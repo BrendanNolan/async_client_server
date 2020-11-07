@@ -18,6 +18,7 @@ private:
 
 private:
     boost::asio::ip::tcp::acceptor acceptor_;
+    int acceptCounter_ = 0;
 };
 
 #endif// SERVER_H

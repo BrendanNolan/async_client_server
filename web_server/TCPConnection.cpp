@@ -1,6 +1,9 @@
 #include "TCPConnection.h"
 
 #include <ctime>
+#include <chrono>
+#include <iostream>
+#include <thread>
 
 #include <boost/asio.hpp>
 #include <boost/bind.hpp>
@@ -14,23 +17,30 @@ namespace
 std::string makeDaytimeString()
 {
     const auto now = std::time(nullptr);
-    return { std::ctime(&now) };
+    std::string s( 100000, 'T' );
+    return s;
 }
 }// namespace
 
-TCPConnection::TCPConnection(io_service& ioService)
+TCPConnection::TCPConnection(io_service& ioService, int id)
     : socket_(ioService)
+    , id_{ id }
 {
 }
 
-TCPConnection::pointer TCPConnection::create(io_service& ioService)
+TCPConnection::pointer TCPConnection::create(io_service& ioService, int id)
 {
-    return pointer{ new TCPConnection{ ioService } };
+    return pointer{ new TCPConnection{ ioService, id } };
 }
 
 tcp::socket& TCPConnection::socket()
 {
     return socket_;
+}
+
+int TCPConnection::id() const
+{
+    return id_;
 }
 
 void TCPConnection::start()
@@ -49,4 +59,7 @@ void TCPConnection::start()
 void TCPConnection::handleWrite(
     const boost::system::error_code& /*error*/, size_t /*bytesTransferred*/)
 {
+    using namespace std::chrono_literals;
+    std::this_thread::sleep_for(10s);
+    std::cout << "Connection " << id_ << " finished writing." << std::endl;
 }

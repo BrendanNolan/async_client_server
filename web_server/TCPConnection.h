@@ -11,16 +11,18 @@
 class TCPConnection : public boost::enable_shared_from_this<TCPConnection>
 {
 private:
-    TCPConnection(boost::asio::io_service& ioService);
+    TCPConnection(boost::asio::io_service& ioService, int id);
 
 public:
     using pointer = boost::shared_ptr<TCPConnection>;
 
-    static pointer create(boost::asio::io_service& ioService);
+    static pointer create(boost::asio::io_service& ioService, int id);
 
     boost::asio::ip::tcp::socket& socket();
 
     void start();
+
+    int id() const;
 
 private:
     void handleWrite(
@@ -29,6 +31,7 @@ private:
 private:
     boost::asio::ip::tcp::socket socket_;
     std::string message_;
+    int id_ = -1;
 };
 
 #endif// TCPCONNECTION_H

@@ -34,7 +34,7 @@ void Client::start()
     tcp::resolver::query q{ "192.168.1.12", "2014" };
     tcp::resolver resolver{ ioservice_ };
     auto it = resolver.resolve(q);
-    for (auto i = 0; i < 100; ++i)
+    for (auto i = 0; i < 10000000; ++i)
     {
         log("\nCreating socket.\n", logFile_);
         tcp::socket socket(ioservice_);
