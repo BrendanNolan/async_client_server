@@ -13,6 +13,12 @@
 using namespace boost::asio;
 using namespace boost::asio::ip;
 
+Server::Server(io_context& ioContext)
+    : ioContext_{ ioContext }
+    , acceptor_{ ioContext, tcp::endpoint(tcp::v4(), 2014) }
+{
+}
+
 void Server::handleConnection(tcp::socket& socket)
 {
     auto now = std::time(nullptr);

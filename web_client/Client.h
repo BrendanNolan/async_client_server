@@ -19,4 +19,4 @@ private:
     std::string logFile_ = "web_client.log";
 };
 
-#endif // CLIENT_H
+#endif// CLIENT_H

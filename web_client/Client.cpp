@@ -16,7 +16,6 @@ using namespace boost::asio::ip;
 namespace
 {
 
-
 void emptyLogFile(const std::string& logFile)
 {
     std::ofstream ofs;
@@ -29,7 +28,7 @@ void log(const std::string& text, const std::string& logFile)
     std::ofstream ofs(logFile, std::ios_base::app);
     ofs << text;
 }
-}
+}// namespace
 
 void Client::start()
 {
@@ -64,10 +63,8 @@ void Client::handleConnection(tcp::socket& socket)
         }
         catch (const boost::system::system_error& error)
         {
-            log(
-                std::string("Socket read_some failed with error message: ") +
-                std::string(error.what()) +
-                '\n',
+            log(std::string("Socket read_some failed with error message: ")
+                    + std::string(error.what()) + '\n',
                 logFile_);
             moreToRead = false;
         }

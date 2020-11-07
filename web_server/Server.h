@@ -1,19 +1,23 @@
 #ifndef SERVER_H
 #define SERVER_H
 
-#include <boost/asio/io_service.hpp>
+#include <boost/asio/io_context.hpp>
 #include <boost/asio/ip/tcp.hpp>
 
 class Server
 {
 public:
-    void start();
+    Server(boost::asio::io_context& ioContext);
 
 private:
-    void handleConnection(boost::asio::ip::tcp::socket& socket);
+    void startAccept();
+    void handleAccept(
+        tcp_connection::pointer new_connection,
+        const boost::system::error_code& error);
 
 private:
-    boost::asio::io_service ioservice_;
+    boost::asio::io_context ioContext_;
+    boost::asio::ip::tcp::acceptor acceptor_;
 };
 
-#endif // SERVER_H
+#endif// SERVER_H
