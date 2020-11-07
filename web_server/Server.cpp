@@ -1,6 +1,7 @@
 #include "Server.h"
 
 #include <iostream>
+#include <functional>
 #include <string>
 #include <ctime>
 
