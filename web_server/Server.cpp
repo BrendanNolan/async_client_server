@@ -23,8 +23,8 @@ Server::Server(io_service& ioService)
 }
 
 void Server::handleAccept(
-        TCPConnection::pointer newConnection,
-        const boost::system::error_code& error)
+    TCPConnection::pointer newConnection,
+    const boost::system::error_code& error)
 {
     if (!error)
         newConnection->start();
@@ -34,14 +34,13 @@ void Server::handleAccept(
 
 void Server::startAccept()
 {
-    auto newConnection = TCPConnection::create(
-        acceptor_.get_io_service());
+    auto newConnection = TCPConnection::create(acceptor_.get_io_service());
 
     acceptor_.async_accept(
         newConnection->socket(),
         boost::bind(
-            &Server::handleAccept, 
-            this, 
+            &Server::handleAccept,
+            this,
             newConnection,
             boost::asio::placeholders::error));
 }

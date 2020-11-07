@@ -9,8 +9,7 @@
 #include <boost/shared_ptr.hpp>
 #include <boost/system/error_code.hpp>
 
-class TCPConnection : 
-    public boost::enable_shared_from_this<TCPConnection>
+class TCPConnection : public boost::enable_shared_from_this<TCPConnection>
 {
 private:
     TCPConnection(boost::asio::io_service& ioService);
@@ -26,8 +25,7 @@ public:
 
 private:
     void handleWrite(
-        const boost::system::error_code& error,
-        size_t bytesTransferred);
+        const boost::system::error_code& error, size_t bytesTransferred);
 
 private:
     boost::asio::ip::tcp::socket socket_;

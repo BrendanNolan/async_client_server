@@ -16,16 +16,14 @@ std::string makeDaytimeString()
     const auto now = std::time(nullptr);
     return { std::ctime(&now) };
 }
-}
+}// namespace
 
-TCPConnection::TCPConnection(
-    io_service& ioService)
+TCPConnection::TCPConnection(io_service& ioService)
     : socket_(ioService)
 {
 }
 
-TCPConnection::pointer TCPConnection::create(
-    io_service& ioService)
+TCPConnection::pointer TCPConnection::create(io_service& ioService)
 {
     return pointer{ new TCPConnection{ ioService } };
 }
@@ -39,17 +37,16 @@ void TCPConnection::start()
 {
     message_ = makeDaytimeString();
     boost::asio::async_write(
-        socket_, 
+        socket_,
         buffer(message_),
         boost::bind(
-            &TCPConnection::handle_write, 
+            &TCPConnection::handle_write,
             shared_from_this(),
             placeholders::error,
             boost::asio::placeholders::bytes_transferred));
 }
 
 void TCPConnection::handleWrite(
-    const boost::system::error_code& /*error*/,
-    size_t /*bytesTransferred*/)
+    const boost::system::error_code& /*error*/, size_t /*bytesTransferred*/)
 {
 }
