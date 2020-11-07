@@ -40,7 +40,7 @@ void TCPConnection::start()
         socket_,
         buffer(message_),
         boost::bind(
-            &TCPConnection::handle_write,
+            &TCPConnection::handleWrite,
             shared_from_this(),
             placeholders::error,
             boost::asio::placeholders::bytes_transferred));
