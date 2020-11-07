@@ -2,6 +2,10 @@
 
 #include <ctime>
 
+#include <boost/asio.hpp>
+#include <boost/bind.hpp>
+#include <boost/make_shared.hpp>
+
 using namespace boost::asio;
 using namespace boost::asio::ip;
 
@@ -23,10 +27,10 @@ TCPConnection::TCPConnection(
 TCPConnection::pointer TCPConnection::create(
     io_service& ioService)
 {
-    return boost::make_shared<TCPConnection>(ioService);
+    return pointer{ new TCPConnection{ ioService } };
 }
 
-socket& TCOConnection::socket()
+tcp::socket& TCPConnection::socket()
 {
     return socket_;
 }
@@ -34,17 +38,17 @@ socket& TCOConnection::socket()
 void TCPConnection::start()
 {
     message_ = makeDaytimeString();
-    async_write(
+    boost::asio::async_write(
         socket_, 
         buffer(message_),
         boost::bind(
-            &tcp_connection::handle_write, 
+            &TCPConnection::handle_write, 
             shared_from_this(),
             placeholders::error,
             boost::asio::placeholders::bytes_transferred));
 }
 
-void TCPConnection::handle_write(
+void TCPConnection::handleWrite(
     const boost::system::error_code& /*error*/,
     size_t /*bytesTransferred*/)
 {

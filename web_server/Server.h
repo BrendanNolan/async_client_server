@@ -18,7 +18,6 @@ private:
         const boost::system::error_code& error);
 
 private:
-    boost::asio::io_service ioService_;
     boost::asio::ip::tcp::acceptor acceptor_;
 };
 

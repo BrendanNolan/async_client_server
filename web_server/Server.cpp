@@ -17,14 +17,13 @@ using namespace boost::asio;
 using namespace boost::asio::ip;
 
 Server::Server(io_service& ioService)
-    : ioService_{ ioService }
-    , acceptor_{ ioService, tcp::endpoint{ tcp::v4(), 2014 } }
+    : acceptor_{ ioService, tcp::endpoint{ tcp::v4(), 2014 } }
 {
     startAccept();
 }
 
 void Server::handleAccept(
-        tcpConnection::pointer newConnection,
+        TCPConnection::pointer newConnection,
         const boost::system::error_code& error)
 {
     if (!error)
@@ -35,12 +34,13 @@ void Server::handleAccept(
 
 void Server::startAccept()
 {
-    auto newConnection = TCPConnection::create(ioService_);
+    auto newConnection = TCPConnection::create(
+        acceptor_.get_io_service());
 
     acceptor_.async_accept(
         newConnection->socket(),
         boost::bind(
-            &tcp_server::handle_accept, 
+            &Server::handleAccept, 
             this, 
             newConnection,
             boost::asio::placeholders::error));
