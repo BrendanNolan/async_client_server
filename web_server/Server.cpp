@@ -1,5 +1,9 @@
 #include "Server.h"
 
+#include <iostream>
+#include <string>
+#include <ctime>
+
 #include <boost/asio/io_service.hpp>
 #include <boost/asio/write.hpp>
 #include <boost/asio/buffer.hpp>
@@ -8,23 +12,17 @@
 #include <boost/bind.hpp>
 #include <boost/system/error_code.hpp>
 
-#include <iostream>
-#include <string>
-#include <ctime>
-
-#include "TCPConnection.h"
-
 using namespace boost::asio;
 using namespace boost::asio::ip;
 
-Server::Server(io_context& ioContext)
-    : ioContext_{ ioContext }
-    , acceptor_{ ioContext, tcp::endpoint{ tcp::v4(), 2014 } }
+Server::Server(io_service& ioService)
+    : ioService_{ ioService }
+    , acceptor_{ ioService, tcp::endpoint{ tcp::v4(), 2014 } }
 {
 }
 
 void Server::handleAccept(
-        tcp_connection::pointer newConnection,
+        tcpConnection::pointer newConnection,
         const boost::system::error_code& error)
 {
     if (!error)
@@ -35,7 +33,7 @@ void Server::handleAccept(
 
 void Server::startAccept()
 {
-    auto newConnection = TCPConnection::create(ioContext_);
+    auto newConnection = TCPConnection::create(ioService_);
 
     acceptor_.async_accept(
         newConnection->socket(),
