@@ -20,6 +20,7 @@ Server::Server(io_service& ioService)
     : ioService_{ ioService }
     , acceptor_{ ioService, tcp::endpoint{ tcp::v4(), 2014 } }
 {
+    startAccept();
 }
 
 void Server::handleAccept(
