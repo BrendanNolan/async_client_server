@@ -36,14 +36,14 @@ tcp::socket& TCPConnection::socket()
 void TCPConnection::start()
 {
     message_ = makeDaytimeString();
-    boost::asio::async_write(
+    async_write(
         socket_,
         buffer(message_),
         boost::bind(
             &TCPConnection::handleWrite,
             shared_from_this(),
             placeholders::error,
-            boost::asio::placeholders::bytes_transferred));
+            placeholders::bytes_transferred));
 }
 
 void TCPConnection::handleWrite(
