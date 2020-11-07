@@ -4,38 +4,44 @@
 #include <boost/asio/write.hpp>
 #include <boost/asio/buffer.hpp>
 #include <boost/asio/ip/tcp.hpp>
+#include <boost/asio/placeholders.hpp>
+#include <boost/bind.hpp>
 #include <boost/system/error_code.hpp>
 
 #include <iostream>
 #include <string>
 #include <ctime>
 
+#include "TCPConnection.h"
+
 using namespace boost::asio;
 using namespace boost::asio::ip;
 
 Server::Server(io_context& ioContext)
     : ioContext_{ ioContext }
-    , acceptor_{ ioContext, tcp::endpoint(tcp::v4(), 2014) }
+    , acceptor_{ ioContext, tcp::endpoint{ tcp::v4(), 2014 } }
 {
 }
 
-void Server::handleConnection(tcp::socket& socket)
+void Server::handleAccept(
+        tcp_connection::pointer newConnection,
+        const boost::system::error_code& error)
 {
-    auto now = std::time(nullptr);
-    std::string data{ std::ctime(&now) };
-    write(socket, buffer(data));
-    socket.shutdown(tcp::socket::shutdown_send);
+    if (!error)
+        newConnection->start();
+
+    startAccept();
 }
 
-void Server::start()
+void Server::startAccept()
 {
-    tcp::endpoint endpoint{ tcp::v4(), 2014 };
-    tcp::acceptor acceptor{ ioservice_, endpoint };
-    while (true)
-    {
-        acceptor.listen();
-        tcp::socket socket{ ioservice_ };
-        acceptor.accept(socket);
-        handleConnection(socket);
-    }
+    auto newConnection = TCPConnection::create(ioContext_);
+
+    acceptor_.async_accept(
+        newConnection->socket(),
+        boost::bind(
+            &tcp_server::handle_accept, 
+            this, 
+            newConnection,
+            boost::asio::placeholders::error));
 }
