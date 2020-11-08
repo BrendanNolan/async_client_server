@@ -22,8 +22,6 @@ void Server::handleAccept(
     TCPConnection::pointer newConnection,
     const boost::system::error_code& error)
 {
-    std::cout << "Handling connection " << newConnection->id() << "..."
-              << std::endl;
     if (!error)
         newConnection->start();
 
@@ -32,13 +30,9 @@ void Server::handleAccept(
 
 void Server::startAccept()
 {
-    std::cout << "Waiting for new connection " << acceptCounter_ << "..."
-              << std::endl;
     auto newConnection =
         TCPConnection::create(acceptor_.get_io_service(), acceptCounter_);
 
-    std::cout << "Asynchronously accepting connection " << acceptCounter_
-              << "..." << std::endl;
     acceptor_.async_accept(
         newConnection->socket(),
         boost::bind(

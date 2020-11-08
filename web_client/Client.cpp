@@ -36,6 +36,7 @@ void Client::start()
     auto it = resolver.resolve(q);
     for (auto i = 0; i < 10000000; ++i)
     {
+        std::cout << "Initiating " << i << "th connection." << std::endl;
         log("\nCreating socket.\n", logFile_);
         tcp::socket socket(ioservice_);
 

@@ -60,7 +60,7 @@ void TCPConnection::handleWrite(
     const boost::system::error_code& /*error*/, size_t /*bytesTransferred*/)
 {
     using namespace std::chrono_literals;
-    std::this_thread::sleep_for(10s);
+    std::this_thread::sleep_for(20s);
     std::cout << "Connection " << id_ << " finished writing. Thread "
               << std::this_thread::get_id() << std::endl;
 }
