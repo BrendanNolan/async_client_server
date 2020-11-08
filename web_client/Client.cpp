@@ -20,6 +20,11 @@ void emptyLogFile(const std::string& logFile)
     ofs.close();
 }
 
+Client::Client()
+{
+    socket_.in
+}
+
 void log(const std::string& text, const std::string& logFile)
 {
     std::ofstream ofs(logFile, std::ios_base::app);
@@ -29,11 +34,15 @@ void log(const std::string& text, const std::string& logFile)
 
 void Client::start()
 {
-    emptyLogFile(logFile_);
-
     tcp::resolver::query q{ "192.168.1.12", "2014" };
     tcp::resolver resolver{ ioservice_ };
-    auto it = resolver.resolve(q);
+    tcp::socket socket{ ioservice_ };
+    resolver.async_resolve(
+        q, 
+        [this](const boost::system::error_code& ec, tcp::resolver::iterator it) {
+            if (!ec)
+                tcp_socket.async_connect(*it, connect_handler);
+        });
     for (auto i = 0; i < 100; ++i)
     {
         log("\nCreating socket.\n", logFile_);
@@ -45,6 +54,23 @@ void Client::start()
         log("Handling connection.\n", logFile_);
         handleConnection(socket);
     }
+}
+
+void Client::resolveHandler(
+    const boost::system::error_code& ec, tcp::resolver::iterator it)
+{
+
+}
+
+void connectHandler(const boost::system::error_code& ec)
+{
+
+}
+
+void readHandler(
+    const boost::system::error_code& ec, std::size_t bytes_transferred)
+{
+    
 }
 
 void Client::handleConnection(tcp::socket& socket)
