@@ -38,8 +38,9 @@ void Client::start()
     tcp::resolver resolver{ ioservice_ };
     tcp::socket socket{ ioservice_ };
     resolver.async_resolve(
-        q, 
-        [this](const boost::system::error_code& ec, tcp::resolver::iterator it) {
+        q,
+        [this](
+            const boost::system::error_code& ec, tcp::resolver::iterator it) {
             if (!ec)
                 tcp_socket.async_connect(*it, connect_handler);
         });
@@ -59,18 +60,15 @@ void Client::start()
 void Client::resolveHandler(
     const boost::system::error_code& ec, tcp::resolver::iterator it)
 {
-
 }
 
 void connectHandler(const boost::system::error_code& ec)
 {
-
 }
 
 void readHandler(
     const boost::system::error_code& ec, std::size_t bytes_transferred)
 {
-    
 }
 
 void Client::handleConnection(tcp::socket& socket)
