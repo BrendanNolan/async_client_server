@@ -11,7 +11,7 @@ int main()
     {
         boost::asio::io_service ioService;
         Server server{ ioService };
-        
+
         std::thread thread0([&ioService] { ioService.run(); });
         std::thread thread1([&ioService] { ioService.run(); });
         std::thread thread2([&ioService] { ioService.run(); });

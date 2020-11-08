@@ -17,7 +17,7 @@ namespace
 std::string makeDaytimeString()
 {
     const auto now = std::time(nullptr);
-    std::string s( 100000, 'T' );
+    std::string s(100000, 'T');
     return s;
 }
 }// namespace
@@ -61,6 +61,6 @@ void TCPConnection::handleWrite(
 {
     using namespace std::chrono_literals;
     std::this_thread::sleep_for(10s);
-    std::cout << "Connection " << id_ << " finished writing. Thread " 
-       << std::this_thread::get_id() << std::endl;
+    std::cout << "Connection " << id_ << " finished writing. Thread "
+              << std::this_thread::get_id() << std::endl;
 }
