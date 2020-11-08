@@ -36,37 +36,23 @@ void Client::start()
 {
     tcp::resolver::query q{ "192.168.1.12", "2014" };
     tcp::resolver resolver{ ioservice_ };
-    tcp::socket socket{ ioservice_ };
-    resolver.async_resolve(
-        q,
-        [this](
-            const boost::system::error_code& ec, tcp::resolver::iterator it) {
-            if (!ec)
-                tcp_socket.async_connect(*it, connect_handler);
-        });
-    for (auto i = 0; i < 100; ++i)
-    {
-        log("\nCreating socket.\n", logFile_);
-        tcp::socket socket(ioservice_);
+    auto it = resolver.resolve(q);
 
-        log("Connecting socket.\n", logFile_);
-        boost::asio::connect(socket, it);
-
-        log("Handling connection.\n", logFile_);
-        handleConnection(socket);
-    }
+    
 }
 
 void Client::resolveHandler(
-    const boost::system::error_code& ec, tcp::resolver::iterator it)
+    const boost::system::error_code& ec, 
+    boost::asio::ip::tcp::resolver::iterator it)
+{
+
+}
+
+void Client::connectHandler(const boost::system::error_code& ec)
 {
 }
 
-void connectHandler(const boost::system::error_code& ec)
-{
-}
-
-void readHandler(
+void Client::readHandler(
     const boost::system::error_code& ec, std::size_t bytes_transferred)
 {
 }

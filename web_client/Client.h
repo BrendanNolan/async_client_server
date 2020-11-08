@@ -8,11 +8,12 @@
 class Client
 {
 public:
+    Client();
     void start();
 
 private:
     void resolveHandler(
-        const boost::system::error_code& ec,
+        const boost::system::error_code& ec, 
         boost::asio::ip::tcp::resolver::iterator it);
     void connectHandler(const boost::system::error_code& ec);
     void readHandler(
