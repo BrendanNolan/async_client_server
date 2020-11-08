@@ -15,8 +15,7 @@ private:
         const boost::system::error_code& ec, tcp::resolver::iterator it);
     void connect_handler(const boost::system::error_code& ec);
     void read_handler(
-        const boost::system::error_code &ec,
-        std::size_t bytes_transferred);
+        const boost::system::error_code& ec, std::size_t bytes_transferred);
 
 private:
     boost::asio::io_service ioservice_;
