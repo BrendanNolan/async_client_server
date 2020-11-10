@@ -3,8 +3,11 @@
 
 class ClientTCPConnection
 {
-public:
+private:
+    ClientTCPConnection(boost::asio::io_service& ioService);
 
+public:
+    
 
 private:
 
