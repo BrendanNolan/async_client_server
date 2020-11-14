@@ -1,9 +1,12 @@
 #ifndef SERVER_H
 #define SERVER_H
 
+#include <string>
+
 #include <boost/asio.hpp>
 
 #include "TCPConnection.h"
+#include "ThreadSafeDeque.h"
 
 class Server
 {
@@ -18,6 +21,7 @@ private:
 
 private:
     boost::asio::ip::tcp::acceptor acceptor_;
+    ThreadSafeDeque<std::string> messageDeque_;
 };
 
 #endif// SERVER_H

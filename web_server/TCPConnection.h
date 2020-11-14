@@ -8,10 +8,14 @@
 #include <boost/shared_ptr.hpp>
 #include <boost/system/error_code.hpp>
 
+#include "ThreadSafeDeque.h"
+
 class TCPConnection : public boost::enable_shared_from_this<TCPConnection>
 {
 private:
-    TCPConnection(boost::asio::io_service& ioService);
+    TCPConnection(
+        boost::asio::io_service& ioService,
+        ThreadSafeDeque<std::string>& messageDeque);
 
 public:
     using pointer = boost::shared_ptr<TCPConnection>;
@@ -28,7 +32,8 @@ private:
 
 private:
     boost::asio::ip::tcp::socket socket_;
-    std::string message_;
+    std::string messageFromClient_;
+    std::string messageForClient_;
 };
 
 #endif// TCPCONNECTION_H
