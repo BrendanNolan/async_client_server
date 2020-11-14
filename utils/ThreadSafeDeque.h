@@ -7,15 +7,38 @@
 #include <utility>
 
 template <typename T>
-class ThreadSafeDeuqeue
+class ThreadSafeDeque
 {
 public:
-    std::optional<T> pop()
+    void push_back(const T& item)
+    {
+        std::scoped_lock lock(mutex_);
+        deque_.push_back(item);
+    }
+
+    std::optional<T> pop_back()
     {
         std::scoped_lock lock(mutex_);
         if (deque_.empty())
             return {};
         auto ret = std::move(deque_.back());
+        deque_.pop_back();
+        return {ret};
+    }
+
+    void push_front(const T& item)
+    {
+        std::scoped_lock lock(mutex_);
+        deque_.push_front(item);
+    }
+
+    std::optional<T> pop_front()
+    {
+        std::scoped_lock lock(mutex_);
+        if (deque_.empty())
+            return {};
+        auto ret = std::move(deque_.front());
+        deque_.pop_front();
         return {ret};
     }
 
