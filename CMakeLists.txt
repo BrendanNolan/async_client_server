@@ -4,4 +4,3 @@ set(CMAKE_BUILD_TYPE Release)
 
 add_subdirectory(web_client)
 add_subdirectory(web_server)
-
