@@ -20,11 +20,6 @@ void emptyLogFile(const std::string& logFile)
     ofs.close();
 }
 
-Client::Client()
-{
-    socket_.in
-}
-
 void log(const std::string& text, const std::string& logFile)
 {
     std::ofstream ofs(logFile, std::ios_base::app);
@@ -32,10 +27,15 @@ void log(const std::string& text, const std::string& logFile)
 }
 }// namespace
 
+Client::Client(io_service& ioservice)
+    : ioservice_{&ioservice}
+{
+}
+
 void Client::start()
 {
     tcp::resolver::query q{ "192.168.1.12", "2014" };
-    tcp::resolver resolver{ ioservice_ };
+    tcp::resolver resolver{ *ioservice_ };
     auto it = resolver.resolve(q);
 
     

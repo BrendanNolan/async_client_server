@@ -8,7 +8,7 @@
 class Client
 {
 public:
-    Client();
+    Client(boost::asio::io_service& ioservice);
     void start();
 
 private:
@@ -19,9 +19,10 @@ private:
     void readHandler(
         const boost::system::error_code& ec, std::size_t bytes_transferred);
 
+    void handleConnection(boost::asio::ip::tcp::socket& socket);
+
 private:
-    boost::asio::io_service ioservice_;
-    boost::asio::ip::tcp::socket socket_;
+    boost::asio::io_service* ioservice_ = nullptr;
     std::string logFile_ = "web_client.log";
 };
 

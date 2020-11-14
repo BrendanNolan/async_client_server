@@ -1,7 +1,10 @@
 #include "Client.h"
 
+#include <boost/asio.hpp>
+
 int main()
 {
-    Client client;
+    boost::asio::io_service ioservice;
+    Client client(ioservice);
     client.start();
 }
