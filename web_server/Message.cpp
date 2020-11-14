@@ -4,7 +4,7 @@
 
 Message::Message(
     const std::string& text,
-    boost::shared_ptr<TCPConnection> connection)
+    std::shared_ptr<TCPConnection> connection)
     : text_{text}
     , connection_{std::move(connection)}
 {

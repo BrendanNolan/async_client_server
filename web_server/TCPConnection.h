@@ -1,16 +1,15 @@
 #ifndef TCPCONNECTION_H
 #define TCPCONNECTION_H
 
+#include <memory>
 #include <string>
 
 #include <boost/asio.hpp>
-#include <boost/enable_shared_from_this.hpp>
-#include <boost/shared_ptr.hpp>
 #include <boost/system/error_code.hpp>
 
 #include "ThreadSafeDeque.h"
 
-class TCPConnection : public boost::enable_shared_from_this<TCPConnection>
+class TCPConnection : public std::enable_shared_from_this<TCPConnection>
 {
 private:
     TCPConnection(
@@ -18,7 +17,7 @@ private:
         ThreadSafeDeque<std::string>& messageDeque);
 
 public:
-    using pointer = boost::shared_ptr<TCPConnection>;
+    using pointer = std::shared_ptr<TCPConnection>;
 
     static pointer create(
         boost::asio::io_service& ioService,
