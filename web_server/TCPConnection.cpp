@@ -18,14 +18,21 @@ std::string makeDaytimeString()
 }
 }// namespace
 
-TCPConnection::TCPConnection(io_service& ioService)
-    : socket_(ioService)
+TCPConnection::TCPConnection(
+    io_service& ioService,
+    ThreadSafeDeque<std::string>& messageDeque)
+    : socket_{ioService}
+    , messageDeque_{&messageDeque}
 {
 }
 
-TCPConnection::pointer TCPConnection::create(io_service& ioService)
+TCPConnection::pointer TCPConnection::create(
+    io_service& ioService,
+    ThreadSafeDeque<std::string>& messageDeque)
 {
-    return pointer{ new TCPConnection{ ioService } };
+    return pointer{ new TCPConnection{ 
+        ioService,
+        messageDeque } };
 }
 
 tcp::socket& TCPConnection::socket()
@@ -35,10 +42,10 @@ tcp::socket& TCPConnection::socket()
 
 void TCPConnection::start()
 {
-    message_ = makeDaytimeString();
+    messageForClient_ = makeDaytimeString();
     async_write(
         socket_,
-        buffer(message_),
+        buffer(messageForClient_),
         boost::bind(
             &TCPConnection::handleWrite,
             shared_from_this(),

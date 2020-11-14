@@ -20,7 +20,9 @@ private:
 public:
     using pointer = boost::shared_ptr<TCPConnection>;
 
-    static pointer create(boost::asio::io_service& ioService);
+    static pointer create(
+        boost::asio::io_service& ioService,
+        ThreadSafeDeque<std::string>& messageDeque);
 
     boost::asio::ip::tcp::socket& socket();
 
@@ -34,6 +36,7 @@ private:
     boost::asio::ip::tcp::socket socket_;
     std::string messageFromClient_;
     std::string messageForClient_;
+    ThreadSafeDeque<std::string>* messageDeque_ = nullptr;
 };
 
 #endif// TCPCONNECTION_H

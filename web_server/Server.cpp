@@ -30,7 +30,9 @@ void Server::handleAccept(
 
 void Server::startAccept()
 {
-    auto newConnection = TCPConnection::create(acceptor_.get_io_service());
+    auto newConnection = TCPConnection::create(
+        acceptor_.get_io_service(),
+        messageDeque_);
 
     acceptor_.async_accept(
         newConnection->socket(),
