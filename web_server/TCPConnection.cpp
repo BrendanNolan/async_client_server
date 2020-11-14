@@ -9,15 +9,6 @@
 using namespace boost::asio;
 using namespace boost::asio::ip;
 
-namespace
-{
-std::string makeDaytimeString()
-{
-    const auto now = std::time(nullptr);
-    return { std::ctime(&now) };
-}
-}// namespace
-
 TCPConnection::TCPConnection(
     io_service& ioService,
     ThreadSafeDeque<std::string>& messageDeque)
@@ -42,7 +33,20 @@ tcp::socket& TCPConnection::socket()
 
 void TCPConnection::start()
 {
-    messageForClient_ = makeDaytimeString();
+    async_read(
+        socket_,
+        buffer(messageFromClient_),
+        boost::bind(
+            &TCPConnection::handleRead,
+            shared_from_this(),
+            placeholders::error,
+            placeholders::bytes_transferred));
+    );
+}
+
+void TCPConnection::handleWrite(
+    const boost::system::error_code& /*error*/, size_t /*bytesTransferred*/)
+{
     async_write(
         socket_,
         buffer(messageForClient_),
