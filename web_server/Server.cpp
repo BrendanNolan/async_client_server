@@ -6,7 +6,6 @@
 #include <ctime>
 
 #include <boost/asio.hpp>
-#include <boost/bind.hpp>
 #include <boost/system/error_code.hpp>
 
 using namespace boost::asio;
@@ -37,9 +36,7 @@ void Server::startAccept()
 
     acceptor_.async_accept(
         newConnection->socket(),
-        boost::bind(
-            &Server::handleAccept,
-            this,
-            newConnection,
-            boost::asio::placeholders::error));
+        [this, newConnection](const boost::system::error_code& error) {
+            handleAccept(newConnection, error);
+        });
 }
