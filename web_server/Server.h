@@ -12,7 +12,7 @@
 class Server
 {
 public:
-    Server(boost::asio::io_service& ioService);
+    Server(boost::asio::io_context& ioContext);
 
 private:
     void startAccept();
@@ -23,6 +23,7 @@ private:
 private:
     boost::asio::ip::tcp::acceptor acceptor_;
     ThreadSafeDeque<Message> messageDeque_;
+    boost::asio::io_context* ioContext_ = nullptr;
 };
 
 #endif// SERVER_H

@@ -1,4 +1,4 @@
-find_package(Boost 1.65.1 REQUIRED COMPONENTS
+find_package(Boost 1.73.0 REQUIRED COMPONENTS
     system thread)
 
 add_executable(client main.cpp Client.cpp ClientTCPConnection.cpp)

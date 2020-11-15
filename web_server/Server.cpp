@@ -12,8 +12,9 @@
 using namespace boost::asio;
 using namespace boost::asio::ip;
 
-Server::Server(io_service& ioService)
-    : acceptor_{ ioService, tcp::endpoint{ tcp::v4(), 2014 } }
+Server::Server(io_context& ioContext)
+    : acceptor_{ ioContext, tcp::endpoint{ tcp::v4(), 2014 } }
+    , ioContext_{&ioContext}
 {
     startAccept();
 }
@@ -31,7 +32,7 @@ void Server::handleAccept(
 void Server::startAccept()
 {
     auto newConnection = TCPConnection::create(
-        acceptor_.get_io_service(),
+        *ioContext_,
         messageDeque_);
 
     acceptor_.async_accept(

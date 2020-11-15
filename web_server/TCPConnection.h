@@ -14,14 +14,14 @@ class TCPConnection : public std::enable_shared_from_this<TCPConnection>
 {
 private:
     TCPConnection(
-        boost::asio::io_service& ioService,
+        boost::asio::io_context& ioContext,
         ThreadSafeDeque<Message>& messageDeque);
 
 public:
     using pointer = std::shared_ptr<TCPConnection>;
 
     static pointer create(
-        boost::asio::io_service& ioService,
+        boost::asio::io_context& ioContext,
         ThreadSafeDeque<Message>& messageDeque);
 
     boost::asio::ip::tcp::socket& socket();

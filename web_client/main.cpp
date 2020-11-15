@@ -4,7 +4,7 @@
 
 int main()
 {
-    boost::asio::io_service ioservice;
-    Client client(ioservice);
+    boost::asio::io_context iocontext;
+    Client client(iocontext);
     client.start();
 }

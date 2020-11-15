@@ -8,10 +8,10 @@ int main()
 {
     try
     {
-        boost::asio::io_service ioService;
-        Server server{ ioService };
+        boost::asio::io_context ioContext;
+        Server server{ ioContext };
 
-        ioService.run();
+        ioContext.run();
     }
     catch (std::exception& e)
     {

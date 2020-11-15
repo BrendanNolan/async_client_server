@@ -4,7 +4,7 @@
 class ClientTCPConnection
 {
 private:
-    ClientTCPConnection(boost::asio::io_service& ioService);
+    ClientTCPConnection(boost::asio::io_context& ioContext);
 
 public:
     

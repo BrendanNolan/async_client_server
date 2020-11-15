@@ -11,19 +11,19 @@ using namespace boost::asio;
 using namespace boost::asio::ip;
 
 TCPConnection::TCPConnection(
-    io_service& ioService,
+    io_context& ioContext,
     ThreadSafeDeque<Message>& messageDeque)
-    : socket_{ioService}
+    : socket_{ioContext}
     , messageDeque_{&messageDeque}
 {
 }
 
 TCPConnection::pointer TCPConnection::create(
-    io_service& ioService,
+    io_context& ioContext,
     ThreadSafeDeque<Message>& messageDeque)
 {
     return pointer{ new TCPConnection{ 
-        ioService,
+        ioContext,
         messageDeque } };
 }
 
