@@ -5,12 +5,12 @@
 
 #include <memory>
 
-#include "TCPConnection.h"
+class TCPConnection;
 
 class Message
 {
 public:
-    explicit Message(
+    Message(
         const std::string& text,
         std::shared_ptr<TCPConnection> connection);
     const std::string& text() const;

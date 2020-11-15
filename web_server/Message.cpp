@@ -2,6 +2,8 @@
 
 #include <utility>
 
+#include "TCPConnection.h"
+
 Message::Message(
     const std::string& text,
     std::shared_ptr<TCPConnection> connection)
