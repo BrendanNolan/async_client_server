@@ -4,7 +4,6 @@
 #include <ctime>
 
 #include <boost/asio.hpp>
-#include <boost/bind.hpp>
 #include <boost/make_shared.hpp>
 
 using namespace boost::asio;
@@ -34,14 +33,13 @@ tcp::socket& TCPConnection::socket()
 
 void TCPConnection::start()
 {
+    auto self = shared_from_this(); // See https://www.boost.org/doc/libs/1_54_0/doc/html/boost_asio/example/cpp11/http/server/connection.cpp
     async_read(
         socket_,
         buffer(bytesFromClient_),
-        boost::bind(
-            &TCPConnection::handleRead,
-            shared_from_this(),
-            placeholders::error,
-            placeholders::bytes_transferred));
+        [this, self](const boost::system::error_code& /*error*/, size_t /*bytesTransferred*/) {
+            handleRead();
+        });
 }
 
 void TCPConnection::write(const std::string& messageForClient)
@@ -50,23 +48,20 @@ void TCPConnection::write(const std::string& messageForClient)
         messageForClient.begin(),
         messageForClient.begin() + 100, 
         messageForClient_.begin());
+    auto self = shared_from_this();
     async_write(
         socket_,
         buffer(messageForClient_),
-        boost::bind(
-            &TCPConnection::handleWrite,
-            shared_from_this(),
-            placeholders::error,
-            placeholders::bytes_transferred));
+        [this, self](const boost::system::error_code& /*error*/, size_t /*bytesTransferred*/) {
+            handleWrite();
+        });
 }
 
-void TCPConnection::handleWrite(
-    const boost::system::error_code& /*error*/, size_t /*bytesTransferred*/)
+void TCPConnection::handleWrite()
 {
 }
 
-void TCPConnection::handleRead(
-    const boost::system::error_code& /*error*/, size_t /*bytesTransferred*/)
+void TCPConnection::handleRead()
 {
     if (!messageDeque_)
         return;
