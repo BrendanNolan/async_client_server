@@ -27,7 +27,7 @@ public:
     boost::asio::ip::tcp::socket& socket();
 
     void start();
-    void write(std::string messageForClient);
+    void write(const std::string& messageForClient);
 
 private:
     void handleRead(
@@ -38,8 +38,8 @@ private:
 
 private:
     boost::asio::ip::tcp::socket socket_;
-    std::string messageFromClient_ = std::string(100, ' ');
     std::string messageForClient_;
+    std::array<char, 100> bytesFromClient_;
     ThreadSafeDeque<Message>* messageDeque_ = nullptr;
 };
 

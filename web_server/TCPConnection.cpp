@@ -1,5 +1,6 @@
 #include "TCPConnection.h"
 
+#include <algorithm>
 #include <ctime>
 
 #include <boost/asio.hpp>
@@ -35,7 +36,7 @@ void TCPConnection::start()
 {
     async_read(
         socket_,
-        buffer(messageFromClient_),
+        buffer(bytesFromClient_),
         boost::bind(
             &TCPConnection::handleRead,
             shared_from_this(),
@@ -43,9 +44,12 @@ void TCPConnection::start()
             placeholders::bytes_transferred));
 }
 
-void TCPConnection::write(std::string messageForClient)
+void TCPConnection::write(const std::string& messageForClient)
 {
-    messageForClient_ = std::move(messageForClient);
+    std::copy(
+        messageForClient.begin(),
+        messageForClient.begin() + 100, 
+        messageForClient_.begin());
     async_write(
         socket_,
         buffer(messageForClient_),
@@ -67,5 +71,7 @@ void TCPConnection::handleRead(
     if (!messageDeque_)
         return;
     
-    messageDeque_->push_back({messageFromClient_, shared_from_this()});
+    messageDeque_->push_back({
+        std::string(bytesFromClient_.begin(), bytesFromClient_.end()),
+        shared_from_this()});
 }
