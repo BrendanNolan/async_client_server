@@ -67,5 +67,5 @@ void TCPConnection::handleRead(
     if (!messageDeque_)
         return;
     
-    messageDeque_->push_back({messageFromCLient_, shared_from_this()});
+    messageDeque_->push_back({messageFromClient_, shared_from_this()});
 }
