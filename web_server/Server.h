@@ -5,6 +5,7 @@
 
 #include <boost/asio.hpp>
 
+#include "Message.h"
 #include "TCPConnection.h"
 #include "ThreadSafeDeque.h"
 
@@ -21,7 +22,7 @@ private:
 
 private:
     boost::asio::ip::tcp::acceptor acceptor_;
-    ThreadSafeDeque<std::string> messageDeque_;
+    ThreadSafeDeque<Message> messageDeque_;
 };
 
 #endif// SERVER_H

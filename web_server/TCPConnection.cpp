@@ -11,7 +11,7 @@ using namespace boost::asio::ip;
 
 TCPConnection::TCPConnection(
     io_service& ioService,
-    ThreadSafeDeque<std::string>& messageDeque)
+    ThreadSafeDeque<Message>& messageDeque)
     : socket_{ioService}
     , messageDeque_{&messageDeque}
 {
@@ -19,7 +19,7 @@ TCPConnection::TCPConnection(
 
 TCPConnection::pointer TCPConnection::create(
     io_service& ioService,
-    ThreadSafeDeque<std::string>& messageDeque)
+    ThreadSafeDeque<Message>& messageDeque)
 {
     return pointer{ new TCPConnection{ 
         ioService,
@@ -41,12 +41,11 @@ void TCPConnection::start()
             shared_from_this(),
             placeholders::error,
             placeholders::bytes_transferred));
-    );
 }
 
-void TCPConnection::handleWrite(
-    const boost::system::error_code& /*error*/, size_t /*bytesTransferred*/)
+void TCPConnection::write(std::string messageForClient)
 {
+    messageForClient_ = std::move(messageForClient);
     async_write(
         socket_,
         buffer(messageForClient_),
@@ -60,4 +59,13 @@ void TCPConnection::handleWrite(
 void TCPConnection::handleWrite(
     const boost::system::error_code& /*error*/, size_t /*bytesTransferred*/)
 {
+}
+
+void TCPConnection::handleRead(
+    const boost::system::error_code& /*error*/, size_t /*bytesTransferred*/)
+{
+    if (!messageDeque_)
+        return;
+    
+    messageDeque_->push_back({messageFromCLient_, shared_from_this()});
 }
