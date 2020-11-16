@@ -42,9 +42,15 @@ public:
         return {ret};
     }
 
+    bool empty() const
+    {
+        std::scoped_lock lock(mutex_);
+        return deque_.empty();
+    }
+
 private:
     std::deque<T> deque_;
-    std::mutex mutex_;
+    mutable std::mutex mutex_;
 };
 
 #endif// THREADSAFEDEQUE_H

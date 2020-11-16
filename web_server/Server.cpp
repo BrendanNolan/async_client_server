@@ -11,11 +11,18 @@
 using namespace boost::asio;
 using namespace boost::asio::ip;
 
+namespace
+{
+    void processMessage(const Message& message);
+}
+
 Server::Server(io_context& ioContext)
     : acceptor_{ ioContext, tcp::endpoint{ tcp::v4(), 2014 } }
     , ioContext_{&ioContext}
 {
     startAccept();
+    for (auto i = 0; i < 4; ++i)
+        threadPool_.emplace_back([this](){ processRequests(); });
 }
 
 void Server::handleAccept(
@@ -39,4 +46,28 @@ void Server::startAccept()
         [this, newConnection](const boost::system::error_code& error) {
             handleAccept(newConnection, error);
         });
+}
+
+void Server::processRequests()
+{
+    while(true)
+    {
+        std::unique_lock lk(mutex_);
+
+        condVar_.wait(
+            lk, [this]{return !messageDeque_.empty();});
+        const auto data = messageDeque_.pop_front();
+        lk.unlock();
+
+        if (data)
+            processMessage(data.value());
+    }
+}
+
+namespace
+{
+    void processMessage(const Message& message)
+    {
+        
+    }
 }
