@@ -28,7 +28,7 @@ void log(const std::string& text, const std::string& logFile)
 }// namespace
 
 Client::Client(io_context& iocontext)
-    : iocontext_{&iocontext}
+    : iocontext_{ &iocontext }
 {
 }
 
@@ -37,15 +37,12 @@ void Client::start()
     tcp::resolver::query q{ "192.168.1.12", "2014" };
     tcp::resolver resolver{ *iocontext_ };
     auto it = resolver.resolve(q);
-
-    
 }
 
 void Client::resolveHandler(
-    const boost::system::error_code& ec, 
+    const boost::system::error_code& ec,
     boost::asio::ip::tcp::resolver::iterator it)
 {
-
 }
 
 void Client::connectHandler(const boost::system::error_code& ec)

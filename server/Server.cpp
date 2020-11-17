@@ -13,16 +13,16 @@ using namespace boost::asio::ip;
 
 namespace
 {
-    void processMessage(const Message& message);
+void processMessage(const Message& message);
 }
 
 Server::Server(io_context& ioContext)
     : acceptor_{ ioContext, tcp::endpoint{ tcp::v4(), 2014 } }
-    , ioContext_{&ioContext}
+    , ioContext_{ &ioContext }
 {
     startAccept();
     for (auto i = 0; i < 4; ++i)
-        threadPool_.emplace_back([this](){ processRequests(); });
+        threadPool_.emplace_back([this]() { processRequests(); });
 }
 
 void Server::handleAccept(
@@ -37,9 +37,7 @@ void Server::handleAccept(
 
 void Server::startAccept()
 {
-    auto newConnection = TCPConnection::create(
-        *ioContext_,
-        messageDeque_);
+    auto newConnection = TCPConnection::create(*ioContext_, messageDeque_);
 
     acceptor_.async_accept(
         newConnection->socket(),
@@ -50,12 +48,11 @@ void Server::startAccept()
 
 void Server::processRequests()
 {
-    while(true)
+    while (true)
     {
         std::unique_lock lk(mutex_);
 
-        condVar_.wait(
-            lk, [this]{return !messageDeque_.empty();});
+        condVar_.wait(lk, [this] { return !messageDeque_.empty(); });
         const auto data = messageDeque_.pop_front();
         lk.unlock();
 
@@ -66,8 +63,7 @@ void Server::processRequests()
 
 namespace
 {
-    void processMessage(const Message& message)
-    {
-        
-    }
+void processMessage(const Message& message)
+{
 }
+}// namespace

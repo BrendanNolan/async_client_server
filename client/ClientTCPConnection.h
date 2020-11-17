@@ -7,10 +7,7 @@ private:
     ClientTCPConnection(boost::asio::io_context& ioContext);
 
 public:
-    
-
 private:
-
 };
 
 #endif// CLIENTTCPCONNECTION_H

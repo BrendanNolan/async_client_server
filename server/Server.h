@@ -33,7 +33,7 @@ private:
     std::vector<std::thread> threadPool_;
 
     std::mutex mutex_;
-    std::condition_variable condVar_;    
+    std::condition_variable condVar_;
     ThreadSafeDeque<Message> messageDeque_;
 };
 

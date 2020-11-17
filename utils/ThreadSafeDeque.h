@@ -6,8 +6,7 @@
 #include <optional>
 #include <utility>
 
-template <typename T>
-class ThreadSafeDeque
+template<typename T> class ThreadSafeDeque
 {
 public:
     void push_back(const T& item)
@@ -23,7 +22,7 @@ public:
             return {};
         auto ret = std::move(deque_.back());
         deque_.pop_back();
-        return {ret};
+        return { ret };
     }
 
     void push_front(const T& item)
@@ -39,7 +38,7 @@ public:
             return {};
         auto ret = std::move(deque_.front());
         deque_.pop_front();
-        return {ret};
+        return { ret };
     }
 
     bool empty() const
