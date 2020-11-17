@@ -15,3 +15,8 @@ const std::string& Message::text() const
 {
     return text_;
 }
+
+TCPConnection::Pointer Message::connection() const
+{
+    return connection_;
+}

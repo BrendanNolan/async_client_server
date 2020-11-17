@@ -20,10 +20,9 @@ void emptyLogFile(const std::string& logFile)
     ofs.close();
 }
 
-void log(const std::string& text, const std::string& logFile)
+void log(const std::string& text, const std::string& /*logFile*/)
 {
-    std::ofstream ofs(logFile, std::ios_base::app);
-    ofs << text;
+    std::cout << text << '\n';
 }
 }// namespace
 

@@ -12,6 +12,7 @@ class Message
 public:
     Message(const std::string& text, std::shared_ptr<TCPConnection> connection);
     const std::string& text() const;
+    std::shared_ptr<TCPConnection> connection() const;
 
 private:
     std::string text_;

@@ -18,9 +18,9 @@ private:
         ThreadSafeDeque<Message>& messageDeque);
 
 public:
-    using pointer = std::shared_ptr<TCPConnection>;
+    using Pointer = std::shared_ptr<TCPConnection>;
 
-    static pointer create(
+    static Pointer create(
         boost::asio::io_context& ioContext,
         ThreadSafeDeque<Message>& messageDeque);
 

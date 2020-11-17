@@ -26,7 +26,7 @@ Server::Server(io_context& ioContext)
 }
 
 void Server::handleAccept(
-    TCPConnection::pointer newConnection,
+    TCPConnection::Pointer newConnection,
     const boost::system::error_code& error)
 {
     if (!error)
@@ -51,7 +51,6 @@ void Server::processRequests()
     while (true)
     {
         std::unique_lock lk(mutex_);
-
         condVar_.wait(lk, [this] { return !messageDeque_.empty(); });
         const auto data = messageDeque_.pop_front();
         lk.unlock();
@@ -65,5 +64,7 @@ namespace
 {
 void processMessage(const Message& message)
 {
+    if (auto connection = message.connection())
+        connection->write("Hello");
 }
 }// namespace

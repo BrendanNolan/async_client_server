@@ -20,7 +20,7 @@ public:
 private:
     void startAccept();
     void handleAccept(
-        TCPConnection::pointer newConnection,
+        TCPConnection::Pointer newConnection,
         const boost::system::error_code& error);
 
 private:

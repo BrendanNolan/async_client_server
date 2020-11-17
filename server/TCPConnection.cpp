@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <ctime>
+#include <iostream>
 
 #include <boost/asio.hpp>
 #include <boost/make_shared.hpp>
@@ -16,10 +17,10 @@ TCPConnection::TCPConnection(
 {
 }
 
-TCPConnection::pointer TCPConnection::create(
+TCPConnection::Pointer TCPConnection::create(
     io_context& ioContext, ThreadSafeDeque<Message>& messageDeque)
 {
-    return pointer{ new TCPConnection{ ioContext, messageDeque } };
+    return Pointer{ new TCPConnection{ ioContext, messageDeque } };
 }
 
 tcp::socket& TCPConnection::socket()
@@ -57,6 +58,7 @@ void TCPConnection::write(const std::string& messageForClient)
 
 void TCPConnection::handleWrite()
 {
+    std::cout << "Finished sending response to client.\n";
 }
 
 void TCPConnection::handleRead()
