@@ -15,5 +15,5 @@ target_link_libraries(server PRIVATE utils)
 
 if (WIN32)
     target_link_libraries(server PRIVATE $ENV{BOOST_LIBRARYDIR}/libboost_date_time-vc141-mt-gd-x64-1_73.lib)
-    target_link_libraries(client PRIVATE $ENV{BOOST_LIBRARYDIR}/libboost_regex-vc141-mt-gd-x64-1_73.lib)
+    target_link_libraries(server PRIVATE $ENV{BOOST_LIBRARYDIR}/libboost_regex-vc141-mt-gd-x64-1_73.lib)
 endif (WIN32)
