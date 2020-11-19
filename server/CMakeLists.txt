@@ -5,8 +5,9 @@ if (WIN32)
     add_compile_definitions(_WIN32_WINNT=0x0A00)
 endif (WIN32)
 
+file (GLOB HEADERS "*.h")
 file(GLOB SOURCES "*.cpp")
-add_executable(server ${SOURCES})
+add_executable(server ${SOURCES} ${HEADERS})
 
 target_compile_features(server PUBLIC cxx_std_17)
 target_include_directories(server PRIVATE ${CMAKE_CURRENT_SOURCE_DIR} ${Boost_INCLUDE_DIRS})
