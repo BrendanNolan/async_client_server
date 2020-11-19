@@ -12,8 +12,7 @@
 using namespace boost::asio;
 using namespace boost::asio::ip;
 
-TCPConnection::TCPConnection(
-    io_context& ioContext, Server& server)
+TCPConnection::TCPConnection(io_context& ioContext, Server& server)
     : socket_{ ioContext }
     , server_{ &server }
 {
@@ -68,7 +67,7 @@ void TCPConnection::handleRead()
     if (!server_)
         return;
 
-    server_->enqueue(Message{ 
-        std::string(bytesFromClient_.begin(), bytesFromClient_.end()),
-        shared_from_this() });
+    server_->enqueue(
+        Message{ std::string(bytesFromClient_.begin(), bytesFromClient_.end()),
+                 shared_from_this() });
 }

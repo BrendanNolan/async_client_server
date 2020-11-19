@@ -38,8 +38,8 @@ void Server::handleAccept(
 void Server::enqueue(const Message& message)
 {
     {
-    std::lock_guard lock{ mutex_ };
-    messageDeque_.push_back(message);
+        std::lock_guard lock{ mutex_ };
+        messageDeque_.push_back(message);
     }
     condVar_.notify_one();
 }
