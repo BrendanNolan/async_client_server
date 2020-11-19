@@ -16,6 +16,7 @@ class Server
 {
 public:
     Server(boost::asio::io_context& ioContext);
+    void enqueue(const Message& message);
 
 private:
     void startAccept();

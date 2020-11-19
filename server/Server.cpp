@@ -35,9 +35,18 @@ void Server::handleAccept(
     startAccept();
 }
 
+void Server::enqueue(const Message& message)
+{
+    {
+    std::lock_guard lock{ mutex_ };
+    messageDeque_.push_back(message);
+    }
+    condVar_.notify_one();
+}
+
 void Server::startAccept()
 {
-    auto newConnection = TCPConnection::create(*ioContext_, messageDeque_);
+    auto newConnection = TCPConnection::create(*ioContext_, *this);
 
     acceptor_.async_accept(
         newConnection->socket(),

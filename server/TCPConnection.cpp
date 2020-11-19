@@ -7,20 +7,22 @@
 #include <boost/asio.hpp>
 #include <boost/make_shared.hpp>
 
+#include "Server.h"
+
 using namespace boost::asio;
 using namespace boost::asio::ip;
 
 TCPConnection::TCPConnection(
-    io_context& ioContext, ThreadSafeDeque<Message>& messageDeque)
+    io_context& ioContext, Server& server)
     : socket_{ ioContext }
-    , messageDeque_{ &messageDeque }
+    , server_{ &server }
 {
 }
 
 TCPConnection::Pointer TCPConnection::create(
-    io_context& ioContext, ThreadSafeDeque<Message>& messageDeque)
+    io_context& ioContext, Server& server)
 {
-    return Pointer{ new TCPConnection{ ioContext, messageDeque } };
+    return Pointer{ new TCPConnection{ ioContext, server } };
 }
 
 tcp::socket& TCPConnection::socket()
@@ -63,10 +65,10 @@ void TCPConnection::handleWrite()
 
 void TCPConnection::handleRead()
 {
-    if (!messageDeque_)
+    if (!server_)
         return;
 
-    messageDeque_->push_back(
-        { std::string(bytesFromClient_.begin(), bytesFromClient_.end()),
-          shared_from_this() });
+    server_->enqueue(Message{ 
+        std::string(bytesFromClient_.begin(), bytesFromClient_.end()),
+        shared_from_this() });
 }
