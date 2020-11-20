@@ -66,7 +66,7 @@ void TCPConnection::handleRead()
 {
     if (!server_)
         return;
-
+    std::cout << "Queueing up message..." << std::endl;
     server_->enqueue(
         Message{ std::string(bytesFromClient_.begin(), bytesFromClient_.end()),
                  shared_from_this() });

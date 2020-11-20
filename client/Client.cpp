@@ -74,7 +74,7 @@ void Client::handleConnection(
 {
     messageForServer_ = "Hello, I am the client.\n";
     async_write(
-        socket,
+        socket_,
         buffer(messageForServer_),
         [this](
             const boost::system::error_code& error,
@@ -87,7 +87,7 @@ void Client::handleWrite(
     const boost::system::error_code& error, std::size_t bytes_transferred)
 {
     async_read(
-        socket, 
+        socket_, 
         buffer(messageFromServer_),
         [this](
             const boost::system::error_code& ec, 
