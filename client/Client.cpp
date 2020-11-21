@@ -48,10 +48,10 @@ void Client::start()
 void Client::handleRead(
     const boost::system::error_code& ec, std::size_t bytes_transferred)
 {
-    std::cout << "Received from server: " << 
-        std::string(
-            messageFromServer_.begin(), 
-            messageFromServer_.begin() + bytes_transferred);
+    std::cout << "Received from server: "
+              << std::string(
+                     messageFromServer_.begin(),
+                     messageFromServer_.begin() + bytes_transferred);
 }
 
 void Client::handleResolve(
@@ -69,8 +69,7 @@ void Client::handleResolve(
 }
 
 void Client::handleConnection(
-    const boost::system::error_code& error,
-    const tcp::endpoint& endpoint)
+    const boost::system::error_code& error, const tcp::endpoint& endpoint)
 {
     messageForServer_ = "Hello, I am the client.\n";
     async_write(
@@ -78,7 +77,7 @@ void Client::handleConnection(
         buffer(messageForServer_),
         [this](
             const boost::system::error_code& error,
-            std::size_t bytes_transferred) { 
+            std::size_t bytes_transferred) {
             handleWrite(error, bytes_transferred);
         });
 }
@@ -87,16 +86,16 @@ void Client::handleWrite(
     const boost::system::error_code& error, std::size_t bytes_transferred)
 {
     async_read(
-        socket_, 
+        socket_,
         buffer(messageFromServer_),
         [this](
-            const boost::system::error_code& ec, 
-            std::size_t bytes_transferred) { 
+            const boost::system::error_code& ec,
+            std::size_t bytes_transferred) {
             handleRead(ec, bytes_transferred);
         });
 }
 
-//void Client::writeHandler()
+// void Client::writeHandler()
 //{
 //    while (moreToRead)
 //    {
