@@ -58,7 +58,7 @@ void Client::handleResolve(
     const boost::system::error_code& error,
     boost::asio::ip::tcp::resolver::results_type results)
 {
-    boost::asio::async_connect(
+    async_connect(
         socket_,
         results,
         [this](
@@ -70,7 +70,7 @@ void Client::handleResolve(
 
 void Client::handleConnection(
     const boost::system::error_code& error,
-    const boost::asio::ip::tcp::endpoint& endpoint)
+    const tcp::endpoint& endpoint)
 {
     messageForServer_ = "Hello, I am the client.\n";
     async_write(
