@@ -74,6 +74,6 @@ namespace
 void processMessage(const Message& message)
 {
     if (auto connection = message.connection())
-        connection->write("Hello");
+        connection->write("Hello, my name is server.");
 }
 }// namespace
