@@ -53,12 +53,12 @@ void Client::handleRead(
         std::cout << "handleRead(): " << error.message() << std::endl;
         return;
     }
-    std::cout << "Received " << bytes_transferred 
-        << " from server; here they are: \n"
-        << std::string(
-                messageFromServer_.begin(),
-                messageFromServer_.begin() + bytes_transferred)
-        << std::endl;
+    std::cout << "Received " << bytes_transferred
+              << " from server; here they are: \n"
+              << std::string(
+                     messageFromServer_.begin(),
+                     messageFromServer_.begin() + bytes_transferred)
+              << std::endl;
 }
 
 void Client::handleResolve(
