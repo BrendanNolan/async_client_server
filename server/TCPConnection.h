@@ -1,6 +1,7 @@
 #ifndef TCPCONNECTION_H
 #define TCPCONNECTION_H
 
+#include <cstdint>
 #include <memory>
 #include <string>
 
@@ -36,7 +37,7 @@ private:
 private:
     boost::asio::ip::tcp::socket socket_;
     std::string messageForClient_;
-    std::array<char, 100> bytesFromClient_;
+    std::vector<std::uint8_t> bytesFromClient_;
     Server* server_ = nullptr;
 };
 
