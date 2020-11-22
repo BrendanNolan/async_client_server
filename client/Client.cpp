@@ -109,8 +109,7 @@ void Client::handleWrite(
         std::cout << "handleWrite(): " << error.message() << std::endl;
         return;
     }
-    async_read(
-        socket_,
+    socket_.async_read_some(// Hack to make reading work without filling buffer.
         buffer(messageFromServer_),
         [this](
             const boost::system::error_code& ec,

@@ -34,8 +34,7 @@ void TCPConnection::start()
     auto self =
         shared_from_this();// See
                            // https://www.boost.org/doc/libs/1_54_0/doc/html/boost_asio/example/cpp11/http/server/connection.cpp
-    async_read(// BUG: This will not return until the whole buffer is full.
-        socket_,
+    socket_.async_read_some(// Hack to make reading work without filling buffer.
         buffer(bytesFromClient_),
         [this, self](
             const boost::system::error_code& error, size_t bytesTransferred) {
