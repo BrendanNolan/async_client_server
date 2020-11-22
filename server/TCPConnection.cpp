@@ -38,8 +38,9 @@ void TCPConnection::start()
         socket_,
         buffer(bytesFromClient_),
         [this, self](
-            const boost::system::error_code& /*error*/,
-            size_t /*bytesTransferred*/) { handleRead(); });
+            const boost::system::error_code& error, size_t bytesTransferred) {
+            handleRead(error, bytesTransferred);
+        });
 }
 
 void TCPConnection::write(const std::string& messageForClient)
@@ -53,17 +54,32 @@ void TCPConnection::write(const std::string& messageForClient)
         socket_,
         buffer(messageForClient_),
         [this, self](
-            const boost::system::error_code& /*error*/,
-            size_t /*bytesTransferred*/) { handleWrite(); });
+            const boost::system::error_code& error,
+            size_t bytesTransferred) { handleWrite(error, bytesTransferred); });
 }
 
-void TCPConnection::handleWrite()
+void TCPConnection::handleWrite(
+    const boost::system::error_code& error, size_t bytesTransferred)
 {
+    if (error)
+    {
+        std::cout << "TCPConnection::handleWrite(): " << error.message()
+                  << std::endl;
+        return;
+    }
+
     std::cout << "Finished sending response to client.\n";
 }
 
-void TCPConnection::handleRead()
+void TCPConnection::handleRead(
+    const boost::system::error_code& error, size_t bytesTransferred)
 {
+    if (error)
+    {
+        std::cout << "TCPConnection::handleRead(): " << error.message()
+                  << std::endl;
+        return;
+    }
     if (!server_)
         return;
     std::cout << "Queueing up message..." << std::endl;

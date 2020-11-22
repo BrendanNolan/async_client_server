@@ -27,9 +27,13 @@ public:
     void write(const std::string& messageForClient);
 
 private:
-    void handleRead();
+    void handleRead(
+        const boost::system::error_code& error,
+        size_t bytesTransferred);
 
-    void handleWrite();
+    void handleWrite(
+        const boost::system::error_code& error,
+        size_t bytesTransferred);
 
 private:
     boost::asio::ip::tcp::socket socket_;

@@ -12,9 +12,9 @@ public:
     void start();
 
 private:
-    void handleConnection(const boost::system::error_code& ec);
+    void handleConnection(const boost::system::error_code& error);
     void handleRead(
-        const boost::system::error_code& ec, std::size_t bytes_transferred);
+        const boost::system::error_code& error, std::size_t bytes_transferred);
     void handleResolve(
         const boost::system::error_code& error,
         boost::asio::ip::tcp::resolver::results_type results);
@@ -29,6 +29,7 @@ private:
 private:
     boost::asio::io_context* iocontext_ = nullptr;
     boost::asio::ip::tcp::socket socket_;
+    boost::asio::ip::tcp::resolver resolver_;
     std::string messageForServer_;
     std::array<char, 256> messageFromServer_;
 };
