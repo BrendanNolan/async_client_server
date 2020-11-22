@@ -34,7 +34,7 @@ void TCPConnection::start()
     auto self =
         shared_from_this();// See
                            // https://www.boost.org/doc/libs/1_54_0/doc/html/boost_asio/example/cpp11/http/server/connection.cpp
-    async_read( // BUG: This will not return until the whole buffer is full.
+    async_read(// BUG: This will not return until the whole buffer is full.
         socket_,
         buffer(bytesFromClient_),
         [this, self](
@@ -45,17 +45,15 @@ void TCPConnection::start()
 
 void TCPConnection::write(const std::string& messageForClient)
 {
-    std::copy(
-        messageForClient.begin(),
-        messageForClient.end(),
-        std::back_inserter(messageForClient_));
+    messageForClient_ = messageForClient;
     auto self = shared_from_this();
     async_write(
         socket_,
         buffer(messageForClient_),
         [this, self](
-            const boost::system::error_code& error,
-            size_t bytesTransferred) { handleWrite(error, bytesTransferred); });
+            const boost::system::error_code& error, size_t bytesTransferred) {
+            handleWrite(error, bytesTransferred);
+        });
 }
 
 void TCPConnection::handleWrite(
