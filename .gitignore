@@ -1,4 +1,5 @@
 build/*
+linux_build/*
 win_build/*
 .vscode/*
 
