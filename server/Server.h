@@ -1,8 +1,6 @@
 #ifndef SERVER_H
 #define SERVER_H
 
-#include <condition_variable>
-#include <mutex>
 #include <string>
 #include <thread>
 
@@ -16,7 +14,6 @@ class Server
 {
 public:
     Server(boost::asio::io_context& ioContext);
-    void enqueue(const Message& message);
 
 private:
     void startAccept();
@@ -32,9 +29,6 @@ private:
     boost::asio::io_context* ioContext_ = nullptr;
 
     std::vector<std::thread> threadPool_;
-
-    std::mutex mutex_;
-    std::condition_variable condVar_;
     ThreadSafeDeque<Message> messageDeque_;
 };
 

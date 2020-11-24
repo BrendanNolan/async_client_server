@@ -35,18 +35,9 @@ void Server::handleAccept(
     startAccept();
 }
 
-void Server::enqueue(const Message& message)
-{
-    {
-        std::lock_guard lock{ mutex_ };
-        messageDeque_.push_back(message);
-    }
-    condVar_.notify_one();
-}
-
 void Server::startAccept()
 {
-    auto newConnection = TCPConnection::create(*ioContext_, *this);
+    auto newConnection = TCPConnection::create(*ioContext_, messageDeque_);
 
     acceptor_.async_accept(
         newConnection->socket(),
@@ -59,13 +50,8 @@ void Server::processRequests()
 {
     while (true)
     {
-        std::unique_lock lk(mutex_);
-        condVar_.wait(lk, [this] { return !messageDeque_.empty(); });
-        const auto data = messageDeque_.pop_front();
-        lk.unlock();
-
-        if (data)
-            processMessage(data.value());
+        const auto data = messageDeque_.wait_and_pop_front();
+        processMessage(data);
     }
 }
 
