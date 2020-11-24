@@ -28,7 +28,7 @@ public:
     T wait_and_pop_back()
     {
         std::unique_lock lock(mutex_);
-        condVar_.wait(lock, [this]() { return deque_.empty(); });
+        condVar_.wait(lock, [this]() { return !deque_.empty(); });
         return pop_back_private();
     }
 
@@ -50,7 +50,7 @@ public:
     T wait_and_pop_front()
     {
         std::unique_lock lock(mutex_);
-        condVar_.wait(lock, [this]() { return deque_.empty(); });
+        condVar_.wait(lock, [this]() { return !deque_.empty(); });
         return pop_front_private();
     }
 
