@@ -5,18 +5,11 @@
 #include "TCPConnection.h"
 
 Message::Message(
-    const std::string& text, std::shared_ptr<TCPConnection> connection)
-    : text_{ text }
+    std::uint32_t type,
+    std::vector<std::uint8_t> body,
+    std::shared_ptr<TCPConnection> connection)
+    : type_{ type }
+    , body_{ std::move(body) }
     , connection_{ std::move(connection) }
 {
-}
-
-const std::string& Message::text() const
-{
-    return text_;
-}
-
-TCPConnection::Pointer Message::connection() const
-{
-    return connection_;
 }

@@ -3,7 +3,7 @@
 
 #include <cstdint>
 #include <memory>
-#include <string>
+#include <vector>
 
 #include <boost/asio.hpp>
 #include <boost/system/error_code.hpp>
@@ -28,7 +28,7 @@ public:
     boost::asio::ip::tcp::socket& socket();
 
     void start();
-    void write(const std::string& messageForClient);
+    void write(std::vector<std::uint8_t> messageForClient);
 
 private:
     void handleRead(
@@ -39,7 +39,7 @@ private:
 
 private:
     boost::asio::ip::tcp::socket socket_;
-    std::string messageForClient_;
+    std::vector<std::uint8_t> messageForClient_;
     std::vector<std::uint8_t> bytesFromClient_;
     ThreadSafeDeque<Message>* messageDeque_ = nullptr;
 };

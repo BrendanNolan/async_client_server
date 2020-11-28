@@ -1,9 +1,10 @@
 #include "Server.h"
 
+#include <cstdint>
+#include <ctime>
 #include <iostream>
 #include <functional>
 #include <string>
-#include <ctime>
 
 #include <boost/asio.hpp>
 #include <boost/system/error_code.hpp>
@@ -57,9 +58,26 @@ void Server::processRequests()
 
 namespace
 {
+std::vector<std::uint8_t> prepareOutgoingBody(const Message& message)
+{
+    const std::string str { "Hello, my name is server." };
+    return std::vector<std::uint8_t>(str.begin(), str.end());
+}
+
 void processMessage(const Message& message)
 {
-    if (auto connection = message.connection())
-        connection->write("Hello, my name is server.");
+    if (!message.connection_)
+        return;
+
+    auto outgoingBody = prepareOutgoingBody(message);
+    std::vector<std::uint8_t> outgoingBytes;
+    outgoingBytes.reserve(4u + outgoingBody.size());
+    outgoingBytes.push_back(message.type_);
+    std::move(
+        outgoingBody.begin(), 
+        outgoingBody.end(), 
+        std::back_inserter(outgoingBytes));
+    
+    message.connection_->write(outgoingBytes);
 }
 }// namespace

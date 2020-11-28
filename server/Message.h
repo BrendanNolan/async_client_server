@@ -1,22 +1,23 @@
 #ifndef MESSAGE_H
 #define MESSAGE_H
 
-#include <string>
-
+#include <cstdint>
 #include <memory>
+#include <vector>
 
 class TCPConnection;
 
-class Message
+struct Message
 {
 public:
-    Message(const std::string& text, std::shared_ptr<TCPConnection> connection);
-    const std::string& text() const;
-    std::shared_ptr<TCPConnection> connection() const;
+    Message(
+        std::uint32_t type,
+        std::vector<std::uint8_t> body,
+        std::shared_ptr<TCPConnection> connection);
 
-private:
-    std::string text_;
-    std::shared_ptr<TCPConnection> connection_;
+    const std::uint32_t type_;
+    const std::vector<std::uint8_t> body_;
+    const std::shared_ptr<TCPConnection> connection_;
 };
 
 #endif// MESSAGE_H

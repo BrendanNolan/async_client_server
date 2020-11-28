@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <ctime>
 #include <iostream>
+#include <utility>
 
 #include <boost/asio.hpp>
 #include <boost/make_shared.hpp>
@@ -41,9 +42,9 @@ void TCPConnection::start()
         });
 }
 
-void TCPConnection::write(const std::string& messageForClient)
+void TCPConnection::write(std::vector<std::uint8_t> messageForClient)
 {
-    messageForClient_ = messageForClient;
+    messageForClient_ = std::move(messageForClient);
     auto self = shared_from_this();
     async_write(
         socket_,
@@ -81,6 +82,9 @@ void TCPConnection::handleRead(
     std::cout << "Queueing up message..." << std::endl;
     messageDeque_->push_back(
         Message{
-            std::string(bytesFromClient_.begin(), bytesFromClient_.end()),
+            bytesFromClient_.front(),
+            std::vector<std::uint8_t>(
+                bytesFromClient_.begin() + 1, 
+                bytesFromClient_.end()),
             shared_from_this() });
 }
