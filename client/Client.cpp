@@ -7,6 +7,8 @@
 #include <fstream>
 #include <sstream>
 
+#include "byte_conversion_functions.h"
+
 using namespace boost::asio;
 using namespace boost::asio::ip;
 
@@ -90,6 +92,17 @@ void Client::handleConnection(
     }
     std::cout << "About to kick off asynchronously writing to socket.\n";
     std::string str{ "Hello, I am the client.\n" };
+    messageForServer_.resize(str.size() + 4u);
+    const auto length = byte_utils::toByteArray(
+        static_cast<std::uint32_t>(str.size()), byte_utils::Endianness::little);
+    std::copy(
+        length.begin(),
+        length.end(),
+        messageForServer_.begin());
+    std::copy(
+        str.begin(),
+        str.end(), 
+        messageForServer_.begin() + 4u);
 
     async_write(
         socket_,

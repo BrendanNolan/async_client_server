@@ -8,6 +8,8 @@
 #include <boost/asio.hpp>
 #include <boost/make_shared.hpp>
 
+#include "byte_conversion_functions.h"
+
 using namespace boost::asio;
 using namespace boost::asio::ip;
 
@@ -82,11 +84,15 @@ void TCPConnection::handleRead(
     if (!messageDeque_)
         return;
     std::cout << "Queueing up message..." << std::endl;
+    
+    using namespace byte_utils;
     messageDeque_->push_back(
-        Message{
-            bytesFromClient_.front(),
+        Message{ 
+            to32BitInt(
+                std::vector<std::uint8_t>(
+                     bytesFromClient_.begin(), bytesFromClient_.begin() + 4),
+                Endianness::little),
             std::vector<std::uint8_t>(
-                bytesFromClient_.begin() + 1, 
-                bytesFromClient_.end()),
-            shared_from_this() });
+                     bytesFromClient_.begin() + 4, bytesFromClient_.end()),
+                 shared_from_this() });
 }

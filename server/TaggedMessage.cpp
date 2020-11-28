@@ -1,4 +1,4 @@
-#include "Message.h"
+#include "TaggedMessage.h"
 
 #include <utility>
 

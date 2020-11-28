@@ -1,5 +1,5 @@
-#ifndef MESSAGE_H
-#define MESSAGE_H
+#ifndef TAGGEDMESSAGE_H
+#define TAGGEDMESSAGE_H
 
 #include <cstdint>
 #include <memory>
@@ -20,4 +20,4 @@ public:
     const std::shared_ptr<TCPConnection> connection_;
 };
 
-#endif// MESSAGE_H
+#endif// TAGGEDMESSAGE_H

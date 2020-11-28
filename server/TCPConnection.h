@@ -9,7 +9,7 @@
 #include <boost/system/error_code.hpp>
 
 #include "ThreadSafeDeque.h"
-#include "Message.h"
+#include "TaggedMessage.h"
 
 class TCPConnection : public std::enable_shared_from_this<TCPConnection>
 {

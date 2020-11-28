@@ -6,7 +6,7 @@
 
 #include <boost/asio.hpp>
 
-#include "Message.h"
+#include "TaggedMessage.h"
 #include "TCPConnection.h"
 #include "ThreadSafeDeque.h"
 
