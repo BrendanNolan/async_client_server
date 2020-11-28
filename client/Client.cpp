@@ -89,7 +89,8 @@ void Client::handleConnection(
         return;
     }
     std::cout << "About to kick off asynchronously writing to socket.\n";
-    messageForServer_ = "Hello, I am the client.\n";
+    std::string str{ "Hello, I am the client.\n" };
+
     async_write(
         socket_,
         buffer(messageForServer_),

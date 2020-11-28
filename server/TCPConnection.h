@@ -41,6 +41,7 @@ private:
     boost::asio::ip::tcp::socket socket_;
     std::vector<std::uint8_t> messageForClient_;
     std::vector<std::uint8_t> bytesFromClient_;
+    std::uint32_t advertisedHeaderSizeFromClient_ = 0u;
     ThreadSafeDeque<Message>* messageDeque_ = nullptr;
 };
 

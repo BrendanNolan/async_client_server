@@ -1,6 +1,5 @@
 cmake_minimum_required(VERSION 3.18.4)
 project(async_client_server)
-set(CMAKE_BUILD_TYPE Release)
 #set(Boost_DEBUG ON)
 
 add_subdirectory(client)

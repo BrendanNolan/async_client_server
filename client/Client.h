@@ -1,7 +1,8 @@
 #ifndef CLIENT_H
 #define CLIENT_H
 
-#include <string>
+#include <cstdint>
+#include <vector>
 
 #include <boost/asio.hpp>
 
@@ -30,8 +31,8 @@ private:
     boost::asio::io_context* iocontext_ = nullptr;
     boost::asio::ip::tcp::socket socket_;
     boost::asio::ip::tcp::resolver resolver_;
-    std::string messageForServer_;
-    std::array<char, 256> messageFromServer_;
+    std::vector<std::uint8_t> messageForServer_;
+    std::vector<std::uint8_t> messageFromServer_;
 };
 
 #endif// CLIENT_H
