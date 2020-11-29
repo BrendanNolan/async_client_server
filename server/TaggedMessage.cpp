@@ -5,11 +5,8 @@
 #include "TCPConnection.h"
 
 TaggedMessage::TaggedMessage(
-    std::uint32_t type,
-    std::vector<std::uint8_t> body,
-    std::shared_ptr<TCPConnection> connection)
-    : type_{ type }
-    , body_{ std::move(body) }
+    utils::Message message, std::shared_ptr<TCPConnection> connection)
+    : message_{ std::move(message) }
     , connection_{ std::move(connection) }
 {
 }

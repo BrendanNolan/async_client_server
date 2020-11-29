@@ -18,7 +18,7 @@ struct Message
 {
 public:
     Message(
-        const MessageHeader& header, std::vector<std::uint8_t> body);
+        MessageHeader header, std::vector<std::uint8_t> body);
 
     const MessageHeader header_;
     const std::vector<std::uint8_t> body_;

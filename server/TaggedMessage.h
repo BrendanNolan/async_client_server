@@ -5,18 +5,18 @@
 #include <memory>
 #include <vector>
 
+#include "Message.h"
+
 class TCPConnection;
 
 struct TaggedMessage
 {
 public:
     TaggedMessage(
-        std::uint32_t type,
-        std::vector<std::uint8_t> body,
+        utils::Message message,
         std::shared_ptr<TCPConnection> connection);
 
-    const std::uint32_t type_;
-    const std::vector<std::uint8_t> body_;
+    const utils::Message message_;
     const std::shared_ptr<TCPConnection> connection_;
 };
 
