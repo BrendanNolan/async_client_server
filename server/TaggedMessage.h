@@ -7,10 +7,10 @@
 
 class TCPConnection;
 
-struct Message
+struct TaggedMessage
 {
 public:
-    Message(
+    TaggedMessage(
         std::uint32_t type,
         std::vector<std::uint8_t> body,
         std::shared_ptr<TCPConnection> connection);

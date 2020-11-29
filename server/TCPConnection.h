@@ -16,14 +16,14 @@ class TCPConnection : public std::enable_shared_from_this<TCPConnection>
 private:
     TCPConnection(
         boost::asio::io_context& ioContext, 
-        ThreadSafeDeque<Message>& messageDeque);
+        ThreadSafeDeque<TaggedMessage>& messageDeque);
 
 public:
     using Pointer = std::shared_ptr<TCPConnection>;
 
     static Pointer create(
         boost::asio::io_context& ioContext, 
-        ThreadSafeDeque<Message>& messageDeque);
+        ThreadSafeDeque<TaggedMessage>& messageDeque);
 
     boost::asio::ip::tcp::socket& socket();
 
@@ -42,7 +42,7 @@ private:
     std::vector<std::uint8_t> messageForClient_;
     std::vector<std::uint8_t> bytesFromClient_;
     std::uint32_t advertisedHeaderSizeFromClient_ = 0u;
-    ThreadSafeDeque<Message>* messageDeque_ = nullptr;
+    ThreadSafeDeque<TaggedMessage>* messageDeque_ = nullptr;
 };
 
 #endif// TCPCONNECTION_H

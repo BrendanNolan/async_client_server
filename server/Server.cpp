@@ -14,7 +14,7 @@ using namespace boost::asio::ip;
 
 namespace
 {
-void processMessage(const Message& message);
+void processMessage(const TaggedMessage& message);
 }
 
 Server::Server(io_context& ioContext)
@@ -58,13 +58,13 @@ void Server::processRequests()
 
 namespace
 {
-std::vector<std::uint8_t> prepareOutgoingBody(const Message& message)
+std::vector<std::uint8_t> prepareOutgoingBody(const TaggedMessage& message)
 {
     const std::string str { "Hello, my name is server." };
     return std::vector<std::uint8_t>(str.begin(), str.end());
 }
 
-void processMessage(const Message& message)
+void processMessage(const TaggedMessage& message)
 {
     if (!message.connection_)
         return;

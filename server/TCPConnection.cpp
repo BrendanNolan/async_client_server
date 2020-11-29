@@ -14,14 +14,14 @@ using namespace boost::asio;
 using namespace boost::asio::ip;
 
 TCPConnection::TCPConnection(
-    io_context& ioContext, ThreadSafeDeque<Message>& messageDeque)
+    io_context& ioContext, ThreadSafeDeque<TaggedMessage>& messageDeque)
     : socket_{ ioContext }
     , messageDeque_{ &messageDeque }
 {
 }
 
 TCPConnection::Pointer TCPConnection::create(
-    io_context& ioContext, ThreadSafeDeque<Message>& messageDeque)
+    io_context& ioContext, ThreadSafeDeque<TaggedMessage>& messageDeque)
 {
     return Pointer{ new TCPConnection{ ioContext, messageDeque } };
 }
@@ -87,7 +87,7 @@ void TCPConnection::handleRead(
     
     using namespace byte_utils;
     messageDeque_->push_back(
-        Message{ 
+        TaggedMessage{ 
             to32BitInt(
                 std::vector<std::uint8_t>(
                      bytesFromClient_.begin(), bytesFromClient_.begin() + 4),

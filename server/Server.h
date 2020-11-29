@@ -29,7 +29,7 @@ private:
     boost::asio::io_context* ioContext_ = nullptr;
 
     std::vector<std::thread> threadPool_;
-    ThreadSafeDeque<Message> messageDeque_;
+    ThreadSafeDeque<TaggedMessage> messageDeque_;
 };
 
 #endif// SERVER_H

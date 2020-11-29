@@ -4,7 +4,7 @@
 
 #include "TCPConnection.h"
 
-Message::Message(
+TaggedMessage::TaggedMessage(
     std::uint32_t type,
     std::vector<std::uint8_t> body,
     std::shared_ptr<TCPConnection> connection)
