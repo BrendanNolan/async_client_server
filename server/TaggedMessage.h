@@ -16,8 +16,8 @@ public:
         utils::Message message,
         std::shared_ptr<TCPConnection> connection);
 
-    const utils::Message message_;
-    const std::shared_ptr<TCPConnection> connection_;
+    utils::Message message_;
+    std::shared_ptr<TCPConnection> connection_;
 };
 
 #endif// TAGGEDMESSAGE_H
