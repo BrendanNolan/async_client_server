@@ -72,7 +72,6 @@ void processMessage(const TaggedMessage& message)
     auto outgoingBody = prepareOutgoingBody(message);
     std::vector<std::uint8_t> outgoingBytes;
     outgoingBytes.reserve(4u + outgoingBody.size());
-    outgoingBytes.push_back(message.type_);
     std::move(
         outgoingBody.begin(), 
         outgoingBody.end(), 

@@ -87,12 +87,7 @@ void TCPConnection::handleRead(
     
     using namespace byte_utils;
     messageDeque_->push_back(
-        TaggedMessage{ 
-            to32BitInt(
-                std::vector<std::uint8_t>(
-                     bytesFromClient_.begin(), bytesFromClient_.begin() + 4),
-                Endianness::little),
-            std::vector<std::uint8_t>(
-                     bytesFromClient_.begin() + 4, bytesFromClient_.end()),
-                 shared_from_this() });
+        TaggedMessage{
+            ,
+            shared_from_this() });
 }
