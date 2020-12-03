@@ -2,6 +2,7 @@
 #define MESSAGE_H
 
 #include <cstdint>
+#include <type_traits>
 #include <vector>
 
 namespace utils
@@ -27,6 +28,12 @@ public:
 template <typename PODType>
 Message& operator<<(Message& message, const PODType& data)
 {
+    static_assert(
+        std::is_standard_layout<PODType>::value, 
+        "Data type not trivially serialisable");
+
+    const auto oldSz = message.body_.size();
+    message.body_.resize(oldSz + sizeof(PODType));
 
 }
 
