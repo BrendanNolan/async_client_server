@@ -90,30 +90,37 @@ void Client::handleConnection(
     }
     std::cout << "About to kick off asynchronously writing to socket.\n";
     std::string str{ "Hello, I am the client.\n" };
-    messageForServer_.resize(str.size() + 4u);
-    const auto length = byte_utils::toByteArray(
-        static_cast<std::uint32_t>(str.size()), byte_utils::Endianness::little);
-    std::copy(
-        length.begin(),
-        length.end(),
-        messageForServer_.begin());
-    std::copy(
-        str.begin(),
-        str.end(), 
-        messageForServer_.begin() + 4u);
+    messageForServer_.header_.type_ = 0;
+    messageForServer_ << str;
+    write();
+}
 
+void Client::write()
+{
     async_write(
         socket_,
-        buffer(messageForServer_),
+        buffer(&messageForServer_.header_, sizeof(utils::MessageHeader)),
         [this](
             const boost::system::error_code& error,
             std::size_t bytes_transferred) {
-            handleWrite(error, bytes_transferred);
+            handleHeaderWrite(error, bytes_transferred);
         });
-    std::cout << "Kicked off asynchronously writing to socket.\n ";
 }
 
-void Client::handleWrite(
+void Client::handleHeaderWrite(
+    const boost::system::error_code& error, std::size_t bytes_transferred)
+{
+    async_write(
+        socket_,
+        buffer(messageForServer_.body_),
+        [this](
+            const boost::system::error_code& error,
+            std::size_t bytesTransferred) {
+            handleBodyWrite(error, bytesTransferred);
+        });
+}
+
+void Client::handleBodyWrite(
     const boost::system::error_code& error, std::size_t bytes_transferred)
 {
     if (error)
@@ -129,23 +136,3 @@ void Client::handleWrite(
             handleRead(ec, bytes_transferred);
         });
 }
-
-// void Client::writeHandler()
-//{
-//    while (moreToRead)
-//    {
-//        try
-//        {
-//            socket.read_some(buffer(bytes));
-//            log("Socket read succeeded.\n", logFile_);
-//        }
-//        catch (const boost::system::system_error& error)
-//        {
-//            log(std::string("Socket read_some failed with error message: ")
-//                    + std::string(error.what()) + '\n',
-//                logFile_);
-//            moreToRead = false;
-//        }
-//    }
-//    log(bytes.data(), logFile_);
-//}

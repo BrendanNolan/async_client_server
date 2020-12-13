@@ -9,8 +9,9 @@
 #include <boost/asio.hpp>
 #include <boost/system/error_code.hpp>
 
-#include "ThreadSafeDeque.h"
+#include "Message.h"
 #include "TaggedMessage.h"
+#include "ThreadSafeDeque.h"
 
 class TCPConnection : public std::enable_shared_from_this<TCPConnection>
 {
@@ -29,18 +30,20 @@ public:
     boost::asio::ip::tcp::socket& socket();
 
     void start();
-    void write(std::vector<std::uint8_t> messageForClient);
+    void write(utils::Message messageForClient);
 
 private:
     void handleRead(
         const boost::system::error_code& error, std::size_t bytesTransferred);
 
-    void handleWrite(
+    void handleHeaderWrite(
+        const boost::system::error_code& error, std::size_t bytesTransferred);
+    void handleBodyWrite(
         const boost::system::error_code& error, std::size_t bytesTransferred);
 
 private:
     boost::asio::ip::tcp::socket socket_;
-    std::vector<std::uint8_t> messageForClient_;
+    utils::Message messageForClient_;
     std::vector<std::uint8_t> bytesFromClient_;
     std::uint32_t advertisedHeaderSizeFromClient_ = 0u;
     ThreadSafeDeque<TaggedMessage>* messageDeque_ = nullptr;

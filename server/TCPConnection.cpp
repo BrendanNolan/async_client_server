@@ -44,20 +44,34 @@ void TCPConnection::start()
         });
 }
 
-void TCPConnection::write(std::vector<std::uint8_t> messageForClient)
+void TCPConnection::write(utils::Message messageForClient)
 {
     messageForClient_ = std::move(messageForClient);
     auto self = shared_from_this();
     async_write(
         socket_,
-        buffer(messageForClient_),
+        buffer(&messageForClient_.header_, sizeof(utils::MessageHeader)),
         [this, self](
             const boost::system::error_code& error, std::size_t bytesTransferred) {
-            handleWrite(error, bytesTransferred);
+            handleHeaderWrite(error, bytesTransferred);
         });
 }
 
-void TCPConnection::handleWrite(
+void TCPConnection::handleHeaderWrite(
+    const boost::system::error_code& error, std::size_t bytesTransferred)
+{
+    auto self = shared_from_this();
+    async_write(
+        socket_,
+        buffer(messageForClient_.body_),
+        [this, self](
+            const boost::system::error_code& error,
+            std::size_t bytesTransferred) {
+            handleBodyWrite(error, bytesTransferred);
+        });
+}
+
+void TCPConnection::handleBodyWrite(
     const boost::system::error_code& error, std::size_t bytesTransferred)
 {
     if (error)
@@ -83,7 +97,6 @@ void TCPConnection::handleRead(
         return;
     std::cout << "Queueing up message..." << std::endl;
     
-    using namespace byte_utils;
     messageDeque_->push_back(
         TaggedMessage{
             ,

@@ -11,21 +11,22 @@ namespace utils
 {
 struct MessageHeader
 {
+    MessageHeader() = default;
     MessageHeader(std::uint32_t type, std::uint32_t size);
 
-    std::uint32_t type_;
-    std::uint32_t bodySize_;
+    std::uint32_t type_ = static_cast < std::uint32_t>(0);
+    std::uint32_t bodySize_ = static_cast<std::uint32_t>(0);
 };
 
 struct Message
 {
 public:
+    Message() = default;
     Message(MessageHeader header, std::vector<std::uint8_t> body);
 
     MessageHeader header_;
     std::vector<std::uint8_t> body_;
 };
-
 void updateHeader(Message& message);
 
 template<typename PODType>
