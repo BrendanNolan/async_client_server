@@ -1,4 +1,4 @@
-There should be an IByteArrayProcessor class which the server uses to take client bytes, do whatever with them, and optionally return bytes to send back to the client. Something like 
+There should be an IByteArrayProcessor class which the server uses to take client bytes, do whatever with them, and optionally return bytes to send back to the client. Something like
 class IByteArrayProcessor
 {
 public:
