@@ -8,8 +8,6 @@
 #include <boost/asio.hpp>
 #include <boost/make_shared.hpp>
 
-#include "byte_conversion_functions.h"
-
 using namespace boost::asio;
 using namespace boost::asio::ip;
 
