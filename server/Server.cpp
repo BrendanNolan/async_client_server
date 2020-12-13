@@ -60,7 +60,7 @@ namespace
 {
 std::vector<std::uint8_t> prepareOutgoingBody(const TaggedMessage& message)
 {
-    const std::string str { "Hello, my name is server." };
+    const std::string str{ "Hello, my name is server." };
     return std::vector<std::uint8_t>(str.begin(), str.end());
 }
 
@@ -73,10 +73,10 @@ void processMessage(const TaggedMessage& message)
     std::vector<std::uint8_t> outgoingBytes;
     outgoingBytes.reserve(4u + outgoingBody.size());
     std::move(
-        outgoingBody.begin(), 
-        outgoingBody.end(), 
+        outgoingBody.begin(),
+        outgoingBody.end(),
         std::back_inserter(outgoingBytes));
-    
+
     message.connection_->write(outgoingBytes);
 }
 }// namespace

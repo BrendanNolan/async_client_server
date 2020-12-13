@@ -16,9 +16,9 @@ public:
 
 private:
     void handleConnection(const boost::system::error_code& error);
-    
+
     void write();
-    
+
     void handleRead(
         const boost::system::error_code& error, std::size_t bytes_transferred);
     void handleResolve(

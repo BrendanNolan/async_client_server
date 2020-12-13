@@ -61,14 +61,14 @@ public:
     }
 
 private:
-    T pop_back_private() 
+    T pop_back_private()
     {
         auto ret = std::move(deque_.back());
         deque_.pop_back();
         return ret;
     }
 
-    T pop_front_private() 
+    T pop_front_private()
     {
         auto ret = std::move(deque_.front());
         deque_.pop_front();

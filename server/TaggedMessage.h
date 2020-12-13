@@ -13,8 +13,7 @@ struct TaggedMessage
 {
 public:
     TaggedMessage(
-        utils::Message message,
-        std::shared_ptr<TCPConnection> connection);
+        utils::Message message, std::shared_ptr<TCPConnection> connection);
 
     utils::Message message_;
     std::shared_ptr<TCPConnection> connection_;

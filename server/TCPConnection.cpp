@@ -38,7 +38,8 @@ void TCPConnection::start()
         socket_,
         buffer(&advertisedHeaderSizeFromClient_, 4),
         [this, self](
-            const boost::system::error_code& error, std::size_t bytesTransferred) {
+            const boost::system::error_code& error,
+            std::size_t bytesTransferred) {
             bytesFromClient_.resize(advertisedHeaderSizeFromClient_);
             handleRead(error, bytesTransferred);
         });
@@ -52,7 +53,8 @@ void TCPConnection::write(utils::Message messageForClient)
         socket_,
         buffer(&messageForClient_.header_, sizeof(utils::MessageHeader)),
         [this, self](
-            const boost::system::error_code& error, std::size_t bytesTransferred) {
+            const boost::system::error_code& error,
+            std::size_t bytesTransferred) {
             handleHeaderWrite(error, bytesTransferred);
         });
 }
@@ -96,9 +98,6 @@ void TCPConnection::handleRead(
     if (!messageDeque_)
         return;
     std::cout << "Queueing up message..." << std::endl;
-    
-    messageDeque_->push_back(
-        TaggedMessage{
-            ,
-            shared_from_this() });
+
+    messageDeque_->push_back(TaggedMessage{, shared_from_this() });
 }
