@@ -4,7 +4,7 @@
 
 utils::MessageHeader::MessageHeader(std::uint32_t type, std::uint32_t size)
     : type_{ type }
-    , size_{ size }
+    , bodySize_{ size }
 {
 }
 
@@ -13,4 +13,10 @@ utils::Message::Message(
     : header_{ std::move(header) }
     , body_{ std::move(body) }
 {
+}
+
+void utils::updateHeader(Message& message)
+{
+    message.header_.bodySize_ =
+        static_cast<std::uint32_t>(message.body_.size());
 }

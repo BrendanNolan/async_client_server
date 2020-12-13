@@ -40,7 +40,7 @@ void TCPConnection::start()
         socket_,
         buffer(&advertisedHeaderSizeFromClient_, 4),
         [this, self](
-            const boost::system::error_code& error, size_t bytesTransferred) {
+            const boost::system::error_code& error, std::size_t bytesTransferred) {
             bytesFromClient_.resize(advertisedHeaderSizeFromClient_);
             handleRead(error, bytesTransferred);
         });
@@ -54,13 +54,13 @@ void TCPConnection::write(std::vector<std::uint8_t> messageForClient)
         socket_,
         buffer(messageForClient_),
         [this, self](
-            const boost::system::error_code& error, size_t bytesTransferred) {
+            const boost::system::error_code& error, std::size_t bytesTransferred) {
             handleWrite(error, bytesTransferred);
         });
 }
 
 void TCPConnection::handleWrite(
-    const boost::system::error_code& error, size_t bytesTransferred)
+    const boost::system::error_code& error, std::size_t bytesTransferred)
 {
     if (error)
     {
@@ -73,7 +73,7 @@ void TCPConnection::handleWrite(
 }
 
 void TCPConnection::handleRead(
-    const boost::system::error_code& error, size_t bytesTransferred)
+    const boost::system::error_code& error, std::size_t bytesTransferred)
 {
     if (error)
     {

@@ -1,6 +1,7 @@
 #ifndef TCPCONNECTION_H
 #define TCPCONNECTION_H
 
+#include <cstddef>
 #include <cstdint>
 #include <memory>
 #include <vector>
@@ -15,14 +16,14 @@ class TCPConnection : public std::enable_shared_from_this<TCPConnection>
 {
 private:
     TCPConnection(
-        boost::asio::io_context& ioContext, 
+        boost::asio::io_context& ioContext,
         ThreadSafeDeque<TaggedMessage>& messageDeque);
 
 public:
     using Pointer = std::shared_ptr<TCPConnection>;
 
     static Pointer create(
-        boost::asio::io_context& ioContext, 
+        boost::asio::io_context& ioContext,
         ThreadSafeDeque<TaggedMessage>& messageDeque);
 
     boost::asio::ip::tcp::socket& socket();
@@ -32,10 +33,10 @@ public:
 
 private:
     void handleRead(
-        const boost::system::error_code& error, size_t bytesTransferred);
+        const boost::system::error_code& error, std::size_t bytesTransferred);
 
     void handleWrite(
-        const boost::system::error_code& error, size_t bytesTransferred);
+        const boost::system::error_code& error, std::size_t bytesTransferred);
 
 private:
     boost::asio::ip::tcp::socket socket_;
