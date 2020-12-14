@@ -16,8 +16,8 @@ public:
     SocketMessageEnqueuer(
         boost::asio::ip::tcp::socket& socket,
         TCPConnection* connection = nullptr);
-    void write(utils::Message message) const;
-    void read() const;
+    void write(utils::Message message);
+    void read();
 
 private:
     virtual void handleHeaderRead(
@@ -33,6 +33,7 @@ private:
         const boost::system::error_code& error, std::size_t bytesTransferred);
 
 private:
+    utils::Message tempIncomingMessage_;
     utils::ThreadSafeDeque<utils::Message> incomingMessageQ_;
     utils::ThreadSafeDeque<utils::Message> outgoingMessageQ_;
     
