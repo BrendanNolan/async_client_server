@@ -5,6 +5,9 @@
 
 #include <boost/asio.hpp>
 
+#include "Message.h"
+#include "ThreadSafeDeque.h"
+
 class TCPConnection;
 
 class SocketMessageEnqueuer
@@ -30,8 +33,10 @@ private:
         const boost::system::error_code& error, std::size_t bytesTransferred);
 
 private:
-    ThreadSafeQueue<utils::Message> incomingMessageQ_;
-    ThreadSafeQueue<utils::Message> outgoingMessageQ_;
+    utils::ThreadSafeDeque<utils::Message> incomingMessageQ_;
+    utils::ThreadSafeDeque<utils::Message> outgoingMessageQ_;
+    
+    boost::asio::ip::tcp::socket* socket_ = nullptr;
     TCPConnection* connection_ = nullptr;
 }
 
