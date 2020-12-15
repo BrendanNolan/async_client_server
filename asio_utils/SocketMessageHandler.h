@@ -24,6 +24,8 @@ public:
     void send(utils::Message message);
     void startReading();
 
+    boost::asio::ip::tcp::socket& socket();
+
     utils::ThreadSafeDeque<utils::Message>& incomingMessageQ();
 
 private:

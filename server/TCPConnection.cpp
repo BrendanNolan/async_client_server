@@ -13,7 +13,7 @@ using namespace boost::asio::ip;
 
 TCPConnection::TCPConnection(
     io_context& ioContext, utils::ThreadSafeDeque<TaggedMessage>& messageDeque)
-    : socket_{ ioContext }
+    : messageHandler_{ tcp::socket{ ioContext } }
     , messageDeque_{ &messageDeque }
 {
 }

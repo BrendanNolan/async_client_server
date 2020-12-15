@@ -14,7 +14,7 @@
 #include "TaggedMessage.h"
 #include "ThreadSafeDeque.h"
 
-class TCPConnection : public SocketMessageHandler
+class TCPConnection : public std::enable_shared_from_this<TCPConnection>
 {
 private:
     TCPConnection(
@@ -28,7 +28,18 @@ public:
         boost::asio::io_context& ioContext,
         utils::ThreadSafeDeque<TaggedMessage>& messageDeque);
 
+    void write(utils::Message);
+    void read();
+
 private:
+    void handleRead(
+        const boost::system::error_code& error, std::size_t bytesTransferred);
+
+    void handleWrite(
+        const boost::system::error_code& error, std::size_t bytesTransferred);
+
+private : 
+    utils::SocketMessageHandler messageHandler_;
     utils::ThreadSafeDeque<TaggedMessage>* messageDeque_ = nullptr;
 };
 

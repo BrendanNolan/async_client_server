@@ -26,6 +26,11 @@ void SocketMessageHandler::startReading()
     readHeader();
 }
 
+boost::asio::ip::tcp::socket& utils::SocketMessageHandler::socket()
+{
+    return socket_;
+}
+
 utils::ThreadSafeDeque<utils::Message>& SocketMessageHandler::incomingMessageQ()
 {
     return incomingMessageQ_;
