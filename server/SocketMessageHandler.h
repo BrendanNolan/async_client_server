@@ -1,5 +1,5 @@
-#ifndef TCPCONNECTIONEXPTAL_H
-#define TCPCONNECTIONEXPTAL_H
+#ifndef SOCKETMESSAGEHANDLER_H
+#define SOCKETMESSAGEHANDLER_H
 
 #include <memory>
 
@@ -47,4 +47,4 @@ private:
     boost::asio::ip::tcp::socket socket_;
 };
 
-#endif// TCPCONNECTIONEXPTAL_H
+#endif// SOCKETMESSAGEHANDLER_H
