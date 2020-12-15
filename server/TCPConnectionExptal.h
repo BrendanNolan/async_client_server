@@ -1,5 +1,5 @@
-#ifndef SOCKETMESSAGEENQUEUER_H
-#define SOCKETMESSAGEENQUEUER_H
+#ifndef TCPCONNECTIONEXPTAL_H
+#define TCPCONNECTIONEXPTAL_H
 
 #include <memory>
 
@@ -8,14 +8,14 @@
 #include "Message.h"
 #include "ThreadSafeDeque.h"
 
-class TCPConnection;
-
-class SocketMessageEnqueuer
+class TCPConnectionExptal
+    : public std::enable_shared_from_this<TCPConnectionExptal>
 {
 public:
-    SocketMessageEnqueuer(
-        boost::asio::ip::tcp::socket& socket,
-        TCPConnection* connection = nullptr);
+    TCPConnectionExptal(
+        boost::asio::ip::tcp::socket& socket);
+    virtual ~TCPConnectionExptal() = default;
+
     void write(utils::Message message);
     void read();
 
@@ -41,4 +41,4 @@ private:
     TCPConnection* connection_ = nullptr;
 }
 
-#endif// SOCKETMESSAGEENQUEUER_H
+#endif// TCPCONNECTIONEXPTAL_H

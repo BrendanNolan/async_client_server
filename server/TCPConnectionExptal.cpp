@@ -1,21 +1,21 @@
-#include "SocketMessageEnqueuer.h"
+#include "TCPConnectionExptal.h"
 
 #include "TCPConnection.h"
 
 using namespace boost::asio;
 
-SocketMessageEnqueuer::SocketMessageEnqueuer(
+TCPConnectionExptal::TCPConnectionExptal(
     ip::tcp::socket& socket, TCPConnection* connection)
     : socket_{ &socket }
     , connection_{ connection }
 {
 }
 
-void SocketMessageEnqueuer::write(utils::Message message)
+void TCPConnectionExptal::write(utils::Message message)
 {
 }
 
-void SocketMessageEnqueuer::read()
+void TCPConnectionExptal::read()
 {
     auto self = connection_ ? 
         connection_->shared_from_this() :
@@ -31,22 +31,22 @@ void SocketMessageEnqueuer::read()
         });
 }
 
-void SocketMessageEnqueuer::handleHeaderRead(
+void TCPConnectionExptal::handleHeaderRead(
     const boost::system::error_code& error, std::size_t bytesTransferred)
 {
 }
 
-void SocketMessageEnqueuer::handleBodyRead(
+void TCPConnectionExptal::handleBodyRead(
     const boost::system::error_code& error, std::size_t bytesTransferred)
 {
 }
 
-void SocketMessageEnqueuer::handleHeaderWrite(
+void TCPConnectionExptal::handleHeaderWrite(
     const boost::system::error_code& error, std::size_t bytesTransferred)
 {
 }
 
-void SocketMessageEnqueuer::handleBodyWrite(
+void TCPConnectionExptal::handleBodyWrite(
     const boost::system::error_code& error, std::size_t bytesTransferred)
 {
 }
