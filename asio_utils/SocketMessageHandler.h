@@ -2,7 +2,6 @@
 #define SOCKETMESSAGEHANDLER_H
 
 #include <deque>
-#include <memory>
 #include <mutex>
 
 #include <boost/asio.hpp>
@@ -13,12 +12,14 @@
 // TCPConnection should go and this class should be a component of
 // ClientTCPConnection and a subclass of ServerTCPConnection.
 
+namespace utils
+{
+// Beware: SocketMessageHandler relies on containing classes to ensure that 
+// it is still alive to execute handlers.
 class SocketMessageHandler
-    : public std::enable_shared_from_this<SocketMessageHandler>
 {
 public:
     SocketMessageHandler(boost::asio::ip::tcp::socket socket);
-    virtual ~SocketMessageHandler() = default;
 
     void send(utils::Message message);
     void startReading();
@@ -33,7 +34,7 @@ private:
     void readHeader();
     void readBody();
 
-private: 
+private:
     std::mutex receiveMessageMutex_;
     utils::Message tempIncomingMessage_;
     utils::ThreadSafeDeque<utils::Message> incomingMessageQ_;
@@ -44,5 +45,7 @@ private:
 
     boost::asio::ip::tcp::socket socket_;
 };
+
+}// namespace utils
 
 #endif// SOCKETMESSAGEHANDLER_H

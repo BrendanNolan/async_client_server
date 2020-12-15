@@ -3,7 +3,7 @@
 
 #include <algorithm>
 #include <cstdint>
-#include <string>
+#include <cstring>
 #include <type_traits>
 #include <vector>
 
@@ -52,7 +52,7 @@ template<typename PODType> Message& operator>>(Message& message, PODType& data)
     std::memcpy(
         &data,
         message.body_.data() + message.body_.size() - sizeof(PODType),
-        sizeof(PODType))
+        sizeof(PODType));
 
         message.body_.resize(message.body_.size() - sizeof(PODType));
 

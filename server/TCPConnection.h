@@ -10,10 +10,11 @@
 #include <boost/system/error_code.hpp>
 
 #include "Message.h"
+#include "SocketMessageHandler.h"
 #include "TaggedMessage.h"
 #include "ThreadSafeDeque.h"
 
-class TCPConnection : public std::enable_shared_from_this<TCPConnection>
+class TCPConnection : public SocketMessageHandler
 {
 private:
     TCPConnection(
@@ -27,25 +28,7 @@ public:
         boost::asio::io_context& ioContext,
         utils::ThreadSafeDeque<TaggedMessage>& messageDeque);
 
-    boost::asio::ip::tcp::socket& socket();
-
-    void start();
-    void write(utils::Message messageForClient);
-
 private:
-    void handleRead(
-        const boost::system::error_code& error, std::size_t bytesTransferred);
-
-    void handleHeaderWrite(
-        const boost::system::error_code& error, std::size_t bytesTransferred);
-    void handleBodyWrite(
-        const boost::system::error_code& error, std::size_t bytesTransferred);
-
-private:
-    boost::asio::ip::tcp::socket socket_;
-    utils::Message messageForClient_;
-    std::vector<std::uint8_t> bytesFromClient_;
-    std::uint32_t advertisedHeaderSizeFromClient_ = 0u;
     utils::ThreadSafeDeque<TaggedMessage>* messageDeque_ = nullptr;
 };
 

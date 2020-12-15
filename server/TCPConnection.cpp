@@ -24,11 +24,6 @@ TCPConnection::Pointer TCPConnection::create(
     return Pointer{ new TCPConnection{ ioContext, messageDeque } };
 }
 
-tcp::socket& TCPConnection::socket()
-{
-    return socket_;
-}
-
 void TCPConnection::start()
 {
     auto self =

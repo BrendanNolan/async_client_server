@@ -11,7 +11,7 @@ file(GLOB SOURCES "*.cpp")
 add_library(asio_utils STATIC ${SOURCES} ${HEADERS})
 
 target_compile_features(asio_utils PUBLIC cxx_std_17)
-target_include_directories(asio_utils PRIVATE ${CMAKE_CURRENT_SOURCE_DIR} ${Boost_INCLUDE_DIRS})
+target_include_directories(asio_utils PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${Boost_INCLUDE_DIRS})
 target_link_libraries(asio_utils PRIVATE ${Boost_LIBRARIES})
 target_link_libraries(asio_utils PRIVATE utils)
 

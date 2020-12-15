@@ -38,7 +38,8 @@ void Server::handleAccept(
 
 void Server::startAccept()
 {
-    auto newConnection = TCPConnection::create(*ioContext_, messageDeque_);
+    auto newConnection = utils::SocketMessageHandler::create(tcp::socket{ 
+        *ioContext_ });
 
     acceptor_.async_accept(
         newConnection->socket(),

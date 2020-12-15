@@ -1,6 +1,9 @@
 #include "SocketMessageHandler.h"
 
+#include <utility>
+
 using namespace boost::asio;
+using namespace utils;
 
 SocketMessageHandler::SocketMessageHandler(ip::tcp::socket socket)
     : socket_{ std::move(socket) }
@@ -30,11 +33,10 @@ utils::ThreadSafeDeque<utils::Message>& SocketMessageHandler::incomingMessageQ()
 
 void SocketMessageHandler::writeHeader()
 {
-    auto self = shared_from_this();
     async_write(
         socket_,
         buffer(&tempOutgoingMessage_.header_, sizeof(utils::MessageHeader)),
-        [this, self](
+        [this](
             const boost::system::error_code& error,
             std::size_t bytesTransferred) {
             if (tempOutgoingMessage_.body_.empty())
@@ -49,11 +51,10 @@ void SocketMessageHandler::writeHeader()
 
 void SocketMessageHandler::writeBody()
 {
-    auto self = shared_from_this();
     async_write(
         socket_,
         buffer(tempOutgoingMessage_.body_),
-        [this, self](
+        [this](
             const boost::system::error_code& error,
             std::size_t bytesTransferred) {
             std::lock_guard<std::mutex> lock{ sendMessageMutex_ };
@@ -73,11 +74,10 @@ void SocketMessageHandler::grabNextOutgoingMessage()
 
 void SocketMessageHandler::readHeader()
 {
-    auto self = shared_from_this();
     async_read(
         socket_,
         buffer(&tempIncomingMessage_.header_, sizeof(utils::MessageHeader)),
-        [this, self](
+        [this](
             const boost::system::error_code& error,
             std::size_t bytesTransferred) {
             if (tempIncomingMessage_.header_.bodySize_ == 0u)
@@ -92,11 +92,10 @@ void SocketMessageHandler::readHeader()
 void SocketMessageHandler::readBody()
 {
     resizeBodyAccordingToHeader(tempIncomingMessage_);
-    auto self = shared_from_this();
     async_read(
         socket_,
         buffer(tempIncomingMessage_.body_),
-        [this, self](
+        [this](
             const boost::system::error_code& error,
             std::size_t bytesTransferred) {
             incomingMessageQ_.push_back(std::move(tempIncomingMessage_));
