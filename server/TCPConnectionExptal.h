@@ -13,11 +13,13 @@ class TCPConnectionExptal
 {
 public:
     TCPConnectionExptal(
-        boost::asio::ip::tcp::socket& socket);
+        boost::asio::ip::tcp::socket socket);
     virtual ~TCPConnectionExptal() = default;
 
     void write(utils::Message message);
     void read();
+
+    utils::ThreadSafeDeque<utils::Message>& incomingMessageQ();
 
 private:
     virtual void handleHeaderRead(
@@ -37,8 +39,7 @@ private:
     utils::ThreadSafeDeque<utils::Message> incomingMessageQ_;
     utils::ThreadSafeDeque<utils::Message> outgoingMessageQ_;
     
-    boost::asio::ip::tcp::socket* socket_ = nullptr;
-    TCPConnection* connection_ = nullptr;
-}
+    boost::asio::ip::tcp::socket socket_;
+};
 
 #endif// TCPCONNECTIONEXPTAL_H

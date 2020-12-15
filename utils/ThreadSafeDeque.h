@@ -7,6 +7,9 @@
 #include <optional>
 #include <utility>
 
+namespace utils
+{
+
 template<typename T> class ThreadSafeDeque
 {
 public:
@@ -81,5 +84,7 @@ private:
     std::condition_variable condVar_;
     mutable std::mutex mutex_;
 };
+
+}
 
 #endif// THREADSAFEDEQUE_H
