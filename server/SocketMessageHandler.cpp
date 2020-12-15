@@ -1,19 +1,19 @@
-#include "TCPConnectionExptal.h"
+#include "SocketMessageHandler.h"
 
 using namespace boost::asio;
 
-TCPConnectionExptal::TCPConnectionExptal(ip::tcp::socket socket)
+SocketMessageHandler::SocketMessageHandler(ip::tcp::socket socket)
     : socket_{ std::move(socket) }
 {
 }
 
-void TCPConnectionExptal::send(utils::Message message)
+void SocketMessageHandler::send(utils::Message message)
 {
     outgoingMessageQ_.push_back(std::move(message));
     writeHeader();
 }
 
-void TCPConnectionExptal::startReading()
+void SocketMessageHandler::startReading()
 {
     auto self =
         shared_from_this();// See
@@ -28,12 +28,12 @@ void TCPConnectionExptal::startReading()
         });
 }
 
-utils::ThreadSafeDeque<utils::Message>& TCPConnectionExptal::incomingMessageQ()
+utils::ThreadSafeDeque<utils::Message>& SocketMessageHandler::incomingMessageQ()
 {
     return incomingMessageQ_;
 }
 
-void TCPConnectionExptal::writeHeader()
+void SocketMessageHandler::writeHeader()
 {
     auto self = shared_from_this();
     async_write(
@@ -46,22 +46,22 @@ void TCPConnectionExptal::writeHeader()
         });
 }
 
-void TCPConnectionExptal::handleHeaderRead(
+void SocketMessageHandler::handleHeaderRead(
     const boost::system::error_code& error, std::size_t bytesTransferred)
 {
 }
 
-void TCPConnectionExptal::handleBodyRead(
+void SocketMessageHandler::handleBodyRead(
     const boost::system::error_code& error, std::size_t bytesTransferred)
 {
 }
 
-void TCPConnectionExptal::handleHeaderWrite(
+void SocketMessageHandler::handleHeaderWrite(
     const boost::system::error_code& error, std::size_t bytesTransferred)
 {
 }
 
-void TCPConnectionExptal::handleBodyWrite(
+void SocketMessageHandler::handleBodyWrite(
     const boost::system::error_code& error, std::size_t bytesTransferred)
 {
 }

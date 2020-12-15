@@ -11,12 +11,12 @@
 // TCPConnection should go and this class should be a component of 
 // ClientTCPConnection and a subclass of ServerTCPConnection.
 
-class TCPConnectionExptal
-    : public std::enable_shared_from_this<TCPConnectionExptal>
+class SocketMessageHandler
+    : public std::enable_shared_from_this<SocketMessageHandler>
 {
 public:
-    TCPConnectionExptal(boost::asio::ip::tcp::socket socket);
-    virtual ~TCPConnectionExptal() = default;
+    SocketMessageHandler(boost::asio::ip::tcp::socket socket);
+    virtual ~SocketMessageHandler() = default;
 
     void send(utils::Message message);
     void startReading();
