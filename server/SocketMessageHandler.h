@@ -1,14 +1,16 @@
 #ifndef SOCKETMESSAGEHANDLER_H
 #define SOCKETMESSAGEHANDLER_H
 
+#include <deque>
 #include <memory>
+#include <mutex>
 
 #include <boost/asio.hpp>
 
 #include "Message.h"
 #include "ThreadSafeDeque.h"
 
-// TCPConnection should go and this class should be a component of 
+// TCPConnection should go and this class should be a component of
 // ClientTCPConnection and a subclass of ServerTCPConnection.
 
 class SocketMessageHandler
@@ -26,23 +28,19 @@ public:
 private:
     void writeHeader();
     void writeBody();
+    void grabNextOutgoingMessage();
 
-    virtual void handleHeaderRead(
-        const boost::system::error_code& error, std::size_t bytesTransferred);
+    void readHeader();
+    void readBody();
 
-    virtual void handleBodyRead(
-        const boost::system::error_code& error, std::size_t bytesTransferred);
-
-    virtual void handleHeaderWrite(
-        const boost::system::error_code& error, std::size_t bytesTransferred);
-
-    virtual void handleBodyWrite(
-        const boost::system::error_code& error, std::size_t bytesTransferred);
-
-private:
+private: 
+    std::mutex receiveMessageMutex_;
     utils::Message tempIncomingMessage_;
     utils::ThreadSafeDeque<utils::Message> incomingMessageQ_;
-    utils::ThreadSafeDeque<utils::Message> outgoingMessageQ_;
+
+    std::mutex sendMessageMutex_;
+    utils::Message tempOutgoingMessage_;
+    std::deque<utils::Message> outgoingMessageQ_;
 
     boost::asio::ip::tcp::socket socket_;
 };

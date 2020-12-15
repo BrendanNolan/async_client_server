@@ -28,6 +28,7 @@ public:
     std::vector<std::uint8_t> body_;
 };
 void updateHeader(Message& message);
+void resizeBodyAccordingToHeader(Message& message);
 
 template<typename PODType>
 Message& operator<<(Message& message, const PODType& data)

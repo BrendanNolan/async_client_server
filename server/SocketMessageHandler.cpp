@@ -9,23 +9,18 @@ SocketMessageHandler::SocketMessageHandler(ip::tcp::socket socket)
 
 void SocketMessageHandler::send(utils::Message message)
 {
-    outgoingMessageQ_.push_back(std::move(message));
+    std::lock_guard<std::mutex> lock{ sendMessageMutex_ };
+    outgoingMessageQ_.emplace_back(std::move(message));
+
+    if (outgoingMessageQ_.size() != 1u)
+        return;
+    grabNextOutgoingMessage();
     writeHeader();
 }
 
 void SocketMessageHandler::startReading()
 {
-    auto self =
-        shared_from_this();// See
-                           // https://www.boost.org/doc/libs/1_54_0/doc/html/boost_asio/example/cpp11/http/server/connection.cpp
-    async_read(
-        socket_,
-        buffer(&tempIncomingMessage_.header_, sizeof(utils::MessageHeader)),
-        [this, self](
-            const boost::system::error_code& error,
-            std::size_t bytesTransferred) {
-            handleHeaderRead(error, bytesTransferred);
-        });
+    readHeader();
 }
 
 utils::ThreadSafeDeque<utils::Message>& SocketMessageHandler::incomingMessageQ()
@@ -38,30 +33,74 @@ void SocketMessageHandler::writeHeader()
     auto self = shared_from_this();
     async_write(
         socket_,
-        buffer(&messageForClient_.header_, sizeof(utils::MessageHeader)),
+        buffer(&tempOutgoingMessage_.header_, sizeof(utils::MessageHeader)),
         [this, self](
             const boost::system::error_code& error,
             std::size_t bytesTransferred) {
-            handleHeaderWrite(error, bytesTransferred);
+            if (tempOutgoingMessage_.body_.empty())
+            {
+                writeHeader();
+                return;
+            }
+
+            writeBody();
         });
 }
 
-void SocketMessageHandler::handleHeaderRead(
-    const boost::system::error_code& error, std::size_t bytesTransferred)
+void SocketMessageHandler::writeBody()
 {
+    auto self = shared_from_this();
+    async_write(
+        socket_,
+        buffer(tempOutgoingMessage_.body_),
+        [this, self](
+            const boost::system::error_code& error,
+            std::size_t bytesTransferred) {
+            std::lock_guard<std::mutex> lock{ sendMessageMutex_ };
+
+            if (outgoingMessageQ_.empty())
+                return;
+            grabNextOutgoingMessage();
+            writeHeader();
+        });
 }
 
-void SocketMessageHandler::handleBodyRead(
-    const boost::system::error_code& error, std::size_t bytesTransferred)
+void SocketMessageHandler::grabNextOutgoingMessage()
 {
+    tempOutgoingMessage_ = std::move(outgoingMessageQ_.front());
+    outgoingMessageQ_.pop_front();
 }
 
-void SocketMessageHandler::handleHeaderWrite(
-    const boost::system::error_code& error, std::size_t bytesTransferred)
+void SocketMessageHandler::readHeader()
 {
+    auto self = shared_from_this();
+    async_read(
+        socket_,
+        buffer(&tempIncomingMessage_.header_, sizeof(utils::MessageHeader)),
+        [this, self](
+            const boost::system::error_code& error,
+            std::size_t bytesTransferred) {
+            if (tempIncomingMessage_.header_.bodySize_ == 0u)
+            {
+                readHeader();
+                return;
+            }
+            readBody();
+        });
 }
 
-void SocketMessageHandler::handleBodyWrite(
-    const boost::system::error_code& error, std::size_t bytesTransferred)
+void SocketMessageHandler::readBody()
 {
+    resizeBodyAccordingToHeader(tempIncomingMessage_);
+    auto self = shared_from_this();
+    async_read(
+        socket_,
+        buffer(tempIncomingMessage_.body_),
+        [this, self](
+            const boost::system::error_code& error,
+            std::size_t bytesTransferred) {
+            incomingMessageQ_.push_back(std::move(tempIncomingMessage_));
+            tempIncomingMessage_ = utils::Message{};
+            readHeader();
+        });
 }

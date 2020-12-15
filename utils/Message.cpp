@@ -19,3 +19,8 @@ void utils::updateHeader(Message& message)
     message.header_.bodySize_ =
         static_cast<std::uint32_t>(message.body_.size());
 }
+
+void utils::resizeBodyAccordingToHeader(Message& message)
+{
+    message.body_.resize(message.header_.bodySize_);
+}
