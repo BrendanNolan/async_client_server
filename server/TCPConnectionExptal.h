@@ -12,8 +12,7 @@ class TCPConnectionExptal
     : public std::enable_shared_from_this<TCPConnectionExptal>
 {
 public:
-    TCPConnectionExptal(
-        boost::asio::ip::tcp::socket socket);
+    TCPConnectionExptal(boost::asio::ip::tcp::socket socket);
     virtual ~TCPConnectionExptal() = default;
 
     void write(utils::Message message);
@@ -38,7 +37,7 @@ private:
     utils::Message tempIncomingMessage_;
     utils::ThreadSafeDeque<utils::Message> incomingMessageQ_;
     utils::ThreadSafeDeque<utils::Message> outgoingMessageQ_;
-    
+
     boost::asio::ip::tcp::socket socket_;
 };
 

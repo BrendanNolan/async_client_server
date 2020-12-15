@@ -85,6 +85,6 @@ private:
     mutable std::mutex mutex_;
 };
 
-}
+}// namespace utils
 
 #endif// THREADSAFEDEQUE_H
