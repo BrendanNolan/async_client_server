@@ -7,11 +7,13 @@ TCPConnectionExptal::TCPConnectionExptal(ip::tcp::socket socket)
 {
 }
 
-void TCPConnectionExptal::write(utils::Message message)
+void TCPConnectionExptal::send(utils::Message message)
 {
+    outgoingMessageQ_.push_back(std::move(message));
+    writeHeader();
 }
 
-void TCPConnectionExptal::read()
+void TCPConnectionExptal::startReading()
 {
     auto self =
         shared_from_this();// See
@@ -29,6 +31,19 @@ void TCPConnectionExptal::read()
 utils::ThreadSafeDeque<utils::Message>& TCPConnectionExptal::incomingMessageQ()
 {
     return incomingMessageQ_;
+}
+
+void TCPConnectionExptal::writeHeader()
+{
+    auto self = shared_from_this();
+    async_write(
+        socket_,
+        buffer(&messageForClient_.header_, sizeof(utils::MessageHeader)),
+        [this, self](
+            const boost::system::error_code& error,
+            std::size_t bytesTransferred) {
+            handleHeaderWrite(error, bytesTransferred);
+        });
 }
 
 void TCPConnectionExptal::handleHeaderRead(

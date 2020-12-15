@@ -8,6 +8,9 @@
 #include "Message.h"
 #include "ThreadSafeDeque.h"
 
+// TCPConnection should go and this class should be a component of 
+// ClientTCPConnection and a subclass of ServerTCPConnection.
+
 class TCPConnectionExptal
     : public std::enable_shared_from_this<TCPConnectionExptal>
 {
@@ -15,12 +18,15 @@ public:
     TCPConnectionExptal(boost::asio::ip::tcp::socket socket);
     virtual ~TCPConnectionExptal() = default;
 
-    void write(utils::Message message);
-    void read();
+    void send(utils::Message message);
+    void startReading();
 
     utils::ThreadSafeDeque<utils::Message>& incomingMessageQ();
 
 private:
+    void writeHeader();
+    void writeBody();
+
     virtual void handleHeaderRead(
         const boost::system::error_code& error, std::size_t bytesTransferred);
 
