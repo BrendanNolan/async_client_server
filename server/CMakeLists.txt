@@ -13,6 +13,7 @@ target_compile_features(server PUBLIC cxx_std_17)
 target_include_directories(server PRIVATE ${CMAKE_CURRENT_SOURCE_DIR} ${Boost_INCLUDE_DIRS})
 target_link_libraries(server PRIVATE ${Boost_LIBRARIES})
 target_link_libraries(server PRIVATE utils)
+target_link_libraries(server PRIVATE asio_utils)
 
 if (WIN32)
     target_link_libraries(server PRIVATE $ENV{BOOST_LIBRARYDIR}/libboost_date_time-vc141-mt-gd-x64-1_73.lib)

@@ -4,4 +4,6 @@ project(async_client_server)
 
 add_subdirectory(client)
 add_subdirectory(server)
+add_subdirectory(asio_utils)
 add_subdirectory(utils)
+
