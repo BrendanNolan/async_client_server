@@ -6,7 +6,7 @@
 class MessagePoster
 {
 public:
-    virtual void post(utils::Message) const = 0;
+    virtual void post(utils::Message message) const = 0;
 };
 
 #endif// MESSAGEPOSTER_H

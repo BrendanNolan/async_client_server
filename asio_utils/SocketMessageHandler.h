@@ -19,6 +19,7 @@ namespace utils
 // Beware: SocketMessageHandler relies on containing classes to ensure that
 // it is still alive to execute handlers.
 class SocketMessageHandler
+    : public std::enable_shared_from_this<SocketMessageHandler>
 {
 public:
     SocketMessageHandler(boost::asio::io_context& ioContext);
@@ -27,6 +28,8 @@ public:
     void startReading();
 
     boost::asio::ip::tcp::socket& socket();
+
+    void setMessagePoster(std::unique_ptr<MessagePoster> poster);
 
 private:
     void writeHeader();

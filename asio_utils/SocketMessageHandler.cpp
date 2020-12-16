@@ -31,6 +31,12 @@ boost::asio::ip::tcp::socket& utils::SocketMessageHandler::socket()
     return socket_;
 }
 
+void utils::SocketMessageHandler::setMessagePoster(
+    std::unique_ptr<MessagePoster> poster)
+{
+    poster_ = std::move(poster);
+}
+
 void SocketMessageHandler::writeHeader()
 {
     async_write(

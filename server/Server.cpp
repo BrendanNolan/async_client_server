@@ -5,9 +5,13 @@
 #include <iostream>
 #include <functional>
 #include <string>
+#include <utility>
 
 #include <boost/asio.hpp>
 #include <boost/system/error_code.hpp>
+
+#include "MessagePoster.h"
+#include "SocketMessageHandler.h"
 
 using namespace boost::asio;
 using namespace boost::asio::ip;
@@ -15,7 +19,20 @@ using namespace boost::asio::ip;
 namespace
 {
 void processMessage(const TaggedMessage& message);
-}
+
+class TaggedMessageEnquer : public MessagePoster
+{
+public:
+    void post(utils::Message message) const override
+    {
+        targetQ_->push_back({std::move(message), messageSource_->shared_from_this()});
+    }
+
+private:
+    utils::SocketMessageHandler* messageSource_;
+    utils::ThreadSafeDeque<TaggedMessage>* targetQ_ = nullptr;
+};
+}// namespace
 
 Server::Server(io_context& ioContext)
     : acceptor_{ ioContext, tcp::endpoint{ tcp::v4(), 2014 } }
