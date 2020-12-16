@@ -31,7 +31,7 @@ public:
     }
 
 private:
-    TCPConnection* messageSource_;
+    utils::TCPConnection* messageSource_;
     ThreadSafeDeque<TaggedMessage>* targetQ_ = nullptr;
 };
 }// namespace
@@ -46,7 +46,7 @@ Server::Server(io_context& ioContext)
 }
 
 void Server::handleAccept(
-    TCPConnection::Pointer newConnection,
+    std::shared_ptr<utils::TCPConnection> newConnection,
     const boost::system::error_code& error)
 {
     if (!error)

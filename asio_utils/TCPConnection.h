@@ -21,8 +21,12 @@ namespace utils
 class TCPConnection
     : public std::enable_shared_from_this<TCPConnection>
 {
-public:
+private:
     TCPConnection(boost::asio::io_context& ioContext);
+
+public:
+    static std::shared_ptr<TCPConnection> create(
+        boost::asio::io_context& ioContext);
 
     void send(utils::Message message);
     void startReading();

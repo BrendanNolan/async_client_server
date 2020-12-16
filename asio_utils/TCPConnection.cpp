@@ -10,6 +10,12 @@ TCPConnection::TCPConnection(io_context& ioContext)
 {
 }
 
+std::shared_ptr<TCPConnection> utils::TCPConnection::create(
+    boost::asio::io_context& ioContext)
+{
+    return std::shared_ptr<TCPConnection>{ new TCPConnection{ ioContext } };
+}
+
 void TCPConnection::send(utils::Message message)
 {
     std::lock_guard<std::mutex> lock{ sendMessageMutex_ };

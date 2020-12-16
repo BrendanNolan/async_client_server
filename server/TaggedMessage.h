@@ -6,17 +6,17 @@
 #include <vector>
 
 #include "Message.h"
-
-class TCPConnection;
+#include "TCPConnection.h"
 
 struct TaggedMessage
 {
 public:
     TaggedMessage(
-        utils::Message message, std::shared_ptr<TCPConnection> connection);
+        utils::Message message,
+        std::shared_ptr<utils::TCPConnection> connection);
 
     utils::Message message_;
-    std::shared_ptr<TCPConnection> connection_;
+    std::shared_ptr<utils::TCPConnection> connection_;
 };
 
 #endif// TAGGEDMESSAGE_H

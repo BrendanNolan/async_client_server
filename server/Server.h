@@ -1,14 +1,19 @@
 #ifndef SERVER_H
 #define SERVER_H
 
+#include <memory>
 #include <string>
 #include <thread>
 
 #include <boost/asio.hpp>
 
 #include "TaggedMessage.h"
-#include "TCPConnection.h"
 #include "ThreadSafeDeque.h"
+
+namespace utils
+{
+class TCPConnection;
+}
 
 class Server
 {
@@ -18,7 +23,7 @@ public:
 private:
     void startAccept();
     void handleAccept(
-        TCPConnection::Pointer newConnection,
+        std::shared_ptr<utils::TCPConnection> newConnection,
         const boost::system::error_code& error);
 
 private:
