@@ -24,14 +24,22 @@ void processMessage(const TaggedMessage& message);
 class TaggedMessageEnquer : public MessagePoster
 {
 public:
+    TaggedMessageEnquer(
+        TCPConnection& messageSource,
+        ThreadSafeDeque<TaggedMessage>& targetQ)
+        : messageSource_{ &messageSource }
+        , targetQ_{ &targetQ }
+    {
+    }
+
     void post(Message message) const override
     {
-        targetQ_->push_back({
-            std::move(message), messageSource_->shared_from_this()});
+        targetQ_->push_back(
+            { std::move(message), messageSource_->shared_from_this() });
     }
 
 private:
-    utils::TCPConnection* messageSource_;
+    TCPConnection* messageSource_;
     ThreadSafeDeque<TaggedMessage>* targetQ_ = nullptr;
 };
 }// namespace
@@ -46,18 +54,20 @@ Server::Server(io_context& ioContext)
 }
 
 void Server::handleAccept(
-    std::shared_ptr<utils::TCPConnection> newConnection,
+    std::shared_ptr<TCPConnection> newConnection,
     const boost::system::error_code& error)
 {
     if (!error)
-        newConnection->start();
+        newConnection->startReading();
 
     startAccept();
 }
 
 void Server::startAccept()
 {
-    auto newConnection = TCPConnection::create(*ioContext_, messageDeque_);
+    auto newConnection = TCPConnection::create(*ioContext_);
+    newConnection->setMessagePoster(std::make_unique<TaggedMessageEnquer>(
+        *newConnection, messageDeque_));
 
     acceptor_.async_accept(
         newConnection->socket(),
@@ -83,12 +93,12 @@ std::vector<std::uint8_t> prepareOutgoingBody(const TaggedMessage& message)
     return std::vector<std::uint8_t>(str.begin(), str.end());
 }
 
-void processMessage(const TaggedMessage& message)
+void processMessage(const TaggedMessage& taggedMessage)
 {
-    if (!message.connection_)
+    if (!taggedMessage.connection_)
         return;
 
-    auto outgoingBody = prepareOutgoingBody(message);
+    auto outgoingBody = prepareOutgoingBody(taggedMessage);
     std::vector<std::uint8_t> outgoingBytes;
     outgoingBytes.reserve(4u + outgoingBody.size());
     std::move(
@@ -96,6 +106,6 @@ void processMessage(const TaggedMessage& message)
         outgoingBody.end(),
         std::back_inserter(outgoingBytes));
 
-    message.connection_->write(outgoingBytes);
+    taggedMessage.connection_->send(taggedMessage.message_);
 }
 }// namespace
