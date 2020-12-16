@@ -15,6 +15,7 @@ class Client
 public:
     Client(boost::asio::io_context& iocontext);
     void start();
+    void send(utils::Message message);
 
 private:
     void handleResolve(

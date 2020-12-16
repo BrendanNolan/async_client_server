@@ -59,6 +59,11 @@ void Client::start()
         });
 }
 
+void Client::send(utils::Message message)
+{
+    connection_->send(std::move(message));
+}
+
 void Client::handleResolve(
     const boost::system::error_code& error,
     boost::asio::ip::tcp::resolver::results_type results)
