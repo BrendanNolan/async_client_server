@@ -28,8 +28,6 @@ public:
 
     boost::asio::ip::tcp::socket& socket();
 
-    utils::ThreadSafeDeque<utils::Message>& incomingMessageQ();
-
 private:
     void writeHeader();
     void writeBody();
