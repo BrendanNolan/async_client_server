@@ -1,16 +1,16 @@
-#include "SocketMessageHandler.h"
+#include "TCPConnection.h"
 
 #include <utility>
 
 using namespace boost::asio;
 using namespace utils;
 
-SocketMessageHandler::SocketMessageHandler(io_context& ioContext)
+TCPConnection::TCPConnection(io_context& ioContext)
     : socket_{ ioContext }
 {
 }
 
-void SocketMessageHandler::send(utils::Message message)
+void TCPConnection::send(utils::Message message)
 {
     std::lock_guard<std::mutex> lock{ sendMessageMutex_ };
     outgoingMessageQ_.emplace_back(std::move(message));
@@ -21,23 +21,23 @@ void SocketMessageHandler::send(utils::Message message)
     writeHeader();
 }
 
-void SocketMessageHandler::startReading()
+void TCPConnection::startReading()
 {
     readHeader();
 }
 
-boost::asio::ip::tcp::socket& utils::SocketMessageHandler::socket()
+boost::asio::ip::tcp::socket& utils::TCPConnection::socket()
 {
     return socket_;
 }
 
-void utils::SocketMessageHandler::setMessagePoster(
+void utils::TCPConnection::setMessagePoster(
     std::unique_ptr<MessagePoster> poster)
 {
     poster_ = std::move(poster);
 }
 
-void SocketMessageHandler::writeHeader()
+void TCPConnection::writeHeader()
 {
     async_write(
         socket_,
@@ -55,7 +55,7 @@ void SocketMessageHandler::writeHeader()
         });
 }
 
-void SocketMessageHandler::writeBody()
+void TCPConnection::writeBody()
 {
     async_write(
         socket_,
@@ -72,13 +72,13 @@ void SocketMessageHandler::writeBody()
         });
 }
 
-void SocketMessageHandler::grabNextOutgoingMessage()
+void TCPConnection::grabNextOutgoingMessage()
 {
     tempOutgoingMessage_ = std::move(outgoingMessageQ_.front());
     outgoingMessageQ_.pop_front();
 }
 
-void SocketMessageHandler::readHeader()
+void TCPConnection::readHeader()
 {
     async_read(
         socket_,
@@ -97,7 +97,7 @@ void SocketMessageHandler::readHeader()
         });
 }
 
-void SocketMessageHandler::readBody()
+void TCPConnection::readBody()
 {
     resizeBodyAccordingToHeader(tempIncomingMessage_);
     async_read(

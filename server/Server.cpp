@@ -11,7 +11,7 @@
 #include <boost/system/error_code.hpp>
 
 #include "MessagePoster.h"
-#include "SocketMessageHandler.h"
+#include "TCPConnection.h"
 
 using namespace boost::asio;
 using namespace boost::asio::ip;
@@ -29,7 +29,7 @@ public:
     }
 
 private:
-    utils::SocketMessageHandler* messageSource_;
+    utils::TCPConnection* messageSource_;
     utils::ThreadSafeDeque<TaggedMessage>* targetQ_ = nullptr;
 };
 }// namespace

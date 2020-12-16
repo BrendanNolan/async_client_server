@@ -1,5 +1,5 @@
-#ifndef SOCKETMESSAGEHANDLER_H
-#define SOCKETMESSAGEHANDLER_H
+#ifndef TCPCONNECTION_H
+#define TCPCONNECTION_H
 
 #include <deque>
 #include <memory>
@@ -16,13 +16,13 @@
 
 namespace utils
 {
-// Beware: SocketMessageHandler relies on containing classes to ensure that
+// Beware: TCPConnection relies on containing classes to ensure that
 // it is still alive to execute handlers.
-class SocketMessageHandler
-    : public std::enable_shared_from_this<SocketMessageHandler>
+class TCPConnection
+    : public std::enable_shared_from_this<TCPConnection>
 {
 public:
-    SocketMessageHandler(boost::asio::io_context& ioContext);
+    TCPConnection(boost::asio::io_context& ioContext);
 
     void send(utils::Message message);
     void startReading();
@@ -53,4 +53,4 @@ private:
 
 }// namespace utils
 
-#endif// SOCKETMESSAGEHANDLER_H
+#endif// TCPCONNECTION_H
