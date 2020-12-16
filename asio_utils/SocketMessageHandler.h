@@ -9,7 +9,6 @@
 
 #include "Message.h"
 #include "MessagePoster.h" // May be able to forward declare
-#include "SocketConnector.h" // May be able to forward declare
 #include "ThreadSafeDeque.h"
 
 // TCPConnection should go and this class should be a component of
@@ -41,7 +40,6 @@ private:
 
 private:
     std::unique_ptr<MessagePoster> poster_;
-    std::unique_ptr<SocketConnector> connector_;
 
     utils::Message tempIncomingMessage_;
 
