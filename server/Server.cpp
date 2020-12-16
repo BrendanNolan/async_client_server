@@ -15,6 +15,7 @@
 
 using namespace boost::asio;
 using namespace boost::asio::ip;
+using namespace utils;
 
 namespace
 {
@@ -23,14 +24,15 @@ void processMessage(const TaggedMessage& message);
 class TaggedMessageEnquer : public MessagePoster
 {
 public:
-    void post(utils::Message message) const override
+    void post(Message message) const override
     {
-        targetQ_->push_back({std::move(message), messageSource_->shared_from_this()});
+        targetQ_->push_back({
+            std::move(message), messageSource_->shared_from_this()});
     }
 
 private:
-    utils::TCPConnection* messageSource_;
-    utils::ThreadSafeDeque<TaggedMessage>* targetQ_ = nullptr;
+    TCPConnection* messageSource_;
+    ThreadSafeDeque<TaggedMessage>* targetQ_ = nullptr;
 };
 }// namespace
 
