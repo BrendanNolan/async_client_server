@@ -46,10 +46,11 @@ void TCPConnection::setMessagePoster(std::unique_ptr<MessagePoster> poster)
 
 void TCPConnection::writeHeader()
 {
+    auto self = shared_from_this();
     async_write(
         socket_,
         buffer(&tempOutgoingMessage_.header_, sizeof(MessageHeader)),
-        [this](
+        [this, self](
             const boost::system::error_code& error,
             std::size_t bytesTransferred) {
             if (tempOutgoingMessage_.body_.empty())
@@ -64,10 +65,11 @@ void TCPConnection::writeHeader()
 
 void TCPConnection::writeBody()
 {
+    auto self = shared_from_this();
     async_write(
         socket_,
         buffer(tempOutgoingMessage_.body_),
-        [this](
+        [this, self](
             const boost::system::error_code& error,
             std::size_t bytesTransferred) {
             std::lock_guard<std::mutex> lock{ sendMessageMutex_ };
@@ -87,10 +89,11 @@ void TCPConnection::grabNextOutgoingMessage()
 
 void TCPConnection::readHeader()
 {
+    auto self = shared_from_this();
     async_read(
         socket_,
         buffer(&tempIncomingMessage_.header_, sizeof(MessageHeader)),
-        [this](
+        [this, self](
             const boost::system::error_code& error,
             std::size_t bytesTransferred) {
             if (tempIncomingMessage_.header_.bodySize_ == 0u)
@@ -107,10 +110,11 @@ void TCPConnection::readHeader()
 void TCPConnection::readBody()
 {
     resizeBodyAccordingToHeader(tempIncomingMessage_);
+    auto self = shared_from_this();
     async_read(
         socket_,
         buffer(tempIncomingMessage_.body_),
-        [this](
+        [this, self](
             const boost::system::error_code& error,
             std::size_t bytesTransferred) {
             poster_->post(std::move(tempIncomingMessage_));

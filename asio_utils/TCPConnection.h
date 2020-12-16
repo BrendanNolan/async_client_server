@@ -9,7 +9,6 @@
 
 #include "Message.h"
 #include "MessagePoster.h" // May be able to forward declare
-#include "ThreadSafeDeque.h"
 
 // TCPConnection should go and this class should be a component of
 // ClientTCPConnection and a subclass of ServerTCPConnection.
