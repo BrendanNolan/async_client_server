@@ -2,11 +2,14 @@
 #define SOCKETMESSAGEHANDLER_H
 
 #include <deque>
+#include <memory>
 #include <mutex>
 
 #include <boost/asio.hpp>
 
 #include "Message.h"
+#include "MessagePoster.h" // May be able to forward declare
+#include "SocketConnector.h" // May be able to forward declare
 #include "ThreadSafeDeque.h"
 
 // TCPConnection should go and this class should be a component of
@@ -14,12 +17,12 @@
 
 namespace utils
 {
-// Beware: SocketMessageHandler relies on containing classes to ensure that 
+// Beware: SocketMessageHandler relies on containing classes to ensure that
 // it is still alive to execute handlers.
 class SocketMessageHandler
 {
 public:
-    SocketMessageHandler(boost::asio::ip::tcp::socket socket);
+    SocketMessageHandler(boost::asio::io_context& ioContext);
 
     void send(utils::Message message);
     void startReading();
@@ -37,9 +40,10 @@ private:
     void readBody();
 
 private:
-    std::mutex receiveMessageMutex_;
+    std::unique_ptr<MessagePoster> poster_;
+    std::unique_ptr<SocketConnector> connector_;
+
     utils::Message tempIncomingMessage_;
-    utils::ThreadSafeDeque<utils::Message> incomingMessageQ_;
 
     std::mutex sendMessageMutex_;
     utils::Message tempOutgoingMessage_;

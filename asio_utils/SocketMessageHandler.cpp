@@ -5,8 +5,8 @@
 using namespace boost::asio;
 using namespace utils;
 
-SocketMessageHandler::SocketMessageHandler(ip::tcp::socket socket)
-    : socket_{ std::move(socket) }
+SocketMessageHandler::SocketMessageHandler(io_context& ioContext)
+    : socket_{ ioContext }
 {
 }
 
@@ -87,6 +87,8 @@ void SocketMessageHandler::readHeader()
             std::size_t bytesTransferred) {
             if (tempIncomingMessage_.header_.bodySize_ == 0u)
             {
+                poster_->post(std::move(tempIncomingMessage_));
+                tempIncomingMessage_ = utils::Message{};
                 readHeader();
                 return;
             }
@@ -103,7 +105,7 @@ void SocketMessageHandler::readBody()
         [this](
             const boost::system::error_code& error,
             std::size_t bytesTransferred) {
-            incomingMessageQ_.push_back(std::move(tempIncomingMessage_));
+            poster_->post(std::move(tempIncomingMessage_));
             tempIncomingMessage_ = utils::Message{};
             readHeader();
         });
