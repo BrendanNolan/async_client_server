@@ -54,7 +54,7 @@ template<typename PODType> Message& operator>>(Message& message, PODType& data)
         message.body_.data() + message.body_.size() - sizeof(PODType),
         sizeof(PODType));
 
-        message.body_.resize(message.body_.size() - sizeof(PODType));
+    message.body_.resize(message.body_.size() - sizeof(PODType));
 
     updateHeader(message);
 

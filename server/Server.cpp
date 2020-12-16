@@ -25,8 +25,7 @@ class TaggedMessageEnquer : public MessagePoster
 {
 public:
     TaggedMessageEnquer(
-        TCPConnection& messageSource,
-        ThreadSafeDeque<TaggedMessage>& targetQ)
+        TCPConnection& messageSource, ThreadSafeDeque<TaggedMessage>& targetQ)
         : messageSource_{ &messageSource }
         , targetQ_{ &targetQ }
     {
@@ -66,8 +65,8 @@ void Server::handleAccept(
 void Server::startAccept()
 {
     auto newConnection = TCPConnection::create(*ioContext_);
-    newConnection->setMessagePoster(std::make_unique<TaggedMessageEnquer>(
-        *newConnection, messageDeque_));
+    newConnection->setMessagePoster(
+        std::make_unique<TaggedMessageEnquer>(*newConnection, messageDeque_));
 
     acceptor_.async_accept(
         newConnection->socket(),

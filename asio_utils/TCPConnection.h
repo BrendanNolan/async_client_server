@@ -8,7 +8,7 @@
 #include <boost/asio.hpp>
 
 #include "Message.h"
-#include "MessagePoster.h" // May be able to forward declare
+#include "MessagePoster.h"// May be able to forward declare
 
 // TCPConnection should go and this class should be a component of
 // ClientTCPConnection and a subclass of ServerTCPConnection.
@@ -17,8 +17,7 @@ namespace utils
 {
 // Beware: TCPConnection relies on containing classes to ensure that
 // it is still alive to execute handlers.
-class TCPConnection
-    : public std::enable_shared_from_this<TCPConnection>
+class TCPConnection : public std::enable_shared_from_this<TCPConnection>
 {
 private:
     TCPConnection(boost::asio::io_context& ioContext);
