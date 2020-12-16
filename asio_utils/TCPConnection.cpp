@@ -3,20 +3,22 @@
 #include <utility>
 
 using namespace boost::asio;
-using namespace utils;
+
+namespace utils
+{
 
 TCPConnection::TCPConnection(io_context& ioContext)
     : socket_{ ioContext }
 {
 }
 
-std::shared_ptr<TCPConnection> utils::TCPConnection::create(
+std::shared_ptr<TCPConnection> TCPConnection::create(
     boost::asio::io_context& ioContext)
 {
     return std::shared_ptr<TCPConnection>{ new TCPConnection{ ioContext } };
 }
 
-void TCPConnection::send(utils::Message message)
+void TCPConnection::send(Message message)
 {
     std::lock_guard<std::mutex> lock{ sendMessageMutex_ };
     outgoingMessageQ_.emplace_back(std::move(message));
@@ -32,13 +34,12 @@ void TCPConnection::startReading()
     readHeader();
 }
 
-boost::asio::ip::tcp::socket& utils::TCPConnection::socket()
+boost::asio::ip::tcp::socket& TCPConnection::socket()
 {
     return socket_;
 }
 
-void utils::TCPConnection::setMessagePoster(
-    std::unique_ptr<MessagePoster> poster)
+void TCPConnection::setMessagePoster(std::unique_ptr<MessagePoster> poster)
 {
     poster_ = std::move(poster);
 }
@@ -47,7 +48,7 @@ void TCPConnection::writeHeader()
 {
     async_write(
         socket_,
-        buffer(&tempOutgoingMessage_.header_, sizeof(utils::MessageHeader)),
+        buffer(&tempOutgoingMessage_.header_, sizeof(MessageHeader)),
         [this](
             const boost::system::error_code& error,
             std::size_t bytesTransferred) {
@@ -88,14 +89,14 @@ void TCPConnection::readHeader()
 {
     async_read(
         socket_,
-        buffer(&tempIncomingMessage_.header_, sizeof(utils::MessageHeader)),
+        buffer(&tempIncomingMessage_.header_, sizeof(MessageHeader)),
         [this](
             const boost::system::error_code& error,
             std::size_t bytesTransferred) {
             if (tempIncomingMessage_.header_.bodySize_ == 0u)
             {
                 poster_->post(std::move(tempIncomingMessage_));
-                tempIncomingMessage_ = utils::Message{};
+                tempIncomingMessage_ = Message{};
                 readHeader();
                 return;
             }
@@ -113,7 +114,9 @@ void TCPConnection::readBody()
             const boost::system::error_code& error,
             std::size_t bytesTransferred) {
             poster_->post(std::move(tempIncomingMessage_));
-            tempIncomingMessage_ = utils::Message{};
+            tempIncomingMessage_ = Message{};
             readHeader();
         });
 }
+
+}// namespace utils
