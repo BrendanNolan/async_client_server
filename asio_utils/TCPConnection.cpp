@@ -98,7 +98,7 @@ void TCPConnection::readHeader()
             std::size_t bytesTransferred) {
             if (tempIncomingMessage_.header_.bodySize_ == 0u)
             {
-                auto post = *poster_;
+                const auto& post = *poster_;
                 post(std::move(tempIncomingMessage_));
                 tempIncomingMessage_ = Message{};
                 readHeader();
@@ -118,7 +118,7 @@ void TCPConnection::readBody()
         [this, self](
             const boost::system::error_code& error,
             std::size_t bytesTransferred) {
-            auto post = *poster_;
+            const auto& post = *poster_;
             post(std::move(tempIncomingMessage_));
             tempIncomingMessage_ = Message{};
             readHeader();
