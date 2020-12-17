@@ -32,7 +32,7 @@ class ClientPostFunctor : public MessagePostFunctor
 {
 public:
     void operator()(Message message) const override
-    { 
+    {
         for (const auto& byte : message.body_)
             std::cout << byte;
     }

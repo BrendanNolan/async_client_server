@@ -66,7 +66,8 @@ void Server::startAccept()
 {
     auto newConnection = TCPConnection::create(*ioContext_);
     newConnection->setMessagePostFunctor(
-        std::make_unique<TaggedMessagePostFunctor>(*newConnection, messageDeque_));
+        std::make_unique<TaggedMessagePostFunctor>(
+            *newConnection, messageDeque_));
 
     acceptor_.async_accept(
         newConnection->socket(),

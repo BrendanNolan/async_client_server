@@ -39,7 +39,8 @@ boost::asio::ip::tcp::socket& TCPConnection::socket()
     return socket_;
 }
 
-void TCPConnection::setMessagePostFunctor(std::unique_ptr<MessagePostFunctor> poster)
+void TCPConnection::setMessagePostFunctor(
+    std::unique_ptr<MessagePostFunctor> poster)
 {
     poster_ = std::move(poster);
 }
