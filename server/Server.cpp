@@ -10,7 +10,7 @@
 #include <boost/asio.hpp>
 #include <boost/system/error_code.hpp>
 
-#include "MessagePoster.h"
+#include "MessagePostFunctor.h"
 #include "TCPConnection.h"
 
 using namespace boost::asio;
@@ -21,17 +21,17 @@ namespace
 {
 void processMessage(const TaggedMessage& message);
 
-class TaggedMessageEnquer : public MessagePoster
+class TaggedMessagePostFunctor : public MessagePostFunctor
 {
 public:
-    TaggedMessageEnquer(
+    TaggedMessagePostFunctor(
         TCPConnection& messageSource, ThreadSafeDeque<TaggedMessage>& targetQ)
         : messageSource_{ &messageSource }
         , targetQ_{ &targetQ }
     {
     }
 
-    void post(Message message) const override
+    void operator()(Message message) const override
     {
         targetQ_->push_back(
             { std::move(message), messageSource_->shared_from_this() });
@@ -65,8 +65,8 @@ void Server::handleAccept(
 void Server::startAccept()
 {
     auto newConnection = TCPConnection::create(*ioContext_);
-    newConnection->setMessagePoster(
-        std::make_unique<TaggedMessageEnquer>(*newConnection, messageDeque_));
+    newConnection->setMessagePostFunctor(
+        std::make_unique<TaggedMessagePostFunctor>(*newConnection, messageDeque_));
 
     acceptor_.async_accept(
         newConnection->socket(),

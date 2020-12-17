@@ -7,7 +7,7 @@
 #include <fstream>
 #include <sstream>
 
-#include "MessagePoster.h"
+#include "MessagePostFunctor.h"
 
 using namespace boost::asio;
 using namespace boost::asio::ip;
@@ -28,10 +28,10 @@ void log(const std::string& text, const std::string& /*logFile*/)
     std::cout << text << '\n';
 }
 
-class ClientPoster : public MessagePoster
+class ClientPostFunctor : public MessagePostFunctor
 {
 public:
-    void post(Message message) const override
+    void operator()(Message message) const override
     { 
         for (const auto& byte : message.body_)
             std::cout << byte;
@@ -44,7 +44,7 @@ Client::Client(io_context& iocontext)
     : connection_{ TCPConnection::create(iocontext) }
     , resolver_{ iocontext }
 {
-    connection_->setMessagePoster(std::make_unique<ClientPoster>());
+    connection_->setMessagePostFunctor(std::make_unique<ClientPostFunctor>());
 }
 
 void Client::start()

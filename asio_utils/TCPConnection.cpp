@@ -39,7 +39,7 @@ boost::asio::ip::tcp::socket& TCPConnection::socket()
     return socket_;
 }
 
-void TCPConnection::setMessagePoster(std::unique_ptr<MessagePoster> poster)
+void TCPConnection::setMessagePostFunctor(std::unique_ptr<MessagePostFunctor> poster)
 {
     poster_ = std::move(poster);
 }
@@ -98,7 +98,8 @@ void TCPConnection::readHeader()
             std::size_t bytesTransferred) {
             if (tempIncomingMessage_.header_.bodySize_ == 0u)
             {
-                poster_->post(std::move(tempIncomingMessage_));
+                auto post = *poster_;
+                post(std::move(tempIncomingMessage_));
                 tempIncomingMessage_ = Message{};
                 readHeader();
                 return;
@@ -117,7 +118,8 @@ void TCPConnection::readBody()
         [this, self](
             const boost::system::error_code& error,
             std::size_t bytesTransferred) {
-            poster_->post(std::move(tempIncomingMessage_));
+            auto post = *poster_;
+            post(std::move(tempIncomingMessage_));
             tempIncomingMessage_ = Message{};
             readHeader();
         });

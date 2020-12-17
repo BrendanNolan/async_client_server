@@ -8,7 +8,7 @@
 #include <boost/asio.hpp>
 
 #include "Message.h"
-#include "MessagePoster.h"// May be able to forward declare
+#include "MessagePostFunctor.h"// May be able to forward declare
 
 // TCPConnection should go and this class should be a component of
 // ClientTCPConnection and a subclass of ServerTCPConnection.
@@ -31,7 +31,7 @@ public:
 
     boost::asio::ip::tcp::socket& socket();
 
-    void setMessagePoster(std::unique_ptr<MessagePoster> poster);
+    void setMessagePostFunctor(std::unique_ptr<MessagePostFunctor> poster);
 
 private:
     void writeHeader();
@@ -42,7 +42,7 @@ private:
     void readBody();
 
 private:
-    std::unique_ptr<MessagePoster> poster_;
+    std::unique_ptr<MessagePostFunctor> poster_;
 
     utils::Message tempIncomingMessage_;
 
