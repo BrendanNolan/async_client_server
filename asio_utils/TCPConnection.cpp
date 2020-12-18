@@ -44,7 +44,7 @@ void TCPConnection::setMessagePostFunctor(
     poster_ = std::move(poster);
 }
 
-void TCPConnection::hasMessageToSend() const
+bool TCPConnection::hasMessageToSend() const
 {
     return !outgoingMessageQ_.empty();
 }
@@ -56,7 +56,7 @@ void TCPConnection::writeHeader()
     auto self = shared_from_this();
     async_write(
         socket_,
-        buffer(outgoingMessage().header_, sizeof(MessageHeader)),
+        buffer(&outgoingMessage().header_, sizeof(MessageHeader)),
         [this, self](
             const boost::system::error_code& error,
             std::size_t bytesTransferred) {
@@ -89,7 +89,7 @@ void TCPConnection::writeBody()
         });
 }
 
-const Message& TCPConnection::outgoingMessage()
+const Message& TCPConnection::outgoingMessage() const
 {
     return outgoingMessageQ_.front();
 }

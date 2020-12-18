@@ -34,7 +34,7 @@ public:
     void setMessagePostFunctor(std::unique_ptr<MessagePostFunctor> poster);
 
 private:
-    bool messageToSend() const
+    bool hasMessageToSend() const;
     void writeHeader();
     void writeBody();
     const Message& outgoingMessage() const;
