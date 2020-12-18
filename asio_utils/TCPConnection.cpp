@@ -25,7 +25,6 @@ void TCPConnection::send(Message message)
 
     if (outgoingMessageQ_.size() != 1u)
         return;
-    grabNextOutgoingMessage();
     writeHeader();
 }
 
@@ -45,17 +44,25 @@ void TCPConnection::setMessagePostFunctor(
     poster_ = std::move(poster);
 }
 
+void TCPConnection::hasMessageToSend() const
+{
+    return !outgoingMessageQ_.empty();
+}
+
 void TCPConnection::writeHeader()
 {
+    if (!hasMessageToSend())
+	return;
     auto self = shared_from_this();
     async_write(
         socket_,
-        buffer(&tempOutgoingMessage_.header_, sizeof(MessageHeader)),
+        buffer(outgoingMessage().header_, sizeof(MessageHeader)),
         [this, self](
             const boost::system::error_code& error,
             std::size_t bytesTransferred) {
-            if (tempOutgoingMessage_.body_.empty())
+            if (outgoingMessage().body_.empty())
             {
+                outgoingMessageQ_.pop_front();
                 writeHeader();
                 return;
             }
@@ -69,7 +76,7 @@ void TCPConnection::writeBody()
     auto self = shared_from_this();
     async_write(
         socket_,
-        buffer(tempOutgoingMessage_.body_),
+        buffer(outgoingMessage().body_),
         [this, self](
             const boost::system::error_code& error,
             std::size_t bytesTransferred) {
@@ -77,15 +84,14 @@ void TCPConnection::writeBody()
 
             if (outgoingMessageQ_.empty())
                 return;
-            grabNextOutgoingMessage();
+            outgoingMessageQ_.pop_front();
             writeHeader();
         });
 }
 
-void TCPConnection::grabNextOutgoingMessage()
+const Message& TCPConnection::outgoingMessage()
 {
-    tempOutgoingMessage_ = std::move(outgoingMessageQ_.front());
-    outgoingMessageQ_.pop_front();
+    return outgoingMessageQ_.front();
 }
 
 void TCPConnection::readHeader()

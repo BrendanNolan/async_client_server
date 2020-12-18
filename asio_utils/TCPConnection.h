@@ -34,9 +34,10 @@ public:
     void setMessagePostFunctor(std::unique_ptr<MessagePostFunctor> poster);
 
 private:
+    bool messageToSend() const
     void writeHeader();
     void writeBody();
-    void grabNextOutgoingMessage();
+    const Message& outgoingMessage() const;
 
     void readHeader();
     void readBody();
@@ -47,7 +48,6 @@ private:
     utils::Message tempIncomingMessage_;
 
     std::mutex sendMessageMutex_;
-    utils::Message tempOutgoingMessage_;
     std::deque<utils::Message> outgoingMessageQ_;
 
     boost::asio::ip::tcp::socket socket_;
