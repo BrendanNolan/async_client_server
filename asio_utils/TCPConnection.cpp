@@ -21,12 +21,10 @@ std::shared_ptr<TCPConnection> TCPConnection::create(
 
 void TCPConnection::send(Message message)
 {
-    {
-        std::lock_guard<std::mutex> lock{ sendMutex_ };
-        outQ_.push_back(std::move(message));
-        if (outQ_.size() != 1u)
-            return;
-    }
+    std::lock_guard<std::mutex> lock{ outQMutex_ };
+    outQ_.push_back(std::move(message));
+    if (outQ_.size() != 1u)
+        return;
     writeHeader();
 }
 
@@ -59,6 +57,7 @@ void TCPConnection::writeHeader()
             std::size_t bytesTransferred) {
             if (outQ_.front()->body_.empty())
             {
+                std::lock_guard lock{ outQMutex_ };
                 outQ_.try_pop_front();
                 if (!outQ_.empty())
                     writeHeader();
@@ -80,6 +79,7 @@ void TCPConnection::writeBody()
         [this, self](
             const boost::system::error_code& error,
             std::size_t bytesTransferred) {
+            std::lock_guard lock{ outQMutex_ };
             outQ_.try_pop_front();
             if (!outQ_.empty())
                 writeHeader();
