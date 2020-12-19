@@ -11,7 +11,7 @@ int main()
     Client client(iocontext);
     client.start();
 
-    for (auto i = 0; i < 100; ++i)
+    for (auto i = 0; i < 10; ++i)
     {
         utils::Message message;
         message << std::string{ "Hello " } << i;

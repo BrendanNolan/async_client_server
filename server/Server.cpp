@@ -4,6 +4,7 @@
 #include <ctime>
 #include <iostream>
 #include <functional>
+#include <mutex>
 #include <string>
 #include <utility>
 
@@ -87,11 +88,13 @@ void Server::processRequests()
 
 namespace
 {
-
+std::mutex coutMutex;
 void processMessage(const TaggedMessage& taggedMessage)
 {
     if (!taggedMessage.connection_)
         return;
-    taggedMessage.connection_->send(taggedMessage.message_);
+    taggedMessage.connection_->send(utils::Message{});
+    std::lock_guard<std::mutex> lock{ coutMutex }; 
+    std::cout << "Sent reply" << std::endl;
 }
 }// namespace

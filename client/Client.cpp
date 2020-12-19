@@ -2,10 +2,11 @@
 
 #include <boost/asio.hpp>
 #include <array>
-#include <string>
 #include <iostream>
 #include <fstream>
+#include <mutex>
 #include <sstream>
+#include <string>
 
 #include "MessagePostFunctor.h"
 
@@ -15,14 +16,14 @@ using namespace utils;
 
 namespace
 {
-
+std::mutex coutMutex;
 class ClientPostFunctor : public MessagePostFunctor
 {
 public:
     void operator()(Message message) const override
     {
-        for (const auto& byte : message.body_)
-            std::cout << byte;
+        std::lock_guard<std::mutex> lock{ coutMutex };
+        std::cout << "Received a message" << std::endl;
     }
 };
 
@@ -33,7 +34,6 @@ Client::Client(io_context& iocontext)
     , resolver_{ iocontext }
 {
     connection_->setMessagePostFunctor(std::make_unique<ClientPostFunctor>());
-    connection_->startReading();
 }
 
 void Client::start()
