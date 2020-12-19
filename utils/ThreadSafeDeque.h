@@ -107,6 +107,12 @@ public:
         return deque_.empty();
     }
 
+    void clear() 
+    { 
+        std::scoped_lock lock{ mutex_ };
+        deque_.clear();
+    }
+
 private:
     T pop_back_private()
     {
