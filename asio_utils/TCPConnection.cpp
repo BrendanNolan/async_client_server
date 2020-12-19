@@ -21,7 +21,7 @@ std::shared_ptr<TCPConnection> TCPConnection::create(
 void TCPConnection::send(Message message)
 {
     std::lock_guard<std::mutex> lock{ outQMutex_ };
-    outQ_.push(std::move(message));
+    outQ_.emplace(std::move(message));
 
     if (outQ_.size() != 1u)
         return;
@@ -44,14 +44,9 @@ void TCPConnection::setMessagePostFunctor(
     poster_ = std::move(poster);
 }
 
-bool TCPConnection::hasMessageToSend() const
-{
-    return !outQ_.empty();
-}
-
 void TCPConnection::writeHeader()
 {
-    if (!hasMessageToSend())
+    if (outQ_.empty())
         return;
     auto self = shared_from_this();
     async_write(
