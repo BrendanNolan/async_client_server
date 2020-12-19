@@ -52,7 +52,7 @@ bool TCPConnection::hasMessageToSend() const
 void TCPConnection::writeHeader()
 {
     if (!hasMessageToSend())
-	return;
+        return;
     auto self = shared_from_this();
     async_write(
         socket_,
