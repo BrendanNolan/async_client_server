@@ -53,6 +53,11 @@ void Client::send(utils::Message message)
     connection_->send(std::move(message));
 }
 
+bool Client::connectionEstablished() const
+{
+    return connectionEstablished_;
+}
+
 void Client::handleResolve(
     const boost::system::error_code& error,
     boost::asio::ip::tcp::resolver::results_type results)
@@ -80,5 +85,6 @@ void Client::handleConnection(
         std::cout << "handleConnection(): " << error.message() << std::endl;
         return;
     }
+    connectionEstablished_ = true;
     connection_->startReading();
 }

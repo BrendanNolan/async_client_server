@@ -17,6 +17,8 @@ public:
     void start();
     void send(utils::Message message);
 
+    bool connectionEstablished() const;
+
 private:
     void handleResolve(
         const boost::system::error_code& error,
@@ -29,6 +31,7 @@ private:
 private:
     boost::asio::ip::tcp::resolver resolver_;
     std::shared_ptr<utils::TCPConnection> connection_;
+    bool connectionEstablished_ = false;
 };
 
 #endif// CLIENT_H

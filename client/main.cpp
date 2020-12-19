@@ -1,3 +1,5 @@
+#include <chrono>
+#include <thread>
 #include <utility>
 
 #include <boost/asio.hpp>
@@ -11,11 +13,20 @@ int main()
     Client client(iocontext);
     client.start();
 
+    std::thread thread{ [&iocontext] { iocontext.run(); } };
+
+    while (!client.connectionEstablished())
+    {
+        using namespace std::chrono_literals;
+        std::this_thread::sleep_for(1s);
+    }
+
     for (auto i = 0; i < 10; ++i)
     {
         utils::Message message;
         message << std::string{ "Hello " } << i;
         client.send(std::move(message));
     }
-    iocontext.run();
+
+    thread.join();
 }
