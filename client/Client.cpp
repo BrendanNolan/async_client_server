@@ -16,18 +16,6 @@ using namespace utils;
 namespace
 {
 
-void emptyLogFile(const std::string& logFile)
-{
-    std::ofstream ofs;
-    ofs.open(logFile, std::ofstream::out | std::ofstream::trunc);
-    ofs.close();
-}
-
-void log(const std::string& text, const std::string& /*logFile*/)
-{
-    std::cout << text << '\n';
-}
-
 class ClientPostFunctor : public MessagePostFunctor
 {
 public:
@@ -45,6 +33,7 @@ Client::Client(io_context& iocontext)
     , resolver_{ iocontext }
 {
     connection_->setMessagePostFunctor(std::make_unique<ClientPostFunctor>());
+    connection_->startReading();
 }
 
 void Client::start()

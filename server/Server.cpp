@@ -87,25 +87,11 @@ void Server::processRequests()
 
 namespace
 {
-std::vector<std::uint8_t> prepareOutgoingBody(const TaggedMessage& message)
-{
-    const std::string str{ "Hello, my name is server." };
-    return std::vector<std::uint8_t>(str.begin(), str.end());
-}
 
 void processMessage(const TaggedMessage& taggedMessage)
 {
     if (!taggedMessage.connection_)
         return;
-
-    auto outgoingBody = prepareOutgoingBody(taggedMessage);
-    std::vector<std::uint8_t> outgoingBytes;
-    outgoingBytes.reserve(4u + outgoingBody.size());
-    std::move(
-        outgoingBody.begin(),
-        outgoingBody.end(),
-        std::back_inserter(outgoingBytes));
-
     taggedMessage.connection_->send(taggedMessage.message_);
 }
 }// namespace

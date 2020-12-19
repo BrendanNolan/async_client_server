@@ -10,10 +10,11 @@ int main()
     boost::asio::io_context iocontext;
     Client client(iocontext);
     client.start();
+
     for (auto i = 0; i < 100; ++i)
     {
         utils::Message message;
-        message << i;
+        message << std::string{ "Hello " } << i;
         client.send(std::move(message));
     }
     iocontext.run();
