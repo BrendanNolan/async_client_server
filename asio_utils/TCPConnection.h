@@ -1,7 +1,6 @@
 #ifndef TCPCONNECTION_H
 #define TCPCONNECTION_H
 
-#include <queue>
 #include <memory>
 #include <mutex>
 
@@ -9,6 +8,7 @@
 
 #include "Message.h"
 #include "MessagePostFunctor.h"// May be able to forward declare
+#include "ThreadSafeDeque.h"
 
 // TCPConnection should go and this class should be a component of
 // ClientTCPConnection and a subclass of ServerTCPConnection.
@@ -36,7 +36,6 @@ public:
 private:
     void writeHeader();
     void writeBody();
-    const Message& outgoingMessage() const;
 
     void readHeader();
     void readBody();
@@ -47,7 +46,7 @@ private:
     utils::Message tempIncomingMessage_;
 
     std::mutex outQMutex_;
-    std::queue<utils::Message> outQ_;
+    utils::ThreadSafeDeque<utils::Message> outQ_;
 
     boost::asio::ip::tcp::socket socket_;
 };

@@ -1,5 +1,6 @@
 #include "TCPConnection.h"
 
+#include <cassert>
 #include <utility>
 
 using namespace boost::asio;
@@ -20,10 +21,12 @@ std::shared_ptr<TCPConnection> TCPConnection::create(
 
 void TCPConnection::send(Message message)
 {
-    std::lock_guard<std::mutex> lock{ outQMutex_ };
-    outQ_.emplace(std::move(message));
-    if (outQ_.size() != 1u)
-        return;
+    {
+        std::lock_guard<std::mutex> lock{ outQMutex_ };
+        outQ_.push_back(std::move(message));
+        if (outQ_.size() != 1u)
+            return;
+    }
     writeHeader();
 }
 
@@ -45,19 +48,20 @@ void TCPConnection::setMessagePostFunctor(
 
 void TCPConnection::writeHeader()
 {
-    if (outQ_.empty())
-        return;
+    assert(!outQ_.empty());
+
     auto self = shared_from_this();
     async_write(
         socket_,
-        buffer(&outgoingMessage().header_, sizeof(MessageHeader)),
+        buffer(&(outQ_.front()->header_), sizeof(MessageHeader)),
         [this, self](
             const boost::system::error_code& error,
             std::size_t bytesTransferred) {
-            if (outgoingMessage().body_.empty())
+            if (outQ_.front()->body_.empty())
             {
-                outQ_.pop();
-                writeHeader();
+                outQ_.try_pop_front();
+                if (!outQ_.empty())
+                    writeHeader();
                 return;
             }
 
@@ -67,25 +71,21 @@ void TCPConnection::writeHeader()
 
 void TCPConnection::writeBody()
 {
+    assert(!outQ_.empty());
+
     auto self = shared_from_this();
     async_write(
         socket_,
-        buffer(outgoingMessage().body_),
+        buffer(outQ_.front()->body_),
         [this, self](
             const boost::system::error_code& error,
             std::size_t bytesTransferred) {
             std::lock_guard<std::mutex> lock{ outQMutex_ };
 
-            if (outQ_.empty())
-                return;
-            outQ_.pop();
-            writeHeader();
+            outQ_.try_pop_front();
+            if (!outQ_.empty())
+                writeHeader();
         });
-}
-
-const Message& TCPConnection::outgoingMessage() const
-{
-    return outQ_.front();
 }
 
 void TCPConnection::readHeader()

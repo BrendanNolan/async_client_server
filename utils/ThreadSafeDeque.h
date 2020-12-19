@@ -19,6 +19,18 @@ public:
         return deque_.size();
     }
 
+    T* back()
+    {
+        std::scoped_lock lock{ mutex_ };
+        return (!deque_.empty()) ? &(deque_.back()) : nullptr;
+    }
+
+    const T* back() const
+    {
+        std::scoped_lock lock{ mutex_ };
+        return (!deque_.empty()) ? &(deque_.back()) : nullptr;
+    }
+
     void push_back(const T& item)
     {
         std::scoped_lock lock{ mutex_ };
@@ -46,6 +58,18 @@ public:
         std::unique_lock lock{ mutex_ };
         condVar_.wait(lock, [this]() { return !deque_.empty(); });
         return pop_back_private();
+    }
+
+    T* front()
+    {
+        std::scoped_lock lock{ mutex_ };
+        return (!deque_.empty()) ? &(deque_.front()) : nullptr;
+    }
+
+    const T* front() const
+    {
+        std::scoped_lock lock{ mutex_ };
+        return (!deque_.empty()) ? &(deque_.front()) : nullptr;
     }
 
     void push_front(const T& item)
