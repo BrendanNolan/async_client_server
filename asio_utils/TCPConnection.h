@@ -1,7 +1,7 @@
 #ifndef TCPCONNECTION_H
 #define TCPCONNECTION_H
 
-#include <deque>
+#include <queue>
 #include <memory>
 #include <mutex>
 
@@ -47,8 +47,8 @@ private:
 
     utils::Message tempIncomingMessage_;
 
-    std::mutex sendMessageMutex_;
-    std::deque<utils::Message> outgoingMessageQ_;
+    std::mutex outQMutex_;
+    std::queue<utils::Message> outQ_;
 
     boost::asio::ip::tcp::socket socket_;
 };

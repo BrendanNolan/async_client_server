@@ -20,10 +20,10 @@ std::shared_ptr<TCPConnection> TCPConnection::create(
 
 void TCPConnection::send(Message message)
 {
-    std::lock_guard<std::mutex> lock{ sendMessageMutex_ };
-    outgoingMessageQ_.emplace_back(std::move(message));
+    std::lock_guard<std::mutex> lock{ outQMutex_ };
+    outQ_.push(std::move(message));
 
-    if (outgoingMessageQ_.size() != 1u)
+    if (outQ_.size() != 1u)
         return;
     writeHeader();
 }
@@ -46,7 +46,7 @@ void TCPConnection::setMessagePostFunctor(
 
 bool TCPConnection::hasMessageToSend() const
 {
-    return !outgoingMessageQ_.empty();
+    return !outQ_.empty();
 }
 
 void TCPConnection::writeHeader()
@@ -62,7 +62,7 @@ void TCPConnection::writeHeader()
             std::size_t bytesTransferred) {
             if (outgoingMessage().body_.empty())
             {
-                outgoingMessageQ_.pop_front();
+                outQ_.pop();
                 writeHeader();
                 return;
             }
@@ -80,18 +80,18 @@ void TCPConnection::writeBody()
         [this, self](
             const boost::system::error_code& error,
             std::size_t bytesTransferred) {
-            std::lock_guard<std::mutex> lock{ sendMessageMutex_ };
+            std::lock_guard<std::mutex> lock{ outQMutex_ };
 
-            if (outgoingMessageQ_.empty())
+            if (outQ_.empty())
                 return;
-            outgoingMessageQ_.pop_front();
+            outQ_.pop();
             writeHeader();
         });
 }
 
 const Message& TCPConnection::outgoingMessage() const
 {
-    return outgoingMessageQ_.front();
+    return outQ_.front();
 }
 
 void TCPConnection::readHeader()
