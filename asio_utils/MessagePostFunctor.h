@@ -3,6 +3,9 @@
 
 #include "Message.h"
 
+namespace utils
+{
+
 class MessagePostFunctor
 {
 public:
@@ -10,4 +13,5 @@ public:
     virtual void operator()(utils::Message message) const = 0;
 };
 
+}// namespace utils
 #endif// MESSAGEPOSTFUNCTOR_H

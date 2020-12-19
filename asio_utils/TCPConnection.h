@@ -31,7 +31,7 @@ public:
 
     boost::asio::ip::tcp::socket& socket();
 
-    void setMessagePostFunctor(std::unique_ptr<MessagePostFunctor> poster);
+    void setMessagePostFunctor(std::unique_ptr<utils::MessagePostFunctor> poster);
 
 private:
     void writeHeader();
@@ -41,7 +41,7 @@ private:
     void readBody();
 
 private:
-    std::unique_ptr<MessagePostFunctor> poster_;
+    std::unique_ptr<utils::MessagePostFunctor> poster_;
 
     utils::Message tempIncomingMessage_;
 
