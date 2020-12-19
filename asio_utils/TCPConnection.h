@@ -7,16 +7,16 @@
 #include <boost/asio.hpp>
 
 #include "Message.h"
-#include "MessagePostFunctor.h"// May be able to forward declare
 #include "ThreadSafeDeque.h"
-
-// TCPConnection should go and this class should be a component of
-// ClientTCPConnection and a subclass of ServerTCPConnection.
 
 namespace utils
 {
-// Beware: TCPConnection relies on containing classes to ensure that
-// it is still alive to execute handlers.
+class MessagePostFunctor;
+}
+
+namespace utils
+{
+
 class TCPConnection : public std::enable_shared_from_this<TCPConnection>
 {
 private:
@@ -25,13 +25,15 @@ private:
 public:
     static std::shared_ptr<TCPConnection> create(
         boost::asio::io_context& ioContext);
+    ~TCPConnection();
 
     void send(utils::Message message);
     void startReading();
 
     boost::asio::ip::tcp::socket& socket();
 
-    void setMessagePostFunctor(std::unique_ptr<utils::MessagePostFunctor> poster);
+    void setMessagePostFunctor(
+        std::unique_ptr<utils::MessagePostFunctor> poster);
 
 private:
     void writeHeader();

@@ -3,6 +3,8 @@
 #include <cassert>
 #include <utility>
 
+#include "MessagePostFunctor.h"
+
 using namespace boost::asio;
 
 namespace utils
@@ -17,6 +19,10 @@ std::shared_ptr<TCPConnection> TCPConnection::create(
     boost::asio::io_context& ioContext)
 {
     return std::shared_ptr<TCPConnection>{ new TCPConnection{ ioContext } };
+}
+
+TCPConnection::~TCPConnection()
+{
 }
 
 void TCPConnection::send(Message message)
