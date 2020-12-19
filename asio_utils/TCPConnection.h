@@ -45,7 +45,7 @@ private:
 
     utils::Message tempIncomingMessage_;
 
-    std::mutex outQMutex_;
+    std::mutex sendMutex_;
     utils::ThreadSafeDeque<utils::Message> outQ_;
 
     boost::asio::ip::tcp::socket socket_;
