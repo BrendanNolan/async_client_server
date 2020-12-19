@@ -22,7 +22,6 @@ void TCPConnection::send(Message message)
 {
     std::lock_guard<std::mutex> lock{ outQMutex_ };
     outQ_.emplace(std::move(message));
-
     if (outQ_.size() != 1u)
         return;
     writeHeader();
