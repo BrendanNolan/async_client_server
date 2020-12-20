@@ -1,4 +1,4 @@
-#include <chrono>
+#include <iostream>
 #include <thread>
 #include <utility>
 
@@ -23,16 +23,15 @@ int main()
 
     std::vector<std::string> messages = { 
         "Dirty", 
-        "old",  
+        "old",     
         "river",
         ",",     
-        "must", 
-        "you", 
+        "must",    
+        "you",
         "keep",  
-        "rolling",
         "rolling", 
-        "on"
-        };
+        "rolling",
+        "on" };
 
     for (const auto& msg : messages)
     {

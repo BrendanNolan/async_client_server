@@ -14,6 +14,13 @@ utils::Message::Message(MessageHeader header, std::vector<std::uint8_t> body)
 {
 }
 
+utils::Message& utils::operator<<(utils::Message& message, const std::string& data)
+{
+    for (const auto& c : data)
+        message << c;
+    return message;
+}
+
 void utils::updateHeader(Message& message)
 {
     message.header_.bodySize_ =

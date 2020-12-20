@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <cstdint>
 #include <cstring>
+#include <string>
 #include <type_traits>
 #include <vector>
 
@@ -46,6 +47,8 @@ Message& operator<<(Message& message, const PODType& data)
 
     return message;
 }
+
+Message& operator<<(Message& message, const std::string& data);
 
 template<typename PODType> Message& operator>>(Message& message, PODType& data)
 {
