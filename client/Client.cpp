@@ -23,7 +23,12 @@ public:
     void operator()(Message message) const override
     {
         std::lock_guard<std::mutex> lock{ coutMutex };
-        std::cout << "Received a message" << std::endl;
+        std::cout << "Received a message of size " << 
+            message.header_.bodySize_ << " which reads:" << std::endl;
+        std::stringstream stream;
+        for (const auto& byte : message.body_)
+            stream << byte;
+        std::cout << stream.str() << std::endl;
     }
 };
 

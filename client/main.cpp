@@ -13,7 +13,7 @@ int main()
     Client client(iocontext);
     client.start();
 
-    std::thread thread{ [&iocontext] { iocontext.run(); } };
+    std::thread thread{ [&iocontext]() { iocontext.run(); } };
 
     while (!client.connectionEstablished())
     {
@@ -21,10 +21,23 @@ int main()
         std::this_thread::sleep_for(1s);
     }
 
-    for (auto i = 0; i < 10; ++i)
+    std::vector<std::string> messages = { 
+        "Dirty", 
+        "old",  
+        "river",
+        ",",     
+        "must", 
+        "you", 
+        "keep",  
+        "rolling",
+        "rolling", 
+        "on"
+        };
+
+    for (const auto& msg : messages)
     {
         utils::Message message;
-        message << std::string{ "Hello " } << i;
+        message << msg;
         client.send(std::move(message));
     }
 
