@@ -16,6 +16,7 @@ utils::Message::Message(MessageHeader header, std::vector<std::uint8_t> body)
 
 utils::Message& utils::operator<<(utils::Message& message, const std::string& data)
 {
+    // Should probably use strcpy here.
     for (const auto& c : data)
         message << c;
     return message;
