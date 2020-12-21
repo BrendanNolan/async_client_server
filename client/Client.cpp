@@ -21,9 +21,8 @@ class ClientPostFunctor : public MessagePostFunctor
 public:
     void operator()(Message message) const override
     {
-        std::lock_guard lock{ coutMutex_ };
-        std::cout << "Received a message of size " << 
-            message.header_.bodySize_ << " which reads:" << std::endl;
+        std::scoped_lock lock{ coutMutex_ };
+	std::cout << "Received: ";
         std::stringstream stream;
         for (const auto& byte : message.body_)
             stream << byte;
