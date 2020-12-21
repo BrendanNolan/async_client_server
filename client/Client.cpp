@@ -16,13 +16,12 @@ using namespace utils;
 
 namespace
 {
-std::mutex coutMutex;
 class ClientPostFunctor : public MessagePostFunctor
 {
 public:
     void operator()(Message message) const override
     {
-        std::lock_guard<std::mutex> lock{ coutMutex };
+        std::lock_guard lock{ coutMutex_ };
         std::cout << "Received a message of size " << 
             message.header_.bodySize_ << " which reads:" << std::endl;
         std::stringstream stream;
@@ -30,6 +29,9 @@ public:
             stream << byte;
         std::cout << stream.str() << std::endl;
     }
+
+private:
+    std::mutex coutMutex_;
 };
 
 }// namespace
