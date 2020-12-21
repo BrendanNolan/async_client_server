@@ -31,7 +31,7 @@ public:
     }
 
 private:
-    std::mutex coutMutex_;
+    mutable std::mutex coutMutex_;
 };
 
 }// namespace
