@@ -1,15 +1,19 @@
 #ifndef CLIENT_H
 #define CLIENT_H
 
+#include <atomic>
 #include <cstdint>
 #include <memory>
 #include <vector>
 
 #include <boost/asio.hpp>
 
+#include "ThreadSafeDeque.h"
 #include "Message.h"
 #include "TCPConnection.h"
 
+// There is probably a race condition about queueing message up before 
+// connection established.
 class Client
 {
 public:
@@ -31,7 +35,8 @@ private:
 private:
     boost::asio::ip::tcp::resolver resolver_;
     std::shared_ptr<utils::TCPConnection> connection_;
-    bool connectionEstablished_ = false;
+    utils::ThreadSafeDeque<utils::Message> preConnectionMessageQ_;
+    std::atomic<bool> connectionEstablished_ = false;
 };
 
 #endif// CLIENT_H
