@@ -17,7 +17,7 @@ int main()
 
     std::thread thread{ [&iocontext]() { iocontext.run(); } };
 
-    for (auto i = 0; i < 10; ++i)
+    for (auto i = 0; i < 10000000; ++i)
     {
         utils::Message message;
         message << i;
