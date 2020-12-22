@@ -49,6 +49,7 @@ Message& operator<<(Message& message, const PODType& data)
 }
 
 Message& operator<<(Message& message, const std::string& data);
+Message& operator<<(Message& message, const std::vector<std::uint8_t>& data);
 
 template<typename PODType> Message& operator>>(Message& message, PODType& data)
 {

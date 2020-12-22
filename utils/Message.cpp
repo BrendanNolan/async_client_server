@@ -1,5 +1,6 @@
 #include "Message.h"
 
+#include <algorithm>
 #include <utility>
 
 utils::MessageHeader::MessageHeader(std::uint32_t type, std::uint32_t size)
@@ -14,11 +15,26 @@ utils::Message::Message(MessageHeader header, std::vector<std::uint8_t> body)
 {
 }
 
-utils::Message& utils::operator<<(utils::Message& message, const std::string& data)
+utils::Message& utils::operator<<(
+    utils::Message& message, const std::string& data)
 {
-    // Should probably use strcpy here.
-    for (const auto& c : data)
-        message << c;
+    std::transform(
+        data.begin(), 
+        data.end(), 
+        std::back_inserter(message.body_),
+        [](char c) { return static_cast<std::uint8_t>(c); });
+    updateHeader(message);
+    return message;
+}
+
+utils::Message& utils::operator<<(
+    utils::Message& message, const std::vector<std::uint8_t>& data)
+{
+    std::copy(
+        data.begin(),
+        data.end(),
+        std::back_inserter(message.body_));
+    updateHeader(message);
     return message;
 }
 
