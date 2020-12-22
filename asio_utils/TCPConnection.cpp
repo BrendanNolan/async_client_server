@@ -1,6 +1,7 @@
 #include "TCPConnection.h"
 
 #include <cassert>
+#include <iostream>
 #include <utility>
 
 #include "MessagePostFunctor.h"
@@ -63,6 +64,12 @@ void TCPConnection::writeHeader()
             std::size_t bytesTransferred) {
             if (outQ_.front()->body_.empty())
             {
+                if (error)
+                {
+                    std::cout << "Could not write header" << std::endl;
+                    std::cout << error.message() << std::endl;
+                    return;
+                }
                 std::scoped_lock lock{ outQMutex_ };
                 outQ_.try_pop_front();
                 if (!outQ_.empty())
@@ -85,6 +92,12 @@ void TCPConnection::writeBody()
         [this, self](
             const boost::system::error_code& error,
             std::size_t bytesTransferred) {
+            if (error)
+            {
+                std::cout << "Could not write body" << std::endl;
+                std::cout << error.message() << std::endl;
+                return;
+            }
             std::scoped_lock lock{ outQMutex_ };
             outQ_.try_pop_front();
             if (!outQ_.empty())
@@ -101,6 +114,12 @@ void TCPConnection::readHeader()
         [this, self](
             const boost::system::error_code& error,
             std::size_t bytesTransferred) {
+            if (error)
+            {
+                std::cout << "Could not read header" << std::endl;
+                std::cout << error.message() << std::endl;
+                return;
+            }
             if (tempIncomingMessage_.header_.bodySize_ == 0u)
             {
                 const auto& post = *poster_;
@@ -123,6 +142,12 @@ void TCPConnection::readBody()
         [this, self](
             const boost::system::error_code& error,
             std::size_t bytesTransferred) {
+            if (error)
+            {
+                std::cout << "Could not read body" << std::endl;
+                std::cout << error.message() << std::endl;
+                return;
+            }
             const auto& post = *poster_;
             post(std::move(tempIncomingMessage_));
             tempIncomingMessage_ = Message{};
