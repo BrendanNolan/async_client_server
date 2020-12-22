@@ -22,11 +22,10 @@ public:
     void operator()(Message message) const override
     {
         std::scoped_lock lock{ coutMutex_ };
-	std::cout << "Received: ";
-        std::stringstream stream;
-        for (const auto& byte : message.body_)
-            stream << byte;
-        std::cout << stream.str() << std::endl;
+	    std::cout << "Received: ";
+        int i = -1;
+        message >> i;
+        std::cout << i << std::endl;
     }
 
 private:
