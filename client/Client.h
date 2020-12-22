@@ -1,7 +1,6 @@
 #ifndef CLIENT_H
 #define CLIENT_H
 
-#include <atomic>
 #include <cstdint>
 #include <memory>
 #include <vector>
@@ -36,7 +35,8 @@ private:
     boost::asio::ip::tcp::resolver resolver_;
     std::shared_ptr<utils::TCPConnection> connection_;
     utils::ThreadSafeDeque<utils::Message> preConnectionMessageQ_;
-    std::atomic<bool> connectionEstablished_ = false;
+
+    bool connectionEstablished_ = false;
 };
 
 #endif// CLIENT_H
