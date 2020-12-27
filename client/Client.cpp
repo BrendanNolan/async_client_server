@@ -22,7 +22,7 @@ public:
     void operator()(Message message) const override
     {
         std::scoped_lock lock{ coutMutex_ };
-	    std::cout << "Received: ";
+        std::cout << "Received: ";
         int i = -1;
         message >> i;
         std::cout << i << std::endl;
@@ -55,17 +55,20 @@ void Client::start()
 
 void Client::send(utils::Message message)
 {
+    std::scoped_lock lock{ preConnectionMutex_ };
+
     if (!connectionEstablished_)
     {
         preConnectionMessageQ_.push_back(std::move(message));
         return;
     }
-    
+
     connection_->send(std::move(message));
 }
 
 bool Client::connectionEstablished() const
 {
+    std::scoped_lock lock{ preConnectionMutex_ };
     return connectionEstablished_;
 }
 

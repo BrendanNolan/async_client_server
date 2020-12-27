@@ -3,6 +3,7 @@
 
 #include <cstdint>
 #include <memory>
+#include <mutex>
 #include <vector>
 
 #include <boost/asio.hpp>
@@ -11,7 +12,7 @@
 #include "Message.h"
 #include "TCPConnection.h"
 
-// There is probably a race condition about queueing message up before 
+// There is probably a race condition about queueing message up before
 // connection established.
 class Client
 {
@@ -34,8 +35,9 @@ private:
 private:
     boost::asio::ip::tcp::resolver resolver_;
     std::shared_ptr<utils::TCPConnection> connection_;
-    utils::ThreadSafeDeque<utils::Message> preConnectionMessageQ_;
 
+    mutable std::mutex preConnectionMutex_;
+    utils::ThreadSafeDeque<utils::Message> preConnectionMessageQ_;
     bool connectionEstablished_ = false;
 };
 
