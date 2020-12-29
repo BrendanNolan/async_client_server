@@ -34,15 +34,15 @@ public:
 
     void operator()(Message message) const override
     {
-	    auto copy = message;
-	    auto i = -1;
-	    copy >> i;
+        auto copy = message;
+        auto i = -1;
+        copy >> i;
         if (i % 5000 == 0)
         {
             std::cout << "Received " << i << " via " << messageSource_
                       << std::endl;
         }
-            
+
         targetQ_->push_back(
             { std::move(message), messageSource_->shared_from_this() });
     }
@@ -109,8 +109,7 @@ void processMessage(const TaggedMessage& taggedMessage)
     if (i % 5000 == 0)
     {
         std::cout << "Sending " << i << " via "
-                  << taggedMessage.connection_.get()
-                  << std::endl;
+                  << taggedMessage.connection_.get() << std::endl;
     }
 
     taggedMessage.connection_->send(taggedMessage.message_);

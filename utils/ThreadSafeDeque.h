@@ -107,8 +107,8 @@ public:
         return deque_.empty();
     }
 
-    void clear() 
-    { 
+    void clear()
+    {
         std::scoped_lock lock{ mutex_ };
         deque_.clear();
     }

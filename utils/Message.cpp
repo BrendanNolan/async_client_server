@@ -19,8 +19,8 @@ utils::Message& utils::operator<<(
     utils::Message& message, const std::string& data)
 {
     std::transform(
-        data.begin(), 
-        data.end(), 
+        data.begin(),
+        data.end(),
         std::back_inserter(message.body_),
         [](char c) { return static_cast<std::uint8_t>(c); });
     updateHeader(message);
@@ -30,10 +30,7 @@ utils::Message& utils::operator<<(
 utils::Message& utils::operator<<(
     utils::Message& message, const std::vector<std::uint8_t>& data)
 {
-    std::copy(
-        data.begin(),
-        data.end(),
-        std::back_inserter(message.body_));
+    std::copy(data.begin(), data.end(), std::back_inserter(message.body_));
     updateHeader(message);
     return message;
 }
