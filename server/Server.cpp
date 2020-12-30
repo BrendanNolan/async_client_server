@@ -58,7 +58,7 @@ Server::Server(io_context& ioContext)
     , ioContext_{ &ioContext }
 {
     startAccept();
-    for (auto i = 0; i < 6; ++i)
+    for (auto i = 0; i < 2; ++i)
         threadPool_.emplace_back([this]() { processRequests(); });
 }
 
@@ -108,8 +108,8 @@ void processMessage(const TaggedMessage& taggedMessage)
     copy >> i;
     if (i == 0)
     {
-        std::cout << "Sending " << i << " via "
-                  << taggedMessage.connection_.get() << std::endl;
+        std::cout << "Sending  " << i << " via "
+                  << taggedMessage.connection_.get() << std::endl << std::endl;
     }
 
     taggedMessage.connection_->send(taggedMessage.message_);

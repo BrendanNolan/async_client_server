@@ -22,10 +22,11 @@ public:
     void operator()(Message message) const override
     {
         std::scoped_lock lock{ coutMutex_ };
-        std::cout << "Received: ";
+
         int i = -1;
         message >> i;
-        std::cout << i << std::endl;
+        if (i == 0 || (i % 5000 == 0))
+            std::cout << "Received " << i << std::endl;
     }
 
 private:
