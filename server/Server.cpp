@@ -37,7 +37,7 @@ public:
         auto copy = message;
         auto i = -1;
         copy >> i;
-        if (i % 5000 == 0)
+        if (i == 0)
         {
             std::cout << "Received " << i << " via " << messageSource_
                       << std::endl;
@@ -58,7 +58,7 @@ Server::Server(io_context& ioContext)
     , ioContext_{ &ioContext }
 {
     startAccept();
-    for (auto i = 0; i < 4; ++i)
+    for (auto i = 0; i < 6; ++i)
         threadPool_.emplace_back([this]() { processRequests(); });
 }
 
@@ -106,7 +106,7 @@ void processMessage(const TaggedMessage& taggedMessage)
     auto copy = taggedMessage.message_;
     auto i = -1;
     copy >> i;
-    if (i % 5000 == 0)
+    if (i == 0)
     {
         std::cout << "Sending " << i << " via "
                   << taggedMessage.connection_.get() << std::endl;
