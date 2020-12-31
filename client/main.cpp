@@ -19,7 +19,7 @@ int main()
 
     std::vector<std::thread> threads;
 
-    for (auto i = 0; i < 6; ++i)
+    for (auto i = 0; i < 20; ++i)
     {
         threads.push_back(
             std::thread([&iocontext, printLogger]() {
