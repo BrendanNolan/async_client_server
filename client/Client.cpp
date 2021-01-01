@@ -111,6 +111,6 @@ void Client::handleConnection(
     while (!preConnectionMessageQ_.empty())
     {
         if (auto message = preConnectionMessageQ_.try_pop_front())
-            send(std::move(message.value()));
+            connection_->send(std::move(message.value()));
     }
 }
