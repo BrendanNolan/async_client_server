@@ -63,12 +63,14 @@ void Client::start()
 
 void Client::send(utils::Message message)
 {
-    std::scoped_lock lock{ preConnectionMutex_ };
-
-    if (!connectionEstablished_)
     {
-        preConnectionMessageQ_.push_back(std::move(message));
-        return;
+        std::scoped_lock lock{ preConnectionMutex_ };
+
+        if (!connectionEstablished_)
+        {
+            preConnectionMessageQ_.push_back(std::move(message));
+            return;
+        }
     }
 
     connection_->send(std::move(message));
@@ -103,6 +105,7 @@ void Client::handleConnection(
             logger_->log("handleConnection(): " + error.message());
         return;
     }
+    std::scoped_lock lock{ preConnectionMutex_ };
     connectionEstablished_ = true;
     connection_->startReading();
     while (!preConnectionMessageQ_.empty())

@@ -17,8 +17,6 @@ namespace utils
 class Logger;
 }
 
-// There is probably a race condition about queueing message up before
-// connection established.
 class Client
 {
 public:
