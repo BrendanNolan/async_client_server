@@ -76,6 +76,12 @@ void Client::send(utils::Message message)
     connection_->send(std::move(message));
 }
 
+bool Client::connected() const
+{
+    std::scoped_lock lock{ preConnectionMutex_ };
+    return connectionEstablished_;
+}
+
 void Client::handleResolve(
     const boost::system::error_code& error,
     boost::asio::ip::tcp::resolver::results_type results)

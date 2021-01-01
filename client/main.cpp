@@ -29,6 +29,11 @@ int main(int argc, char* argv[])
         threads.push_back(std::thread([&iocontext, printLogger]() {
             Client client(iocontext, std::move(printLogger));
             client.start();
+            while (!client.connected())
+            {
+                using namespace std::chrono_literals;
+                std::this_thread::sleep_for(1s);
+            }
             for (auto i = 0; i < 10000000; ++i)
             {
                 utils::Message message;
