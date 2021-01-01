@@ -69,7 +69,11 @@ void Server::handleAccept(
     if (!error)
     {
         newConnection->startReading();
-        std::cout << "Accepted at connection" << newConnection.get();
+        std::cout << "Accepted at connection" << newConnection.get() << std::endl;
+    }
+    else
+    {
+        std::cout << "handleAccept()" << error.message() << std::endl;
     }
 
     startAccept();
@@ -82,7 +86,7 @@ void Server::startAccept()
         std::make_unique<TaggedMessagePostFunctor>(
             *newConnection, messageDeque_));
 
-    std::cout << "Beginning to accept at connection" << newConnection.get();
+    std::cout << "Beginning to accept at connection" << newConnection.get() << std::endl;
     acceptor_.async_accept(
         newConnection->socket(),
         [this, newConnection](const boost::system::error_code& error) {
