@@ -26,14 +26,18 @@ int main(int argc, char* argv[])
     const auto threadCount = std::atoi(argv[1]);
     for (auto i = 0; i < threadCount; ++i)
     {
-        threads.push_back(std::thread([&iocontext, printLogger]() {
+        threads.push_back(std::thread([&iocontext, printLogger, i]() {
             Client client(iocontext, std::move(printLogger));
+            printLogger->log("Trying to connect Client #" + std::to_string(i));
             client.start();
             while (!client.connected())
             {
+                printLogger->log(
+                    "Not yet managed to connect Client #" + std::to_string(i));
                 using namespace std::chrono_literals;
                 std::this_thread::sleep_for(1s);
             }
+            printLogger->log("Connected Client #" + std::to_string(i));
             for (auto i = 0; i < 10000000; ++i)
             {
                 utils::Message message;
