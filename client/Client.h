@@ -26,8 +26,6 @@ public:
     void start();
     void send(utils::Message message);
 
-    bool connectionEstablished() const;
-
 private:
     void handleResolve(
         const boost::system::error_code& error,
