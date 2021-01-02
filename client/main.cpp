@@ -21,27 +21,34 @@ int main(int argc, char* argv[])
 
     auto printLogger = std::make_shared<utils::PrintLogger>();
 
-    std::vector<std::thread> threads;
-    
-    const auto threadCount = std::atoi(argv[1]);
-    for (auto i = 0; i < threadCount; ++i)
+    std::thread runThread;
+
     {
-        threads.push_back(std::thread([&iocontext, printLogger]() {
-            Client client(iocontext, std::move(printLogger));
-            client.start();
-            for (auto i = 0; i < 10000000; ++i)
-            {
-                utils::Message message;
-                message << i;
-                client.send(std::move(message));
-            }
-        }));
+        boost::asio::io_context::work{iocontext};
+        runThread = std::thread{ [&iocontext]() {
+            iocontext.run();
+            std::cout << "ran\n";
+        } };
+
+        std::vector<std::thread> workerThreads;
+        const auto threadCount = std::atoi(argv[1]);
+        for (auto i = 0; i < threadCount; ++i)
+        {
+            workerThreads.push_back(std::thread([&iocontext, printLogger]() {
+                Client client(iocontext, std::move(printLogger));
+                client.start();
+                for (auto i = 0; i < 10000000; ++i)
+                {
+                    utils::Message message;
+                    message << i;
+                    client.send(std::move(message));
+                }
+            }));
+        }
+
+        for (auto& t : workerThreads)
+            t.join();
     }
 
-    std::thread thread{ [&iocontext]() { iocontext.run(); } };
-
-    for (auto& t : threads)
-        t.join();
-
-    thread.join();
+    runThread.join();
 }
