@@ -8,20 +8,21 @@
 
 #include <boost/asio.hpp>
 
-#include "ThreadSafeDeque.h"
 #include "Message.h"
 #include "TCPConnection.h"
+#include "ThreadSafeDeque.h"
 
-// There is probably a race condition about queueing message up before
-// connection established.
+namespace utils
+{
+class Logger;
+}
+
 class Client
 {
 public:
-    Client(boost::asio::io_context& iocontext);
+    Client(boost::asio::io_context& iocontext, std::shared_ptr<utils::Logger> logger);
     void start();
     void send(utils::Message message);
-
-    bool connectionEstablished() const;
 
 private:
     void handleResolve(
@@ -35,6 +36,8 @@ private:
 private:
     boost::asio::ip::tcp::resolver resolver_;
     std::shared_ptr<utils::TCPConnection> connection_;
+
+    std::shared_ptr<utils::Logger> logger_;
 
     mutable std::mutex preConnectionMutex_;
     utils::ThreadSafeDeque<utils::Message> preConnectionMessageQ_;
