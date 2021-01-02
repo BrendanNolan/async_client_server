@@ -11,7 +11,9 @@
 #include <boost/asio.hpp>
 #include <boost/system/error_code.hpp>
 
+#include "Message.h"
 #include "MessagePostFunctor.h"
+#include "MessageProcessFunctor.h"
 #include "TCPConnection.h"
 
 using namespace boost::asio;
@@ -20,7 +22,6 @@ using namespace utils;
 
 namespace
 {
-void processMessage(const TaggedMessage& message);
 
 class TaggedMessagePostFunctor : public MessagePostFunctor
 {
@@ -42,6 +43,7 @@ private:
     TCPConnection* messageSource_;
     ThreadSafeDeque<TaggedMessage>* targetQ_ = nullptr;
 };
+
 }// namespace
 
 Server::Server(io_context& ioContext)
@@ -51,6 +53,15 @@ Server::Server(io_context& ioContext)
     startAccept();
     for (auto i = 0; i < 4; ++i)
         threadPool_.emplace_back([this]() { processRequests(); });
+}
+
+Server::~Server()
+{
+}
+
+void Server::setMessageProcessFunctor(std::unique_ptr<MessageProcessFunctor> functor)
+{
+    messageProcessFunctor_ = std::move(functor);
 }
 
 void Server::handleAccept(
@@ -81,19 +92,9 @@ void Server::processRequests()
 {
     while (true)
     {
-        const auto data = messageDeque_.wait_and_pop_front();
-        processMessage(data);
+        const auto taggedMessageToProcess = messageDeque_.wait_and_pop_front();
+        auto& processMessage = *messageProcessFunctor_;
+
+        taggedMessageToProcess.connection_->send(processMessage(taggedMessageToProcess.message_));
     }
 }
-
-namespace
-{
-
-void processMessage(const TaggedMessage& taggedMessage)
-{
-    if (!taggedMessage.connection_)
-        return;
-    taggedMessage.connection_->send(taggedMessage.message_);
-}
-
-}// namespace

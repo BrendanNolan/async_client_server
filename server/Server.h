@@ -10,6 +10,8 @@
 #include "TaggedMessage.h"
 #include "ThreadSafeDeque.h"
 
+class MessageProcessFunctor;
+
 namespace utils
 {
 class TCPConnection;
@@ -19,6 +21,9 @@ class Server
 {
 public:
     Server(boost::asio::io_context& ioContext);
+    ~Server();
+
+    void setMessageProcessFunctor(std::unique_ptr<MessageProcessFunctor> functor);
 
 private:
     void startAccept();
@@ -35,6 +40,8 @@ private:
 
     std::vector<std::thread> threadPool_;
     utils::ThreadSafeDeque<TaggedMessage> messageDeque_;
+
+    std::unique_ptr<MessageProcessFunctor> messageProcessFunctor_;
 };
 
 #endif// SERVER_H
