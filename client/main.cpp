@@ -1,5 +1,6 @@
 #include <chrono>
 #include <iostream>
+#include <memory>
 #include <thread>
 #include <utility>
 
@@ -7,12 +8,13 @@
 
 #include "Client.h"
 #include "Message.h"
+#include "PrintLogger.h"
 
 int main()
 {
     boost::asio::io_context iocontext;
 
-    Client client(iocontext);
+    Client client{ iocontext, std::make_shared<utils::PrintLogger>() };
     client.start();
 
     std::thread thread{ [&iocontext]() { iocontext.run(); } };
