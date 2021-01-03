@@ -59,7 +59,8 @@ Server::~Server()
 {
 }
 
-void Server::setMessageProcessFunctor(std::unique_ptr<MessageProcessFunctor> functor)
+void Server::setMessageProcessFunctor(
+    std::unique_ptr<MessageProcessFunctor> functor)
 {
     messageProcessFunctor_ = std::move(functor);
 }
@@ -95,6 +96,7 @@ void Server::processRequests()
         const auto taggedMessageToProcess = messageDeque_.wait_and_pop_front();
         auto& processMessage = *messageProcessFunctor_;
 
-        taggedMessageToProcess.connection_->send(processMessage(taggedMessageToProcess.message_));
+        taggedMessageToProcess.connection_->send(
+            processMessage(taggedMessageToProcess.message_));
     }
 }

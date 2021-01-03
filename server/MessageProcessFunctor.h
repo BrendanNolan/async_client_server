@@ -11,4 +11,4 @@ public:
     virtual utils::Message operator()(const utils::Message& message) = 0;
 };
 
-#endif // MESSAGEPROCESSFUNCTOR_H
+#endif// MESSAGEPROCESSFUNCTOR_H

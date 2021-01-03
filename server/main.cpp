@@ -10,14 +10,14 @@
 
 namespace
 {
-    class MessageMirrorerFunctor : public MessageProcessFunctor
+class MessageMirrorerFunctor : public MessageProcessFunctor
+{
+    virtual utils::Message operator()(const utils::Message& message) override
     {
-        virtual utils::Message operator()(const utils::Message& message) override
-        {
-            return message;
-        }
-    };
-}
+        return message;
+    }
+};
+}// namespace
 
 int main()
 {
@@ -25,7 +25,8 @@ int main()
     {
         boost::asio::io_context ioContext;
         Server server{ ioContext };
-        server.setMessageProcessFunctor(std::make_unique<MessageMirrorerFunctor>());
+        server.setMessageProcessFunctor(
+            std::make_unique<MessageMirrorerFunctor>());
 
         ioContext.run();
     }

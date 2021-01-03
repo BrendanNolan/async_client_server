@@ -21,4 +21,3 @@ private:
 }// namespace utils
 
 #endif// PRINTLOGGER_H
-

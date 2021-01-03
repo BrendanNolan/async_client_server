@@ -23,7 +23,8 @@ public:
     Server(boost::asio::io_context& ioContext);
     ~Server();
 
-    void setMessageProcessFunctor(std::unique_ptr<MessageProcessFunctor> functor);
+    void setMessageProcessFunctor(
+        std::unique_ptr<MessageProcessFunctor> functor);
 
 private:
     void startAccept();

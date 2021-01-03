@@ -12,4 +12,3 @@ void PrintLogger::log(const std::string& text)
 }
 
 }// namespace utils
-

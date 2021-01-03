@@ -20,7 +20,9 @@ class Logger;
 class Client
 {
 public:
-    Client(boost::asio::io_context& iocontext, std::shared_ptr<utils::Logger> logger);
+    Client(
+        boost::asio::io_context& iocontext,
+        std::shared_ptr<utils::Logger> logger);
     void start();
     void send(utils::Message message);
 
