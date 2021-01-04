@@ -32,7 +32,7 @@ public:
 
         int i;
         message >> i;
-        
+
         logger_->log("Received " + std::to_string(i));
     }
 
