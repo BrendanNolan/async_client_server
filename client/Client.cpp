@@ -1,10 +1,11 @@
 #include "Client.h"
 
 #include <boost/asio.hpp>
-#include <array>
+#include <chrono>
 #include <mutex>
 #include <sstream>
 #include <string>
+#include <thread>
 #include <utility>
 
 #include "MessagePostFunctor.h"
@@ -28,10 +29,11 @@ public:
     {
         if (!logger_)
             return;
-        int i = -1;
+
+        int i;
         message >> i;
-        if (i == 0 || (i % 5000 == 0))
-            logger_->log("Received " + std::to_string(i));
+        
+        logger_->log("Received " + std::to_string(i));
     }
 
 private:
@@ -63,6 +65,8 @@ void Client::start()
 
 void Client::send(utils::Message message)
 {
+    using namespace std::chrono_literals;
+    std::this_thread::sleep_for(6s);
     {
         std::scoped_lock lock{ preConnectionMutex_ };
 
