@@ -6,18 +6,7 @@
 #include <boost/asio.hpp>
 
 #include "Message.h"
-#include "MessageProcessFunctor.h"
-
-namespace
-{
-class MessageMirrorerFunctor : public MessageProcessFunctor
-{
-    virtual utils::Message operator()(const utils::Message& message) override
-    {
-        return message;
-    }
-};
-}// namespace
+#include "DelayedMessageMirrorerFunctor.h"
 
 int main()
 {
@@ -26,7 +15,7 @@ int main()
         boost::asio::io_context ioContext;
         Server server{ ioContext };
         server.setMessageProcessFunctor(
-            std::make_unique<MessageMirrorerFunctor>());
+            std::make_unique<DelayedMessageMirrorerFunctor>());
 
         ioContext.run();
     }
