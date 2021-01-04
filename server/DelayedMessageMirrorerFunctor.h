@@ -10,4 +10,4 @@ public:
     utils::Message operator()(const utils::Message& message) override;
 };
 
-#endif // DELAYEDMESSAGEMIRRORFUNCTOR_H
+#endif// DELAYEDMESSAGEMIRRORFUNCTOR_H
