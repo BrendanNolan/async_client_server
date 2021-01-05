@@ -9,6 +9,7 @@
 #include <utility>
 
 #include "MessagePostFunctor.h"
+#include "ErrorNotifyFunctor.h"
 #include "Logger.h"
 
 using namespace boost::asio;
@@ -17,6 +18,7 @@ using namespace utils;
 
 namespace
 {
+
 class ClientPostFunctor : public MessagePostFunctor
 {
 public:
@@ -40,6 +42,23 @@ private:
     utils::Logger* logger_ = nullptr;
 };
 
+class SetBrokenConnectionFlagFunctor : public ErrorNotifyFunctor
+{
+public:
+    SetBrokenConnectionFlagFunctor(std::atomic<bool>& flag)
+        : flag_{ &flag }
+    {
+    }
+
+    void operator()(const boost::system::error_code& error) const override
+    {
+        *flag_ = true;
+    }
+
+private:
+    std::atomic<bool>* flag_;
+};
+
 }// namespace
 
 Client::Client(std::shared_ptr<utils::Logger> logger)
@@ -49,6 +68,8 @@ Client::Client(std::shared_ptr<utils::Logger> logger)
 {
     connection_->setMessagePostFunctor(
         std::make_unique<ClientPostFunctor>(logger_.get()));
+    connection_->setErrorNotifyFunctor(
+        std::make_unique<SetBrokenConnectionFlagFunctor>(connectionBroken_));
 
     contextThread_ = std::thread{ [this]() { iocontext_.run(); } };
 }
@@ -90,6 +111,11 @@ void Client::send(utils::Message message)
     connection_->send(std::move(message));
 }
 
+bool Client::connectionBroken() const
+{
+    return connectionBroken_;
+}
+
 void Client::handleResolve(
     const boost::system::error_code& error,
     boost::asio::ip::tcp::resolver::results_type results)
@@ -98,6 +124,7 @@ void Client::handleResolve(
     {
         if (logger_)
             logger_->log("handleResolve(): " + error.message());
+        connectionBroken_ = true;
         return;
     }
     async_connect(
@@ -117,6 +144,7 @@ void Client::handleConnection(
     {
         if (logger_)
             logger_->log("handleConnection(): " + error.message());
+        connectionBroken_ = true;
         return;
     }
     std::scoped_lock lock{ preConnectionMutex_ };

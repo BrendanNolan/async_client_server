@@ -1,6 +1,7 @@
 #ifndef CLIENT_H
 #define CLIENT_H
 
+#include <atomic>
 #include <cstdint>
 #include <memory>
 #include <mutex>
@@ -29,6 +30,8 @@ public:
     void connect(const std::string& host, const int port);
     void send(utils::Message message);
 
+    bool connectionBroken() const;
+
 private:
     void handleResolve(
         const boost::system::error_code& error,
@@ -47,6 +50,8 @@ private:
     mutable std::mutex preConnectionMutex_;
     utils::ThreadSafeDeque<utils::Message> preConnectionMessageQ_;
     bool connectionEstablished_ = false;
+
+    std::atomic<bool> connectionBroken_;
 
     boost::asio::io_context iocontext_;
     std::thread contextThread_;

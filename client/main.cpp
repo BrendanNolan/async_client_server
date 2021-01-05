@@ -15,6 +15,9 @@ int main()
 
     for (auto i = 0; i < 10000000; ++i)
     {
+        if (client.connectionBroken())
+            break;
+
         utils::Message message;
         message << i;
         client.send(std::move(message));
