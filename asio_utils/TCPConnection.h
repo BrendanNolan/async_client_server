@@ -12,6 +12,7 @@
 namespace utils
 {
 class MessagePostFunctor;
+class ErrorNotifyFunctor;
 }
 
 namespace utils
@@ -34,6 +35,8 @@ public:
 
     void setMessagePostFunctor(
         std::unique_ptr<utils::MessagePostFunctor> poster);
+    void setErrorNotifyFunctor(
+        std::unique_ptr<utils::ErrorNotifyFunctor> notifier);
 
 private:
     void writeHeader();
@@ -42,8 +45,12 @@ private:
     void readHeader();
     void readBody();
 
+    void postMessage(utils::Message message) const;
+    void notifyError(const boost::system::error_code& error) const;
+
 private:
     std::unique_ptr<utils::MessagePostFunctor> poster_;
+    std::unique_ptr<utils::ErrorNotifyFunctor> notifier_;
 
     utils::Message tempIncomingMessage_;
 

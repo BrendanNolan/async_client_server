@@ -4,6 +4,7 @@
 #include <iostream>
 #include <utility>
 
+#include "ErrorNotifyFunctor.h"
 #include "MessagePostFunctor.h"
 
 using namespace boost::asio;
@@ -51,6 +52,12 @@ void TCPConnection::setMessagePostFunctor(
     poster_ = std::move(poster);
 }
 
+void TCPConnection::setErrorNotifyFunctor(
+    std::unique_ptr<utils::ErrorNotifyFunctor> notifier)
+{
+    notifier_ = std::move(notifier);
+}
+
 void TCPConnection::writeHeader()
 {
     assert(!outQ_.empty());
@@ -96,6 +103,7 @@ void TCPConnection::writeBody()
             {
                 std::cout << "Could not write body" << std::endl;
                 std::cout << error.message() << std::endl;
+                notifyError(error);
                 return;
             }
             std::scoped_lock lock{ outQMutex_ };
@@ -122,8 +130,7 @@ void TCPConnection::readHeader()
             }
             if (tempIncomingMessage_.header_.bodySize_ == 0u)
             {
-                const auto& post = *poster_;
-                post(std::move(tempIncomingMessage_));
+                postMessage(std::move(tempIncomingMessage_));
                 tempIncomingMessage_ = Message{};
                 readHeader();
                 return;
@@ -148,11 +155,28 @@ void TCPConnection::readBody()
                 std::cout << error.message() << std::endl;
                 return;
             }
-            const auto& post = *poster_;
-            post(std::move(tempIncomingMessage_));
+            postMessage(std::move(tempIncomingMessage_));
             tempIncomingMessage_ = Message{};
             readHeader();
         });
+}
+
+void TCPConnection::postMessage(utils::Message message) const
+{
+    if (!poster_)
+        return;
+
+    const auto& postFunctor = *poster_;
+    postFunctor(std::move(message));
+}
+
+void TCPConnection::notifyError(const boost::system::error_code & error) const
+{
+    if (!notifier_)
+        return;
+
+    const auto& notifyFunctor = *notifier_;
+    notifyFunctor(error);
 }
 
 }// namespace utils
