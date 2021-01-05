@@ -4,20 +4,14 @@
 #include <thread>
 #include <utility>
 
-#include <boost/asio.hpp>
-
 #include "Client.h"
 #include "Message.h"
 #include "PrintLogger.h"
 
 int main()
 {
-    boost::asio::io_context iocontext;
-
-    Client client{ iocontext, std::make_shared<utils::PrintLogger>() };
-    client.start();
-
-    std::thread thread{ [&iocontext]() { iocontext.run(); } };
+    Client client{ std::make_shared<utils::PrintLogger>() };
+    client.connect("192.168.1.12", 2014);
 
     for (auto i = 0; i < 10000000; ++i)
     {
@@ -25,6 +19,4 @@ int main()
         message << i;
         client.send(std::move(message));
     }
-
-    thread.join();
 }

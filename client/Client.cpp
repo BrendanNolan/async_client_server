@@ -42,20 +42,30 @@ private:
 
 }// namespace
 
-Client::Client(io_context& iocontext, std::shared_ptr<utils::Logger> logger)
-    : connection_{ TCPConnection::create(iocontext) }
+Client::Client(std::shared_ptr<utils::Logger> logger)
+    : connection_{ TCPConnection::create(iocontext_) }
     , logger_{ std::move(logger) }
-    , resolver_{ iocontext }
+    , resolver_{ iocontext_ }
 {
     connection_->setMessagePostFunctor(
         std::make_unique<ClientPostFunctor>(logger_.get()));
+
+    contextThread_ = std::thread{ [this]() { iocontext_.run(); } };
 }
 
-void Client::start()
+Client::~Client()
+{
+    iocontext_.stop();
+    
+    if (contextThread_.joinable())
+        contextThread_.join();
+}
+
+void Client::connect(const std::string& host, const int port)
 {
     resolver_.async_resolve(
-        "192.168.1.12",
-        "2014",
+        host,
+        std::to_string(port),
         [this](
             const boost::system::error_code& error,
             boost::asio::ip::tcp::resolver::results_type results) {

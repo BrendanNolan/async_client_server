@@ -4,6 +4,8 @@
 #include <cstdint>
 #include <memory>
 #include <mutex>
+#include <string>
+#include <thread>
 #include <vector>
 
 #include <boost/asio.hpp>
@@ -21,9 +23,10 @@ class Client
 {
 public:
     Client(
-        boost::asio::io_context& iocontext,
         std::shared_ptr<utils::Logger> logger);
-    void start();
+    ~Client();
+
+    void connect(const std::string& host, const int port);
     void send(utils::Message message);
 
 private:
@@ -44,6 +47,9 @@ private:
     mutable std::mutex preConnectionMutex_;
     utils::ThreadSafeDeque<utils::Message> preConnectionMessageQ_;
     bool connectionEstablished_ = false;
+
+    boost::asio::io_context iocontext_;
+    std::thread contextThread_;
 };
 
 #endif// CLIENT_H
