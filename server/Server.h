@@ -20,7 +20,7 @@ class TCPConnection;
 class Server
 {
 public:
-    Server(boost::asio::io_context& ioContext, int workers);
+    Server(boost::asio::io_context& ioContext, int workerCount);
     ~Server();
 
     void setMessageProcessFunctor(

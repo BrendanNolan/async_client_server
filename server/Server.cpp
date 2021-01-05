@@ -46,12 +46,12 @@ private:
 
 }// namespace
 
-Server::Server(io_context& ioContext, int workers)
+Server::Server(io_context& ioContext, int workerCount)
     : acceptor_{ ioContext, tcp::endpoint{ tcp::v4(), 2014 } }
     , ioContext_{ &ioContext }
 {
     startAccept();
-    for (auto i = 0; i < workers; ++i)
+    for (auto i = 0; i < workerCount; ++i)
         workerPool_.emplace_back([this]() { processRequests(); });
 }
 
