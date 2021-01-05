@@ -73,6 +73,7 @@ void TCPConnection::writeHeader()
             {
                 if (error)
                 {
+                    notifyOfError(error);
                     std::cout << "Could not write header" << std::endl;
                     std::cout << error.message() << std::endl;
                     return;
@@ -101,9 +102,9 @@ void TCPConnection::writeBody()
             std::size_t bytesTransferred) {
             if (error)
             {
+                notifyOfError(error);
                 std::cout << "Could not write body" << std::endl;
                 std::cout << error.message() << std::endl;
-                notifyError(error);
                 return;
             }
             std::scoped_lock lock{ outQMutex_ };
@@ -124,6 +125,7 @@ void TCPConnection::readHeader()
             std::size_t bytesTransferred) {
             if (error)
             {
+                notifyOfError(error);
                 std::cout << "Could not read header" << std::endl;
                 std::cout << error.message() << std::endl;
                 return;
@@ -151,6 +153,7 @@ void TCPConnection::readBody()
             std::size_t bytesTransferred) {
             if (error)
             {
+                notifyOfError(error);
                 std::cout << "Could not read body" << std::endl;
                 std::cout << error.message() << std::endl;
                 return;
@@ -170,7 +173,7 @@ void TCPConnection::postMessage(utils::Message message) const
     postFunctor(std::move(message));
 }
 
-void TCPConnection::notifyError(const boost::system::error_code & error) const
+void TCPConnection::notifyOfError(const boost::system::error_code & error) const
 {
     if (!notifier_)
         return;

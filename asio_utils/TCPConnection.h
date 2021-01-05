@@ -46,7 +46,7 @@ private:
     void readBody();
 
     void postMessage(utils::Message message) const;
-    void notifyError(const boost::system::error_code& error) const;
+    void notifyOfError(const boost::system::error_code& error) const;
 
 private:
     std::unique_ptr<utils::MessagePostFunctor> poster_;
