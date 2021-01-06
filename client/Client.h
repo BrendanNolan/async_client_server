@@ -57,7 +57,7 @@ private:
     utils::ThreadSafeDeque<utils::Message> preConnectionMessageQ_;
     bool connectionEstablished_ = false;
 
-    std::atomic<bool> connectionBroken_;
+    std::atomic<bool> connectionBroken_ = false;
 
     std::thread contextThread_;
 };
