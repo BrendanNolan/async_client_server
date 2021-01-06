@@ -8,9 +8,9 @@
 #include <thread>
 #include <utility>
 
-#include "MessagePostFunctor.h"
 #include "ErrorNotifyFunctor.h"
 #include "Logger.h"
+#include "MessagePostFunctor.h"
 
 using namespace boost::asio;
 using namespace boost::asio::ip;
@@ -18,29 +18,6 @@ using namespace utils;
 
 namespace
 {
-
-class ClientPostFunctor : public MessagePostFunctor
-{
-public:
-    ClientPostFunctor(utils::Logger* logger)
-        : logger_{ logger }
-    {
-    }
-
-    void operator()(Message message) const override
-    {
-        if (!logger_)
-            return;
-
-        int i;
-        message >> i;
-
-        logger_->log("Received " + std::to_string(i));
-    }
-
-private:
-    utils::Logger* logger_ = nullptr;
-};
 
 class SetBrokenConnectionFlagFunctor : public ErrorNotifyFunctor
 {
@@ -61,13 +38,11 @@ private:
 
 }// namespace
 
-Client::Client(std::shared_ptr<utils::Logger> logger)
-    : connection_{ TCPConnection::create(iocontext_) }
+Client::Client(std::unique_ptr<utils::Logger> logger)
+    : resolver_{ iocontext_ }
+    , connection_{ TCPConnection::create(iocontext_) }
     , logger_{ std::move(logger) }
-    , resolver_{ iocontext_ }
 {
-    connection_->setMessagePostFunctor(
-        std::make_unique<ClientPostFunctor>(logger_.get()));
     connection_->setErrorNotifyFunctor(
         std::make_unique<SetBrokenConnectionFlagFunctor>(connectionBroken_));
 
@@ -114,6 +89,16 @@ void Client::send(utils::Message message)
 bool Client::connectionBroken() const
 {
     return connectionBroken_;
+}
+
+void Client::setMessagePostFunctor(std::unique_ptr<utils::MessagePostFunctor> poster)
+{
+    connection_->setMessagePostFunctor(std::move(poster));
+}
+
+utils::Logger* Client::logger() const
+{
+    return logger_.get();
 }
 
 void Client::handleResolve(

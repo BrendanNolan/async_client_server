@@ -4,8 +4,6 @@
 #include <iostream>
 #include <memory>
 
-#include <boost/asio.hpp>
-
 #include "Message.h"
 #include "DelayedMessageMirrorerFunctor.h"
 
@@ -16,12 +14,9 @@ int main(int argc, char* argv[])
 
     try
     {
-        boost::asio::io_context ioContext;
-        Server server{ ioContext, std::atoi(argv[1]) };
+        Server server{ std::atoi(argv[1]) };
         server.setMessageProcessFunctor(
             std::make_unique<DelayedMessageMirrorerFunctor>());
-
-        ioContext.run();
     }
     catch (const std::exception& e)
     {

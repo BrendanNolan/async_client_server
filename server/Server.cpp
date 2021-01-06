@@ -46,17 +46,20 @@ private:
 
 }// namespace
 
-Server::Server(io_context& ioContext, int workerCount)
-    : acceptor_{ ioContext, tcp::endpoint{ tcp::v4(), 2014 } }
-    , ioContext_{ &ioContext }
+Server::Server(int workerCount)
+    : acceptor_{ ioContext_, tcp::endpoint{ tcp::v4(), 2014 } }
 {
     startAccept();
     for (auto i = 0; i < workerCount; ++i)
         workerPool_.emplace_back([this]() { processRequests(); });
+
+    contextRunThread_ = std::thread{ [this]() { ioContext_.run(); } };
 }
 
 Server::~Server()
 {
+    if (contextRunThread_.joinable())
+        contextRunThread_.join();
 }
 
 void Server::setMessageProcessFunctor(
@@ -77,7 +80,7 @@ void Server::handleAccept(
 
 void Server::startAccept()
 {
-    auto newConnection = TCPConnection::create(*ioContext_);
+    auto newConnection = TCPConnection::create(ioContext_);
     newConnection->setMessagePostFunctor(
         std::make_unique<TaggedMessagePostFunctor>(
             *newConnection, messageDeque_));

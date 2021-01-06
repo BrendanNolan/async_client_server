@@ -20,7 +20,7 @@ class TCPConnection;
 class Server
 {
 public:
-    Server(boost::asio::io_context& ioContext, int workerCount);
+    Server(int workerCount);
     ~Server();
 
     void setMessageProcessFunctor(
@@ -36,8 +36,9 @@ private:
     void processRequests();
 
 private:
+    boost::asio::io_context ioContext_;
     boost::asio::ip::tcp::acceptor acceptor_;
-    boost::asio::io_context* ioContext_ = nullptr;
+    std::thread contextRunThread_; // May not need to run this in a thread.
 
     std::vector<std::thread> workerPool_;
     utils::ThreadSafeDeque<TaggedMessage> messageDeque_;
