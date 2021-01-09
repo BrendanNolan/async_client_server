@@ -2,12 +2,13 @@
 
 #include <iostream>
 
-namespace utils {
-
-void PrintLogger::log(const std::string &text)
+namespace utils
 {
-  std::scoped_lock lock{ coutMutex_ };
-  std::cout << text << std::endl;
+
+void PrintLogger::log(const std::string& text)
+{
+    std::scoped_lock lock{ coutMutex_ };
+    std::cout << text << std::endl;
 }
 
 }// namespace utils

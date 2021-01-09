@@ -3,14 +3,15 @@
 
 #include <string>
 
-namespace utils {
+namespace utils
+{
 
 class Logger
 {
 public:
-  virtual ~Logger() = default;
+    virtual ~Logger() = default;
 
-  virtual void log(const std::string &text) = 0;
+    virtual void log(const std::string& text) = 0;
 };
 
 }// namespace utils

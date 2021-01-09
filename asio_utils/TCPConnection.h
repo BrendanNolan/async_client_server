@@ -9,50 +9,55 @@
 #include "Message.h"
 #include "ThreadSafeDeque.h"
 
-namespace utils {
+namespace utils
+{
 class MessagePostFunctor;
 class ErrorNotifyFunctor;
 }// namespace utils
 
-namespace utils {
+namespace utils
+{
 
 class TCPConnection : public std::enable_shared_from_this<TCPConnection>
 {
 private:
-  TCPConnection(boost::asio::io_context &ioContext);
+    TCPConnection(boost::asio::io_context& ioContext);
 
 public:
-  static std::shared_ptr<TCPConnection> create(boost::asio::io_context &ioContext);
-  ~TCPConnection();
+    static std::shared_ptr<TCPConnection> create(
+        boost::asio::io_context& ioContext);
+    ~TCPConnection();
 
-  void send(utils::Message message);
-  void startReading();
+    void send(utils::Message message);
+    void startReading();
 
-  boost::asio::ip::tcp::socket &socket();
+    boost::asio::ip::tcp::socket& socket();
 
-  void setMessagePostFunctor(std::unique_ptr<utils::MessagePostFunctor> poster);
-  void setErrorNotifyFunctor(std::unique_ptr<utils::ErrorNotifyFunctor> notifier);
-
-private:
-  void writeHeader();
-  void writeBody();
-
-  void readHeader();
-  void readBody();
-
-  void postMessage(utils::Message message) const;
-  void notifyOfError(const boost::system::error_code &error) const;
+    void setMessagePostFunctor(
+        std::unique_ptr<utils::MessagePostFunctor> poster);
+    void setErrorNotifyFunctor(
+        std::unique_ptr<utils::ErrorNotifyFunctor> notifier);
 
 private:
-  std::unique_ptr<utils::MessagePostFunctor> poster_;
-  std::unique_ptr<utils::ErrorNotifyFunctor> notifier_;
+    void writeHeader();
+    void writeBody();
 
-  utils::Message tempIncomingMessage_;
+    void readHeader();
+    void readBody();
 
-  std::mutex                             outQMutex_;
-  utils::ThreadSafeDeque<utils::Message> outQ_;
+    void postMessage(utils::Message message) const;
+    void notifyOfError(const boost::system::error_code& error) const;
 
-  boost::asio::ip::tcp::socket socket_;
+private:
+    std::unique_ptr<utils::MessagePostFunctor> poster_;
+    std::unique_ptr<utils::ErrorNotifyFunctor> notifier_;
+
+    utils::Message tempIncomingMessage_;
+
+    std::mutex outQMutex_;
+    utils::ThreadSafeDeque<utils::Message> outQ_;
+
+    boost::asio::ip::tcp::socket socket_;
 };
 
 }// namespace utils

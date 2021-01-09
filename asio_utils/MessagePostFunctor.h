@@ -3,13 +3,14 @@
 
 #include "Message.h"
 
-namespace utils {
+namespace utils
+{
 
 class MessagePostFunctor
 {
 public:
-  virtual ~MessagePostFunctor()                         = default;
-  virtual void operator()(utils::Message message) const = 0;
+    virtual ~MessagePostFunctor() = default;
+    virtual void operator()(utils::Message message) const = 0;
 };
 
 }// namespace utils
