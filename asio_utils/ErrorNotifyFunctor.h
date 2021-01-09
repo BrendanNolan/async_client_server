@@ -12,6 +12,6 @@ public:
 
     virtual void operator()(const boost::system::error_code& ec) const = 0;
 };
-}
+}// namespace utils
 
-#endif // ERRORNOTIFYFUNCTOR_H
+#endif// ERRORNOTIFYFUNCTOR_H

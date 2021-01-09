@@ -173,7 +173,7 @@ void TCPConnection::postMessage(utils::Message message) const
     postFunctor(std::move(message));
 }
 
-void TCPConnection::notifyOfError(const boost::system::error_code & error) const
+void TCPConnection::notifyOfError(const boost::system::error_code& error) const
 {
     if (!notifier_)
         return;

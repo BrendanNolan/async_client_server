@@ -38,7 +38,7 @@ private:
 private:
     boost::asio::io_context ioContext_;
     boost::asio::ip::tcp::acceptor acceptor_;
-    std::thread contextRunThread_; // May not need to run this in a thread.
+    std::thread contextRunThread_;// May not need to run this in a thread.
 
     std::vector<std::thread> workerPool_;
     utils::ThreadSafeDeque<TaggedMessage> messageDeque_;
