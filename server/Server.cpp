@@ -2,8 +2,8 @@
 
 #include <cstdint>
 #include <ctime>
-#include <functional>
 #include <iostream>
+#include <functional>
 #include <mutex>
 #include <string>
 #include <utility>

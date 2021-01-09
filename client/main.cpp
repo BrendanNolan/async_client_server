@@ -35,13 +35,12 @@ private:
     utils::Logger* logger_ = nullptr;
 };
 
-}// namespace
+}
 
 int main()
 {
     Client client{ std::make_unique<utils::PrintLogger>() };
-    client.setMessagePostFunctor(
-        std::make_unique<ClientPostFunctor>(client.logger()));
+    client.setMessagePostFunctor(std::make_unique<ClientPostFunctor>(client.logger()));
     client.connect("192.168.1.12", 2014);
 
     for (auto i = 0; i < 10000000; ++i)

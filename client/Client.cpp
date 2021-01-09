@@ -52,7 +52,7 @@ Client::Client(std::unique_ptr<utils::Logger> logger)
 Client::~Client()
 {
     iocontext_.stop();
-
+    
     if (contextThread_.joinable())
         contextThread_.join();
 }
@@ -91,8 +91,7 @@ bool Client::connectionBroken() const
     return connectionBroken_;
 }
 
-void Client::setMessagePostFunctor(
-    std::unique_ptr<utils::MessagePostFunctor> poster)
+void Client::setMessagePostFunctor(std::unique_ptr<utils::MessagePostFunctor> poster)
 {
     connection_->setMessagePostFunctor(std::move(poster));
 }

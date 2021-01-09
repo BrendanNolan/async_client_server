@@ -4,8 +4,8 @@
 #include <iostream>
 #include <memory>
 
-#include "DelayedMessageMirrorerFunctor.h"
 #include "Message.h"
+#include "DelayedMessageMirrorerFunctor.h"
 
 int main(int argc, char* argv[])
 {

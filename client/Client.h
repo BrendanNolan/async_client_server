@@ -19,12 +19,13 @@ namespace utils
 {
 class Logger;
 class MessagePostFunctor;
-}// namespace utils
+}
 
 class Client
 {
 public:
-    Client(std::unique_ptr<utils::Logger> logger);
+    Client(
+        std::unique_ptr<utils::Logger> logger);
     ~Client();
 
     void connect(const std::string& host, const int port);
@@ -32,8 +33,7 @@ public:
 
     bool connectionBroken() const;
 
-    void setMessagePostFunctor(
-        std::unique_ptr<utils::MessagePostFunctor> poster);
+    void setMessagePostFunctor(std::unique_ptr<utils::MessagePostFunctor> poster);
 
     utils::Logger* logger() const;
 

@@ -13,7 +13,7 @@ namespace utils
 {
 class MessagePostFunctor;
 class ErrorNotifyFunctor;
-}// namespace utils
+}
 
 namespace utils
 {
