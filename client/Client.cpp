@@ -59,6 +59,8 @@ Client::~Client()
 
 void Client::connect(const std::string& host, const int port)
 {
+    if (logger_)
+        logger_->log("Calling async_resolve().");
     resolver_.async_resolve(
         host,
         std::to_string(port),
