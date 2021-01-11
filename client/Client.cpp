@@ -2,6 +2,7 @@
 
 #include <boost/asio.hpp>
 #include <chrono>
+#include <iostream>
 #include <mutex>
 #include <sstream>
 #include <string>
@@ -59,8 +60,7 @@ Client::~Client()
 
 void Client::connect(const std::string& host, const int port)
 {
-    if (logger_)
-        logger_->log("Calling async_resolve().");
+    std::cout << "Calling async_resolve().") << std::endl;
     resolver_.async_resolve(
         host,
         std::to_string(port),
