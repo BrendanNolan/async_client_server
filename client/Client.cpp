@@ -45,8 +45,6 @@ Client::Client(std::unique_ptr<utils::Logger> logger)
 {
     connection_->setErrorNotifyFunctor(
         std::make_unique<SetBrokenConnectionFlagFunctor>(connectionBroken_));
-
-    contextThread_ = std::thread{ [this]() { iocontext_.run(); } };
 }
 
 Client::~Client()
@@ -67,6 +65,8 @@ void Client::connect(const std::string& host, const int port)
             boost::asio::ip::tcp::resolver::results_type results) {
             handleResolve(error, results);
         });
+
+    contextThread_ = std::thread{ [this]() { iocontext_.run(); } };
 }
 
 void Client::send(utils::Message message)
