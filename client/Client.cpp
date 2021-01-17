@@ -52,6 +52,7 @@ Client::Client(std::unique_ptr<utils::Logger> logger)
 
 Client::~Client()
 {
+    std::cout << "Client object being destroyed." << std::endl;
     iocontext_.stop();
 
     if (contextThread_.joinable())
@@ -60,7 +61,7 @@ Client::~Client()
 
 void Client::connect(const std::string& host, const int port)
 {
-    std::cout << "Calling async_resolve()." << std::endl;
+    std::cout << "Calling async_resolve()" << std::endl;
     resolver_.async_resolve(
         host,
         std::to_string(port),
@@ -108,6 +109,7 @@ void Client::handleResolve(
     const boost::system::error_code& error,
     boost::asio::ip::tcp::resolver::results_type results)
 {
+    std::cout << "Calling handleResolve()" << std::endl;
     if (error)
     {
         if (logger_)
@@ -115,6 +117,7 @@ void Client::handleResolve(
         connectionBroken_ = true;
         return;
     }
+    std::cout << "Calling async_connect()" << std::endl;
     async_connect(
         connection_->socket(),
         results,
@@ -128,6 +131,7 @@ void Client::handleResolve(
 void Client::handleConnection(
     const boost::system::error_code& error, const tcp::endpoint& endpoint)
 {
+    std::cout << "Calling handleConnection()" << std::endl;
     if (error)
     {
         if (logger_)
