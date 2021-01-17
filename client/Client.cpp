@@ -46,7 +46,11 @@ Client::Client(std::unique_ptr<utils::Logger> logger)
     connection_->setErrorNotifyFunctor(
         std::make_unique<SetBrokenConnectionFlagFunctor>(connectionBroken_));
 
-    contextThread_ = std::thread{ [this]() { iocontext_.run(); } };
+    contextThread_ = std::thread{ [this]() { 
+        logger_->log("Running io_context");
+	iocontext_.run(); 
+        logger_->log("Finished running io_context");
+    } };
 }
 
 Client::~Client()
@@ -59,6 +63,7 @@ Client::~Client()
 
 void Client::connect(const std::string& host, const int port)
 {
+    logger_->log("Calling async_resolve()");
     resolver_.async_resolve(
         host,
         std::to_string(port),
