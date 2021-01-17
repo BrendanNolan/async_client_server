@@ -72,18 +72,14 @@ void Server::handleAccept(
     std::shared_ptr<TCPConnection> newConnection,
     const boost::system::error_code& error)
 {
-    if (error)
-        std::cout << "handleAccept() error: " << error.message() << std::endl;
-
-    newConnection->startReading();
+    if (!error)
+        newConnection->startReading();
 
     startAccept();
 }
 
 void Server::startAccept()
 {
-    std::cout << "Waiting for a connection..." << std::endl;
-
     auto newConnection = TCPConnection::create(ioContext_);
     newConnection->setMessagePostFunctor(
         std::make_unique<TaggedMessagePostFunctor>(
