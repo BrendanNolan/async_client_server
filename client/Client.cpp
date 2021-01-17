@@ -47,9 +47,7 @@ Client::Client(std::unique_ptr<utils::Logger> logger)
         std::make_unique<SetBrokenConnectionFlagFunctor>(connectionBroken_));
 
     contextThread_ = std::thread{ [this]() { 
-        logger_->log("Running io_context");
 	iocontext_.run(); 
-        logger_->log("Finished running io_context");
     } };
 }
 
