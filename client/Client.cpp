@@ -60,7 +60,7 @@ Client::~Client()
 
 void Client::connect(const std::string& host, const int port)
 {
-    std::cout << "Calling async_resolve().") << std::endl;
+    std::cout << "Calling async_resolve()." << std::endl;
     resolver_.async_resolve(
         host,
         std::to_string(port),
