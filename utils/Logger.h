@@ -5,8 +5,7 @@
 
 namespace utils {
 
-class Logger
-{
+class Logger {
 public:
   virtual ~Logger() = default;
 

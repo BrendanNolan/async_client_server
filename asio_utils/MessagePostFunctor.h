@@ -5,8 +5,7 @@
 
 namespace utils {
 
-class MessagePostFunctor
-{
+class MessagePostFunctor {
 public:
   virtual ~MessagePostFunctor()                         = default;
   virtual void operator()(utils::Message message) const = 0;

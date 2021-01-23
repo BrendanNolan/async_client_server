@@ -20,8 +20,7 @@ class Logger;
 class MessagePostFunctor;
 }// namespace utils
 
-class Client
-{
+class Client {
 public:
   Client(std::unique_ptr<utils::Logger> logger);
   ~Client();

@@ -11,14 +11,13 @@
 
 namespace {
 
-class ClientPostFunctor : public utils::MessagePostFunctor
-{
+class ClientPostFunctor : public utils::MessagePostFunctor {
 public:
   ClientPostFunctor(utils::Logger *logger) : logger_{ logger } {}
 
-  void operator()(utils::Message message) const override
-  {
-    if (!logger_) return;
+  void operator()(utils::Message message) const override {
+    if (!logger_)
+      return;
 
     int i;
     message >> i;
@@ -32,14 +31,14 @@ private:
 
 }// namespace
 
-int main()
-{
+int main() {
   Client client{ std::make_unique<utils::PrintLogger>() };
   client.setMessagePostFunctor(std::make_unique<ClientPostFunctor>(client.logger()));
   client.connect("192.168.1.12", 2014);
 
   for (auto i = 0; i < 10000000; ++i) {
-    if (client.connectionBroken()) break;
+    if (client.connectionBroken())
+      break;
 
     utils::Message message;
     message << i;

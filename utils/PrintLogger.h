@@ -8,8 +8,7 @@
 
 namespace utils {
 
-class PrintLogger : public Logger
-{
+class PrintLogger : public Logger {
 public:
   void log(const std::string &text) override;
 

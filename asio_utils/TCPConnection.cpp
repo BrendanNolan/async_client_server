@@ -13,18 +13,17 @@ namespace utils {
 
 TCPConnection::TCPConnection(io_context &ioContext) : socket_{ ioContext } {}
 
-std::shared_ptr<TCPConnection> TCPConnection::create(boost::asio::io_context &ioContext)
-{
+std::shared_ptr<TCPConnection> TCPConnection::create(boost::asio::io_context &ioContext) {
   return std::shared_ptr<TCPConnection>{ new TCPConnection{ ioContext } };
 }
 
 TCPConnection::~TCPConnection() {}
 
-void TCPConnection::send(Message message)
-{
+void TCPConnection::send(Message message) {
   std::scoped_lock lock{ outQMutex_ };
   outQ_.push_back(std::move(message));
-  if (outQ_.size() != 1u) return;
+  if (outQ_.size() != 1u)
+    return;
   writeHeader();
 }
 
@@ -34,13 +33,11 @@ boost::asio::ip::tcp::socket &TCPConnection::socket() { return socket_; }
 
 void TCPConnection::setMessagePostFunctor(std::unique_ptr<MessagePostFunctor> poster) { poster_ = std::move(poster); }
 
-void TCPConnection::setErrorNotifyFunctor(std::unique_ptr<utils::ErrorNotifyFunctor> notifier)
-{
+void TCPConnection::setErrorNotifyFunctor(std::unique_ptr<utils::ErrorNotifyFunctor> notifier) {
   notifier_ = std::move(notifier);
 }
 
-void TCPConnection::writeHeader()
-{
+void TCPConnection::writeHeader() {
   assert(!outQ_.empty());
 
   auto self = shared_from_this();
@@ -56,7 +53,8 @@ void TCPConnection::writeHeader()
                   }
                   std::scoped_lock lock{ outQMutex_ };
                   outQ_.try_pop_front();
-                  if (!outQ_.empty()) writeHeader();
+                  if (!outQ_.empty())
+                    writeHeader();
                   return;
                 }
 
@@ -64,8 +62,7 @@ void TCPConnection::writeHeader()
               });
 }
 
-void TCPConnection::writeBody()
-{
+void TCPConnection::writeBody() {
   assert(!outQ_.empty());
 
   auto self = shared_from_this();
@@ -80,12 +77,12 @@ void TCPConnection::writeBody()
                 }
                 std::scoped_lock lock{ outQMutex_ };
                 outQ_.try_pop_front();
-                if (!outQ_.empty()) writeHeader();
+                if (!outQ_.empty())
+                  writeHeader();
               });
 }
 
-void TCPConnection::readHeader()
-{
+void TCPConnection::readHeader() {
   auto self = shared_from_this();
   async_read(socket_,
              buffer(&tempIncomingMessage_.header_, sizeof(MessageHeader)),
@@ -106,8 +103,7 @@ void TCPConnection::readHeader()
              });
 }
 
-void TCPConnection::readBody()
-{
+void TCPConnection::readBody() {
   resizeBodyAccordingToHeader(tempIncomingMessage_);
   auto self = shared_from_this();
   async_read(socket_,
@@ -125,17 +121,17 @@ void TCPConnection::readBody()
              });
 }
 
-void TCPConnection::postMessage(utils::Message message) const
-{
-  if (!poster_) return;
+void TCPConnection::postMessage(utils::Message message) const {
+  if (!poster_)
+    return;
 
   const auto &postFunctor = *poster_;
   postFunctor(std::move(message));
 }
 
-void TCPConnection::notifyOfError(const boost::system::error_code &error) const
-{
-  if (!notifier_) return;
+void TCPConnection::notifyOfError(const boost::system::error_code &error) const {
+  if (!notifier_)
+    return;
 
   const auto &notifyFunctor = *notifier_;
   notifyFunctor(error);

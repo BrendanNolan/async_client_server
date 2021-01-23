@@ -16,8 +16,7 @@ class ErrorNotifyFunctor;
 
 namespace utils {
 
-class TCPConnection : public std::enable_shared_from_this<TCPConnection>
-{
+class TCPConnection : public std::enable_shared_from_this<TCPConnection> {
 private:
   TCPConnection(boost::asio::io_context &ioContext);
 

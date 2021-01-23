@@ -3,8 +3,7 @@
 
 #include "Message.h"
 
-class MessageProcessFunctor
-{
+class MessageProcessFunctor {
 public:
   virtual ~MessageProcessFunctor() = default;
 

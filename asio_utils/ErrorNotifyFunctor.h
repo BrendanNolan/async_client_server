@@ -4,8 +4,7 @@
 #include <boost/asio.hpp>
 
 namespace utils {
-class ErrorNotifyFunctor
-{
+class ErrorNotifyFunctor {
 public:
   virtual ~ErrorNotifyFunctor() = default;
 

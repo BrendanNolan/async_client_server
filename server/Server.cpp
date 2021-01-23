@@ -22,15 +22,12 @@ using namespace utils;
 
 namespace {
 
-class TaggedMessagePostFunctor : public MessagePostFunctor
-{
+class TaggedMessagePostFunctor : public MessagePostFunctor {
 public:
   TaggedMessagePostFunctor(TCPConnection &messageSource, ThreadSafeDeque<TaggedMessage> &targetQ)
-    : messageSource_{ &messageSource }, targetQ_{ &targetQ }
-  {}
+    : messageSource_{ &messageSource }, targetQ_{ &targetQ } {}
 
-  void operator()(Message message) const override
-  {
+  void operator()(Message message) const override {
     targetQ_->push_back({ std::move(message), messageSource_->shared_from_this() });
   }
 
@@ -41,33 +38,30 @@ private:
 
 }// namespace
 
-Server::Server(int workerCount) : acceptor_{ ioContext_, tcp::endpoint{ tcp::v4(), 2014 } }
-{
+Server::Server(int workerCount) : acceptor_{ ioContext_, tcp::endpoint{ tcp::v4(), 2014 } } {
   startAccept();
   for (auto i = 0; i < workerCount; ++i) workerPool_.emplace_back([this]() { processRequests(); });
 
   contextRunThread_ = std::thread{ [this]() { ioContext_.run(); } };
 }
 
-Server::~Server()
-{
-  if (contextRunThread_.joinable()) contextRunThread_.join();
+Server::~Server() {
+  if (contextRunThread_.joinable())
+    contextRunThread_.join();
 }
 
-void Server::setMessageProcessFunctor(std::unique_ptr<MessageProcessFunctor> functor)
-{
+void Server::setMessageProcessFunctor(std::unique_ptr<MessageProcessFunctor> functor) {
   messageProcessFunctor_ = std::move(functor);
 }
 
-void Server::handleAccept(std::shared_ptr<TCPConnection> newConnection, const boost::system::error_code &error)
-{
-  if (!error) newConnection->startReading();
+void Server::handleAccept(std::shared_ptr<TCPConnection> newConnection, const boost::system::error_code &error) {
+  if (!error)
+    newConnection->startReading();
 
   startAccept();
 }
 
-void Server::startAccept()
-{
+void Server::startAccept() {
   auto newConnection = TCPConnection::create(ioContext_);
   newConnection->setMessagePostFunctor(std::make_unique<TaggedMessagePostFunctor>(*newConnection, messageDeque_));
 
@@ -76,8 +70,7 @@ void Server::startAccept()
   });
 }
 
-void Server::processRequests()
-{
+void Server::processRequests() {
   while (true) {
     const auto taggedMessageToProcess = messageDeque_.wait_and_pop_front();
     auto &     processMessage         = *messageProcessFunctor_;

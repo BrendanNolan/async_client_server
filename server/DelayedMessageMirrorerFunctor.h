@@ -4,8 +4,7 @@
 #include "Message.h"
 #include "MessageProcessFunctor.h"
 
-class DelayedMessageMirrorerFunctor : public MessageProcessFunctor
-{
+class DelayedMessageMirrorerFunctor : public MessageProcessFunctor {
 public:
   utils::Message operator()(const utils::Message &message) override;
 };

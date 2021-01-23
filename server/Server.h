@@ -16,8 +16,7 @@ namespace utils {
 class TCPConnection;
 }
 
-class Server
-{
+class Server {
 public:
   Server(int workerCount);
   ~Server();

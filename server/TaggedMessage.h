@@ -8,8 +8,7 @@
 #include "Message.h"
 #include "TCPConnection.h"
 
-struct TaggedMessage
-{
+struct TaggedMessage {
 public:
   TaggedMessage(utils::Message message, std::shared_ptr<utils::TCPConnection> connection);
 

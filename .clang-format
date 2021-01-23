@@ -9,7 +9,7 @@ AllowAllParametersOfDeclarationOnNextLine: false
 AllowShortBlocksOnASingleLine: true
 AllowShortCaseLabelsOnASingleLine: false
 AllowShortFunctionsOnASingleLine: All
-AllowShortIfStatementsOnASingleLine: true
+AllowShortIfStatementsOnASingleLine: false
 AllowShortLoopsOnASingleLine: true
 AlwaysBreakAfterDefinitionReturnType: None
 AlwaysBreakAfterReturnType: None
@@ -18,18 +18,18 @@ AlwaysBreakTemplateDeclarations: false
 BinPackArguments: false
 BinPackParameters: false
 BraceWrapping:
-  AfterClass: true
+  AfterClass: false
   AfterControlStatement: false
   AfterEnum: false
-  AfterFunction: true
+  AfterFunction: false
   AfterNamespace: false
   AfterObjCDeclaration: false
-  AfterStruct: true
+  AfterStruct: false
   AfterUnion: false
   BeforeCatch: false
   BeforeElse: false
   IndentBraces: false
-  SplitEmptyFunction: false
+  SplitEmptyFunction: true
   SplitEmptyNamespace: true
   SplitEmptyRecord: true
 BreakAfterJavaFieldAnnotations: true
