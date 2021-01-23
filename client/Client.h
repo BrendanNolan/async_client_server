@@ -15,8 +15,7 @@
 #include "TCPConnection.h"
 #include "ThreadSafeDeque.h"
 
-namespace utils
-{
+namespace utils {
 class Logger;
 class MessagePostFunctor;
 }// namespace utils
@@ -24,42 +23,37 @@ class MessagePostFunctor;
 class Client
 {
 public:
-    Client(std::unique_ptr<utils::Logger> logger);
-    ~Client();
+  Client(std::unique_ptr<utils::Logger> logger);
+  ~Client();
 
-    void connect(const std::string& host, const int port);
-    void send(utils::Message message);
+  void connect(const std::string &host, const int port);
+  void send(utils::Message message);
 
-    bool connectionBroken() const;
+  bool connectionBroken() const;
 
-    void setMessagePostFunctor(
-        std::unique_ptr<utils::MessagePostFunctor> poster);
+  void setMessagePostFunctor(std::unique_ptr<utils::MessagePostFunctor> poster);
 
-    utils::Logger* logger() const;
-
-private:
-    void handleResolve(
-        const boost::system::error_code& error,
-        boost::asio::ip::tcp::resolver::results_type results);
-
-    void handleConnection(
-        const boost::system::error_code& error,
-        const boost::asio::ip::tcp::endpoint& endpoint);
+  utils::Logger *logger() const;
 
 private:
-    boost::asio::io_context iocontext_;
-    boost::asio::ip::tcp::resolver resolver_;
-    std::shared_ptr<utils::TCPConnection> connection_;
+  void handleResolve(const boost::system::error_code &error, boost::asio::ip::tcp::resolver::results_type results);
 
-    std::unique_ptr<utils::Logger> logger_;
+  void handleConnection(const boost::system::error_code &error, const boost::asio::ip::tcp::endpoint &endpoint);
 
-    mutable std::mutex preConnectionMutex_;
-    utils::ThreadSafeDeque<utils::Message> preConnectionMessageQ_;
-    bool connectionEstablished_ = false;
+private:
+  boost::asio::io_context               iocontext_;
+  boost::asio::ip::tcp::resolver        resolver_;
+  std::shared_ptr<utils::TCPConnection> connection_;
 
-    std::atomic<bool> connectionBroken_ = false;
+  std::unique_ptr<utils::Logger> logger_;
 
-    std::thread contextThread_;
+  mutable std::mutex                     preConnectionMutex_;
+  utils::ThreadSafeDeque<utils::Message> preConnectionMessageQ_;
+  bool                                   connectionEstablished_ = false;
+
+  std::atomic<bool> connectionBroken_ = false;
+
+  std::thread contextThread_;
 };
 
 #endif// CLIENT_H
