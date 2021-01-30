@@ -18,16 +18,16 @@ namespace utils {
 
 class TCPConnection : public std::enable_shared_from_this<TCPConnection> {
 private:
-  TCPConnection(boost::asio::io_context &ioContext);
+  TCPConnection(boost::asio::io_context& ioContext);
 
 public:
-  static std::shared_ptr<TCPConnection> create(boost::asio::io_context &ioContext);
+  static std::shared_ptr<TCPConnection> create(boost::asio::io_context& ioContext);
   ~TCPConnection();
 
   void send(utils::Message message);
   void startReading();
 
-  boost::asio::ip::tcp::socket &socket();
+  boost::asio::ip::tcp::socket& socket();
 
   void setMessagePostFunctor(std::unique_ptr<utils::MessagePostFunctor> poster);
   void setErrorNotifyFunctor(std::unique_ptr<utils::ErrorNotifyFunctor> notifier);
@@ -40,7 +40,7 @@ private:
   void readBody();
 
   void postMessage(utils::Message message) const;
-  void notifyOfError(const boost::system::error_code &error) const;
+  void notifyOfError(const boost::system::error_code& error) const;
 
 private:
   std::unique_ptr<utils::MessagePostFunctor> poster_;
@@ -48,7 +48,7 @@ private:
 
   utils::Message tempIncomingMessage_;
 
-  std::mutex                             outQMutex_;
+  std::mutex outQMutex_;
   utils::ThreadSafeDeque<utils::Message> outQ_;
 
   boost::asio::ip::tcp::socket socket_;

@@ -13,7 +13,7 @@ struct MessageHeader {
   MessageHeader() = default;
   MessageHeader(std::uint32_t type, std::uint32_t size);
 
-  std::uint32_t type_     = static_cast<std::uint32_t>(0);
+  std::uint32_t type_ = static_cast<std::uint32_t>(0);
   std::uint32_t bodySize_ = static_cast<std::uint32_t>(0);
 };
 
@@ -22,13 +22,13 @@ public:
   Message() = default;
   Message(MessageHeader header, std::vector<std::uint8_t> body);
 
-  MessageHeader             header_;
+  MessageHeader header_;
   std::vector<std::uint8_t> body_;
 };
-void updateHeader(Message &message);
-void resizeBodyAccordingToHeader(Message &message);
+void updateHeader(Message& message);
+void resizeBodyAccordingToHeader(Message& message);
 
-template<typename PODType> Message &operator<<(Message &message, const PODType &data) {
+template<typename PODType> Message& operator<<(Message& message, const PODType& data) {
   static_assert(std::is_standard_layout<PODType>::value, "Data type not trivially serialisable");
 
   const auto oldBodySize = message.body_.size();
@@ -41,11 +41,12 @@ template<typename PODType> Message &operator<<(Message &message, const PODType &
   return message;
 }
 
-Message &operator<<(Message &message, const std::string &data);
-Message &operator<<(Message &message, const std::vector<std::uint8_t> &data);
+Message& operator<<(Message& message, const std::string& data);
+Message& operator<<(Message& message, const std::vector<std::uint8_t>& data);
 
-template<typename PODType> Message &operator>>(Message &message, PODType &data) {
-  std::memcpy(&data, message.body_.data() + message.body_.size() - sizeof(PODType), sizeof(PODType));
+template<typename PODType> Message& operator>>(Message& message, PODType& data) {
+  std::memcpy(
+    &data, message.body_.data() + message.body_.size() - sizeof(PODType), sizeof(PODType));
 
   message.body_.resize(message.body_.size() - sizeof(PODType));
 

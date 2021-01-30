@@ -12,7 +12,7 @@ struct TaggedMessage {
 public:
   TaggedMessage(utils::Message message, std::shared_ptr<utils::TCPConnection> connection);
 
-  utils::Message                        message_;
+  utils::Message message_;
   std::shared_ptr<utils::TCPConnection> connection_;
 };
 

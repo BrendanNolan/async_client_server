@@ -16,23 +16,23 @@ public:
     return deque_.size();
   }
 
-  T *back() {
+  T* back() {
     std::scoped_lock lock{ mutex_ };
     return (!deque_.empty()) ? &(deque_.back()) : nullptr;
   }
 
-  const T *back() const {
+  const T* back() const {
     std::scoped_lock lock{ mutex_ };
     return (!deque_.empty()) ? &(deque_.back()) : nullptr;
   }
 
-  void push_back(const T &item) {
+  void push_back(const T& item) {
     std::scoped_lock lock{ mutex_ };
     deque_.push_back(item);
     condVar_.notify_one();
   }
 
-  void push_back(T &&item) {
+  void push_back(T&& item) {
     std::scoped_lock lock{ mutex_ };
     deque_.push_back(std::move(item));
     condVar_.notify_one();
@@ -51,23 +51,23 @@ public:
     return pop_back_private();
   }
 
-  T *front() {
+  T* front() {
     std::scoped_lock lock{ mutex_ };
     return (!deque_.empty()) ? &(deque_.front()) : nullptr;
   }
 
-  const T *front() const {
+  const T* front() const {
     std::scoped_lock lock{ mutex_ };
     return (!deque_.empty()) ? &(deque_.front()) : nullptr;
   }
 
-  void push_front(const T &item) {
+  void push_front(const T& item) {
     std::scoped_lock lock{ mutex_ };
     deque_.push_front(item);
     condVar_.notify_one();
   }
 
-  void push_front(T &&item) {
+  void push_front(T&& item) {
     std::scoped_lock lock{ mutex_ };
     deque_.push_front(std::move(item));
     condVar_.notify_one();
@@ -113,7 +113,7 @@ private:
   std::deque<T> deque_;
 
   std::condition_variable condVar_;
-  mutable std::mutex      mutex_;
+  mutable std::mutex mutex_;
 };
 
 }// namespace utils

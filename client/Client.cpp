@@ -20,19 +20,21 @@ namespace {
 
 class SetBrokenConnectionFlagFunctor : public ErrorNotifyFunctor {
 public:
-  SetBrokenConnectionFlagFunctor(std::atomic<bool> &flag) : flag_{ &flag } {}
+  SetBrokenConnectionFlagFunctor(std::atomic<bool>& flag) : flag_{ &flag } {}
 
-  void operator()(const boost::system::error_code &error) const override { *flag_ = true; }
+  void operator()(const boost::system::error_code& error) const override { *flag_ = true; }
 
 private:
-  std::atomic<bool> *flag_;
+  std::atomic<bool>* flag_;
 };
 
 }// namespace
 
 Client::Client(std::unique_ptr<utils::Logger> logger)
-  : resolver_{ iocontext_ }, connection_{ TCPConnection::create(iocontext_) }, logger_{ std::move(logger) } {
-  connection_->setErrorNotifyFunctor(std::make_unique<SetBrokenConnectionFlagFunctor>(connectionBroken_));
+  : resolver_{ iocontext_ }, connection_{ TCPConnection::create(iocontext_) }, logger_{ std::move(
+                                                                                 logger) } {
+  connection_->setErrorNotifyFunctor(
+    std::make_unique<SetBrokenConnectionFlagFunctor>(connectionBroken_));
 }
 
 Client::~Client() {
@@ -42,13 +44,11 @@ Client::~Client() {
     contextThread_.join();
 }
 
-void Client::connect(const std::string &host, const int port) {
-  resolver_.async_resolve(
-    host,
+void Client::connect(const std::string& host, const int port) {
+  resolver_.async_resolve(host,
     std::to_string(port),
-    [this](const boost::system::error_code &error, boost::asio::ip::tcp::resolver::results_type results) {
-      handleResolve(error, results);
-    });
+    [this](const boost::system::error_code& error,
+      boost::asio::ip::tcp::resolver::results_type results) { handleResolve(error, results); });
 
   contextThread_ = std::thread{ [this]() { iocontext_.run(); } };
 }
@@ -74,10 +74,10 @@ void Client::setMessagePostFunctor(std::unique_ptr<utils::MessagePostFunctor> po
   connection_->setMessagePostFunctor(std::move(poster));
 }
 
-utils::Logger *Client::logger() const { return logger_.get(); }
+utils::Logger* Client::logger() const { return logger_.get(); }
 
-void Client::handleResolve(const boost::system::error_code &            error,
-                           boost::asio::ip::tcp::resolver::results_type results) {
+void Client::handleResolve(const boost::system::error_code& error,
+  boost::asio::ip::tcp::resolver::results_type results) {
   if (error) {
     if (logger_)
       logger_->log("handleResolve(): " + error.message());
@@ -85,13 +85,14 @@ void Client::handleResolve(const boost::system::error_code &            error,
     return;
   }
   async_connect(connection_->socket(),
-                results,
-                [this](const boost::system::error_code &error, const boost::asio::ip::tcp::endpoint &endpoint) {
-                  handleConnection(error, endpoint);
-                });
+    results,
+    [this](const boost::system::error_code& error, const boost::asio::ip::tcp::endpoint& endpoint) {
+      handleConnection(error, endpoint);
+    });
 }
 
-void Client::handleConnection(const boost::system::error_code &error, const tcp::endpoint &endpoint) {
+void Client::handleConnection(const boost::system::error_code& error,
+  const tcp::endpoint& endpoint) {
   if (error) {
     if (logger_)
       logger_->log("handleConnection(): " + error.message());

@@ -25,17 +25,18 @@ public:
 
 private:
   void startAccept();
-  void handleAccept(std::shared_ptr<utils::TCPConnection> newConnection, const boost::system::error_code &error);
+  void handleAccept(std::shared_ptr<utils::TCPConnection> newConnection,
+    const boost::system::error_code& error);
 
 private:
   void processRequests();
 
 private:
-  boost::asio::io_context        ioContext_;
+  boost::asio::io_context ioContext_;
   boost::asio::ip::tcp::acceptor acceptor_;
-  std::thread                    contextRunThread_;// May not need to run this in a thread.
+  std::thread contextRunThread_;// May not need to run this in a thread.
 
-  std::vector<std::thread>              workerPool_;
+  std::vector<std::thread> workerPool_;
   utils::ThreadSafeDeque<TaggedMessage> messageDeque_;
 
   std::unique_ptr<MessageProcessFunctor> messageProcessFunctor_;
