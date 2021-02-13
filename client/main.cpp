@@ -13,7 +13,9 @@ namespace {
 
 class ClientPostFunctor : public utils::MessagePostFunctor {
 public:
-  ClientPostFunctor(utils::Logger* logger) : logger_{ logger } {}
+  ClientPostFunctor(utils::Logger* logger)
+    : logger_{ logger } {
+  }
 
   void operator()(utils::Message message) const override {
     if (!logger_)

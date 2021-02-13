@@ -20,9 +20,13 @@ namespace {
 
 class SetBrokenConnectionFlagFunctor : public ErrorNotifyFunctor {
 public:
-  SetBrokenConnectionFlagFunctor(std::atomic<bool>& flag) : flag_{ &flag } {}
+  SetBrokenConnectionFlagFunctor(std::atomic<bool>& flag)
+    : flag_{ &flag } {
+  }
 
-  void operator()(const boost::system::error_code& error) const override { *flag_ = true; }
+  void operator()(const boost::system::error_code& error) const override {
+    *flag_ = true;
+  }
 
 private:
   std::atomic<bool>* flag_;
@@ -31,8 +35,9 @@ private:
 }// namespace
 
 Client::Client(std::unique_ptr<utils::Logger> logger)
-  : resolver_{ iocontext_ }, connection_{ TCPConnection::create(iocontext_) }, logger_{ std::move(
-                                                                                 logger) } {
+  : resolver_{ iocontext_ }
+  , connection_{ TCPConnection::create(iocontext_) }
+  , logger_{ std::move(logger) } {
   connection_->setErrorNotifyFunctor(
     std::make_unique<SetBrokenConnectionFlagFunctor>(connectionBroken_));
 }
@@ -68,13 +73,17 @@ void Client::send(utils::Message message) {
   connection_->send(std::move(message));
 }
 
-bool Client::connectionBroken() const { return connectionBroken_; }
+bool Client::connectionBroken() const {
+  return connectionBroken_;
+}
 
 void Client::setMessagePostFunctor(std::unique_ptr<utils::MessagePostFunctor> poster) {
   connection_->setMessagePostFunctor(std::move(poster));
 }
 
-utils::Logger* Client::logger() const { return logger_.get(); }
+utils::Logger* Client::logger() const {
+  return logger_.get();
+}
 
 void Client::handleResolve(const boost::system::error_code& error,
   boost::asio::ip::tcp::resolver::results_type results) {

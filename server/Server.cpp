@@ -25,7 +25,9 @@ namespace {
 class TaggedMessagePostFunctor : public MessagePostFunctor {
 public:
   TaggedMessagePostFunctor(TCPConnection& messageSource, ThreadSafeDeque<TaggedMessage>& targetQ)
-    : messageSource_{ &messageSource }, targetQ_{ &targetQ } {}
+    : messageSource_{ &messageSource }
+    , targetQ_{ &targetQ } {
+  }
 
   void operator()(Message message) const override {
     targetQ_->push_back({ std::move(message), messageSource_->shared_from_this() });
@@ -38,7 +40,8 @@ private:
 
 }// namespace
 
-Server::Server(int workerCount) : acceptor_{ ioContext_, tcp::endpoint{ tcp::v4(), 2014 } } {
+Server::Server(int workerCount)
+  : acceptor_{ ioContext_, tcp::endpoint{ tcp::v4(), 2014 } } {
   startAccept();
   for (auto i = 0; i < workerCount; ++i)
     workerPool_.emplace_back([this]() { processRequests(); });

@@ -11,13 +11,16 @@ using namespace boost::asio;
 
 namespace utils {
 
-TCPConnection::TCPConnection(io_context& ioContext) : socket_{ ioContext } {}
+TCPConnection::TCPConnection(io_context& ioContext)
+  : socket_{ ioContext } {
+}
 
 std::shared_ptr<TCPConnection> TCPConnection::create(boost::asio::io_context& ioContext) {
   return std::shared_ptr<TCPConnection>{ new TCPConnection{ ioContext } };
 }
 
-TCPConnection::~TCPConnection() {}
+TCPConnection::~TCPConnection() {
+}
 
 void TCPConnection::send(Message message) {
   std::scoped_lock lock{ outQMutex_ };
@@ -27,9 +30,13 @@ void TCPConnection::send(Message message) {
   writeHeader();
 }
 
-void TCPConnection::startReading() { readHeader(); }
+void TCPConnection::startReading() {
+  readHeader();
+}
 
-boost::asio::ip::tcp::socket& TCPConnection::socket() { return socket_; }
+boost::asio::ip::tcp::socket& TCPConnection::socket() {
+  return socket_;
+}
 
 void TCPConnection::setMessagePostFunctor(std::unique_ptr<MessagePostFunctor> poster) {
   poster_ = std::move(poster);
