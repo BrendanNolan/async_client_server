@@ -2,7 +2,6 @@
 #define TCPCONNECTION_H
 
 #include <memory>
-#include <mutex>
 
 #include <boost/asio.hpp>
 
@@ -54,7 +53,6 @@ private:
 
     utils::Message tempIncomingMessage_;
 
-    std::mutex outQMutex_;
     utils::ThreadSafeDeque<utils::Message> outQ_;
 
     boost::asio::ip::tcp::socket socket_;

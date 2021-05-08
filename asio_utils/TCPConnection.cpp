@@ -29,7 +29,6 @@ TCPConnection::~TCPConnection()
 
 void TCPConnection::send(Message message)
 {
-    std::scoped_lock lock{ outQMutex_ };
     outQ_.push_back(std::move(message));
     if (outQ_.size() != 1u)
         return;
@@ -78,7 +77,6 @@ void TCPConnection::writeHeader()
                     std::cout << error.message() << std::endl;
                     return;
                 }
-                std::scoped_lock lock{ outQMutex_ };
                 outQ_.try_pop_front();
                 if (!outQ_.empty())
                     writeHeader();
@@ -107,7 +105,6 @@ void TCPConnection::writeBody()
                 std::cout << error.message() << std::endl;
                 return;
             }
-            std::scoped_lock lock{ outQMutex_ };
             outQ_.try_pop_front();
             if (!outQ_.empty())
                 writeHeader();
