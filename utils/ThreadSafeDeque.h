@@ -41,7 +41,7 @@ public:
     void push_back(T&& item)
     {
         std::scoped_lock lock{ mutex_ };
-        deque_.push_back(std::move(item));
+        deque_.push_back(std::forward<T>(item));
         condVar_.notify_one();
     }
 
@@ -82,7 +82,7 @@ public:
     void push_front(T&& item)
     {
         std::scoped_lock lock{ mutex_ };
-        deque_.push_front(std::move(item));
+        deque_.push_front(std::forward<T>(item));
         condVar_.notify_one();
     }
 
