@@ -1,0 +1,13 @@
+if [[ "$VIRTUAL_ENV" != "" ]]
+then
+  deactivate
+fi
+
+virtualenv --python=python3.6.9 .venv
+source .venv/bin/activate
+
+conan profile new default --detect
+conan profile update settings.compiler.libcxx=libstdc++11 default
+
+mkdir -p build
+
