@@ -2,4 +2,5 @@ build/*
 linux_build/*
 win_build/*
 .vs/*
+.cache/*
 
