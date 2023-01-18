@@ -3,10 +3,9 @@ then
   deactivate
 fi
 
-virtualenv --python=python3.6.9 .venv
+virtualenv --python=python3.10.6 .venv
 source .venv/bin/activate
 
-conan profile new default --detect
 conan profile update settings.compiler.libcxx=libstdc++11 default
 
 mkdir -p build
