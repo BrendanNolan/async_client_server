@@ -1,0 +1,13 @@
+virtualenv --python=python3.10.6 .venv
+source .venv/bin/activate
+
+sudo apt install conan
+
+conan profile update settings.compiler.libcxx=libstdc++11 default
+
+source setup_script_to_source
+
+cd build/
+conan install ..
+conan build ..
+
