@@ -14,3 +14,5 @@ cd build/
 conan install ..
 conan build ..
 
+cd ..
+
