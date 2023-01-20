@@ -9,7 +9,6 @@ file (GLOB HEADERS "*.h")
 file(GLOB SOURCES "*.cpp")
 add_executable(server ${SOURCES} ${HEADERS})
 
-target_compile_features(server PUBLIC cxx_std_17)
 target_include_directories(server PRIVATE ${CMAKE_CURRENT_SOURCE_DIR} ${Boost_INCLUDE_DIRS})
 target_link_libraries(server PRIVATE ${Boost_LIBRARIES})
 target_link_libraries(server PRIVATE utils)

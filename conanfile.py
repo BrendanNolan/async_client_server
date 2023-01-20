@@ -8,6 +8,7 @@ class async_client_server(ConanFile):
     def build(self):
         cmake = CMake(self)
         cmake.definitions["CMAKE_EXPORT_COMPILE_COMMANDS"] = 1
+        cmake.definitions["CMAKE_CXX_STANDARD"] = 17
         cmake.configure()
         cmake.build()
 
